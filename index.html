@@ -129,25 +129,35 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 .up-note{font-size:.7rem;color:var(--muted);margin-top:2px}
 
 /* ── MARKETING CARDS ── */
-.marketing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:28px}
-.mkt-card{background:#fff;border-radius:8px;border:1px solid var(--border);border-top:3px solid var(--navy);overflow:hidden}
-.mkt-header{padding:12px 14px 8px;display:flex;justify-content:space-between;align-items:flex-start}
-.mkt-comp{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.mkt-feed-header{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.mkt-feed-title{font-size:.8rem;font-weight:600;color:var(--navy)}
+.mkt-feed-meta{font-size:.68rem;color:var(--muted)}
+.mkt-inline-filters{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;display:flex;flex-direction:column;gap:8px}
+.mkt-filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mkt-filter-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);white-space:nowrap;min-width:52px}
+.marketing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px;margin-bottom:28px}
+.mkt-card{background:#fff;border-radius:8px;border:1px solid var(--border);border-top:3px solid var(--navy);overflow:hidden;display:flex;flex-direction:column}
+.mkt-header{padding:10px 14px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.mkt-comp{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--navy)}
+.mkt-status-badge{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px}
+.mkt-status-active{background:var(--green-light);color:var(--green-dark)}
+.mkt-status-inactive{background:var(--surface);color:var(--muted)}
+.mkt-status-noads{background:var(--amber-light);color:#92400e}
+.mkt-meta-row{padding:4px 14px 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--surface)}
+.mkt-channel-badge{font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:3px;background:var(--surface);border:1px solid var(--border);color:var(--navy-mid)}
 .mkt-date{font-size:.65rem;color:var(--muted)}
-.mkt-screenshot{height:80px;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:.75rem}
-.mkt-body{padding:10px 14px}
-.mkt-channel-badge{display:inline-block;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:3px;background:var(--surface);border:1px solid var(--border);color:var(--navy);margin-bottom:6px}
-.mkt-hook{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:4px}
-.mkt-mechanics{font-size:.75rem;color:#4a5568;line-height:1.5;margin-bottom:8px}
-.mkt-row{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;flex-wrap:wrap}
-.mkt-field{font-size:.7rem;color:var(--muted)}
-.mkt-field strong{display:block;font-size:.75rem;color:var(--text);font-weight:600}
-.aggr-badge{font-size:.65rem;font-weight:800;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px}
-.aggr-badge.high{background:var(--red-light);color:var(--red)}
-.aggr-badge.medium{background:var(--amber-light);color:#92400e}
-.aggr-badge.low{background:var(--green-light);color:var(--green-dark)}
-.mkt-counter{background:var(--navy);color:#fff;font-size:.75rem;font-weight:600;padding:8px 12px;margin:0 -14px -10px;border-top:1px solid rgba(255,255,255,.1)}
-.mkt-counter::before{content:"↩ Counter: ";opacity:.6}
+.mkt-hook-badge{font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:10px;background:#e8eeff;color:var(--navy-mid);border:1px solid #c7d4f5}
+.mkt-screenshot{height:72px;background:var(--surface);display:flex;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:.72rem;border-bottom:1px solid var(--surface)}
+.mkt-screenshot a{color:var(--navy-light);font-size:.7rem;font-weight:600;text-decoration:none}
+.mkt-screenshot a:hover{text-decoration:underline}
+.mkt-body{padding:10px 14px;flex:1;display:flex;flex-direction:column;gap:6px}
+.mkt-field-row{display:flex;gap:4px;align-items:baseline;font-size:.75rem}
+.mkt-field-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);white-space:nowrap;min-width:82px}
+.mkt-field-val{color:var(--text);line-height:1.45}
+.mkt-headline{font-size:.83rem;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:2px}
+.mkt-links{padding:8px 14px;background:var(--surface);border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:6px}
+.mkt-link{font-size:.65rem;font-weight:600;color:var(--navy-light);text-decoration:none;padding:2px 6px;border:1px solid var(--border);border-radius:3px;background:#fff}
+.mkt-link:hover{border-color:var(--navy);color:var(--navy)}
 
 /* ── PRODUCT FEED ── */
 .prod-subnav{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
@@ -318,8 +328,6 @@ a.src:hover{text-decoration:underline}
 <div id="filterbar">
   <span class="filter-label">Competitor</span>
   <div class="chips" id="competitorChips"></div>
-  <span class="filter-label channel-filter-label" id="channelFilterLabel" style="display:none">Channel</span>
-  <div class="chips channel-filter" id="channelChips" style="display:none"></div>
   <div class="filter-search">
     <input type="search" id="searchInput" placeholder="Search…" autocomplete="off">
   </div>
@@ -397,90 +405,217 @@ upcomingEvents: [
 ],
 
 marketingItems: [
-  {id:'m1',dateCaptured:'2025-01-15',competitor:'Nu',channel:'Social/Meta',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'First credit / Financial transformation',
-   promoMechanics:'UGC campaign: real customer stories ("first loan," "first savings"). Jan–Mar 2025. 10M+ users milestone activation.',
-   targetSegment:'First-time credit users; underbanked adults',
-   cta:'Download Nu',aggressiveness:'medium',
-   screditoCounterMove:'Nu owns the emotional "first credit" story at scale. Do not copy — find the second credit moment: limit increase, loyalty, graduation to better products.'},
-  {id:'m2',dateCaptured:'2025-01-01',competitor:'Nu',channel:'App / In-app',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'12.25% savings yield (Cajitas Turbo)',
-   promoMechanics:'In-app push + landing page. "Earn while you sleep." Direct head-to-head vs bank savings accounts. Upgraded to 15% for Cajitas Turbo goals.',
-   targetSegment:'Existing Nu users; deposit acquisition from traditional banks',
-   cta:'Open Cajitas',aggressiveness:'high',
-   screditoCounterMove:'Ignore the deposit rate war — SCredito is a lender, not a bank. Nu\'s deposit cost (12.25%) is a P&L problem, not a strength.'},
-  {id:'m3',dateCaptured:'2025-11-01',competitor:'Plata',channel:'Meta / TikTok',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'Up to 15% cashback',
-   promoMechanics:'Performance ads targeting card-savvy 25–40 segment. "Real cashback — not points." Buen Fin boost to 15% on all purchases. Funded by interchange.',
-   targetSegment:'Mid-income card users; Nu card holders',
-   cta:'Get your Plata card',aggressiveness:'high',
-   screditoCounterMove:'Copy this. If interchange cap passes, Plata can\'t sustain 15% cashback. SCredito should offer a comparable hook funded differently (loyalty, lower APR, faster limit increases).'},
-  {id:'m4',dateCaptured:'2025-06-01',competitor:'Plata',channel:'Influencer / Offline',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'In-person card — trusted, not just an app',
-   promoMechanics:'City-by-city brand ambassador rollout: Ciudad Juárez, Monterrey, CDMX. Face-to-face onboarding at stands. Converts "I don\'t trust a phone app" segment.',
-   targetSegment:'First-time digital credit users in mid-sized cities',
-   cta:'Solicita tu tarjeta',aggressiveness:'medium',
-   screditoCounterMove:'Copy the city rollout model for SCredito\'s launch markets. In-person onboarding has 3–5× conversion vs pure digital for the underbanked segment.'},
-  {id:'m5',dateCaptured:'2024-11-15',competitor:'Kueski',channel:'Google / Landing page',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'No buró needed + 15% Buen Fin discount',
-   promoMechanics:'Coupon KUESKIBUENFIN: 15% off, MXN 2,500 min spend, MXN 600 max discount. Native placement on 150+ merchant checkout pages. Nov 15–18 2024.',
-   targetSegment:'E-commerce shoppers without credit cards; price-sensitive buyers',
-   cta:'Compra ahora, paga después',aggressiveness:'high',
-   screditoCounterMove:'Kueski owns the Buen Fin / Hot Sale checkout moment. SCredito should identify the merchant categories Kueski has NOT activated (local services, B2B, subscription).'},
-  {id:'m6',dateCaptured:'2024-01-01',competitor:'Kueski',channel:'Marketplace / Amazon',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'Buy now, pay in installments at Amazon',
-   promoMechanics:'BNPL displayed at Amazon.com.mx checkout alongside credit cards and OXXO. First fintech main sponsor of Hot Sale. "No se necesita tarjeta de crédito."',
-   targetSegment:'Amazon MX shoppers without credit cards (estimated 40%+ of MX Amazon users)',
-   cta:'Elige Kueski Pay',aggressiveness:'high',
-   screditoCounterMove:'Do not match this. Amazon partnership is exclusive. Find the Shopee, Liverpool, and regional e-commerce moments instead.'},
-  {id:'m7',dateCaptured:'2025-03-01',competitor:'Kueski',channel:'Google / SEO',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'#1 most ethical lender in Mexico (AMITAI)',
-   promoMechanics:'4× AMITAI award leveraged in performance marketing. Counters high-APR perception. Message: "Más transparente que el banco." Targets users burned by informal lenders.',
-   targetSegment:'Users comparing lenders; users who had bad experience with predatory apps',
-   cta:'Ver mi límite de crédito',aggressiveness:'low',
-   screditoCounterMove:'Ethics / transparency is table stakes in 2026. SCredito must show CAT clearly and match Kueski\'s CONDUSEF compliance record to compete in this trust market.'},
-  {id:'m8',dateCaptured:'2025-01-01',competitor:'Mercado Pago',channel:'Marketplace / Landing',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'"Tu historial de ventas es tu crédito"',
-   promoMechanics:'Pre-approval shown in seller dashboard for Mercado Libre sellers with 90+ days revenue history. Zero friction — no application, no paperwork. 63% of recipients never had a formal loan.',
-   targetSegment:'Mercado Libre SME sellers; informal business owners',
-   cta:'Ver mi crédito disponible',aggressiveness:'high',
-   screditoCounterMove:'Do not compete in SME seller credit — Mercado Pago\'s data moat is unbeatable for ML sellers. Find SMEs outside the Mercado Libre ecosystem.'},
-  {id:'m9',dateCaptured:'2025-06-01',competitor:'Mercado Pago',channel:'Meta / Performance',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'15% savings yield — earn more than Nubank',
-   promoMechanics:'Explicit Nu comparison in performance ads. "Gana más que con Nu." Targets Nu deposit holders. Savings rate cut from 16.5%→15% without notice in 2025 caused backlash.',
-   targetSegment:'Nu depositors; savers looking for higher yield',
-   cta:'Abre tu cuenta Mercado Pago',aggressiveness:'high',
-   screditoCounterMove:'SCredito is not a savings product — ignore this battle. But note: Mercado Pago\'s account freeze complaints are an opening for trust-based positioning.'},
-  {id:'m10',dateCaptured:'2025-09-01',competitor:'DiDi',channel:'App / Push notification',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'Emergency cash in minutes — for DiDi users',
-   promoMechanics:'In-app push to active DiDi riders and drivers. "Dinero de emergencia en minutos." Pre-scored from ride history. No paperwork required.',
-   targetSegment:'Gig economy workers; DiDi drivers and frequent riders',
-   cta:'Ver mi límite',aggressiveness:'medium',
-   screditoCounterMove:'DiDi owns gig workers via ride data. SCredito should target the non-gig informal worker — market stall owners, domestic workers, day laborers — where DiDi has no data.'},
-  {id:'m11',dateCaptured:'2025-08-01',competitor:'Stori',channel:'Meta',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'Aprobación aunque te hayan rechazado antes',
-   promoMechanics:'Direct targeting of users rejected by banks and other fintechs. "Te damos la oportunidad que otros no te dan." Low initial limit but guaranteed approval message.',
-   targetSegment:'Credit-rejected adults; thin-file borrowers',
-   cta:'Solicita tu Stori Card',aggressiveness:'medium',
-   screditoCounterMove:'Stori\'s 13.1% NPL reveals the cost of blanket low-rejection messaging. SCredito should promise "fair assessment," not "guaranteed approval" — better long-term brand.'},
-  {id:'m12',dateCaptured:'2025-10-01',competitor:'Klar',channel:'Google',
-   creativeUrl:'',screenshotUrl:'',
-   hook:'Crédito para empresas — sin burocracia (Klar Empresarial)',
-   promoMechanics:'Post-Tribal acquisition SME pivot. Targets small business owners. "Cuenta 360 para tu negocio." Still early-stage acquisition — ad spend appears low.',
-   targetSegment:'Small business owners; self-employed professionals',
-   cta:'Solicitar para mi empresa',aggressiveness:'low',
-   screditoCounterMove:'Klar\'s SME pivot is capital-constrained and NPL-stressed. If SCredito has an SME product, now is the window — Klar cannot invest aggressively in 2026.'},
+  // ── KUESKI ──
+  {id:'KU-001',dateCaptured:'2026-05-21',competitor:'Kueski',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://www.kueskipay.com/registratehoy',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://www.kueskipay.com/registratehoy',
+   headline:'Regístrate hoy a Kueski Pay y paga en quincenas',
+   adCopySummary:'BNPL at 11,000+ online and physical stores. Buy now, pay in up to 12 fortnightly installments. No credit card or initial payment required. 2% cashback on purchases.',
+   hook:'BNPL',
+   promoMechanics:'Ahorra hasta 30% en tu primera compra (mínimo $50); 2% cashback comprando con Kueski Pay; $500 cashback por referido que tome su primer préstamo',
+   targetSegment:'E-commerce shopper / Underbanked user',
+   cta:'Crear cuenta / Regístrate hoy',
+   notes:'Active landing page as of 2026-05-21. Available at Amazon MX, Mercado Libre, Temu and 11,000+ stores. Meta Ads Library access blocked — paid ad library entry not confirmable.'},
+  {id:'KU-002',dateCaptured:'2026-05-21',competitor:'Kueski',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://www.kueski.com/prestamos-en-efectivo',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://www.kueski.com/prestamos-en-efectivo',
+   headline:'Préstamos en Efectivo, recibe el dinero el mismo día',
+   adCopySummary:'Personal cash loans up to $26,000 MXN, same-day deposit. No collateral, no hidden commissions, 100% online. Response in minutes. First loan at 0% interest.',
+   hook:'0% interest first loan',
+   promoMechanics:'0% interés en tu primer préstamo de hasta $25,500',
+   targetSegment:'Emergency cash borrower / First-time borrower',
+   cta:'Pide tu primer préstamo',
+   notes:'Tagline: "La pasión no espera, tu préstamo tampoco." 35M+ loans issued. CONDUSEF #1 service rating 9.86/10. Meta Ads Library access blocked.'},
+  {id:'KU-003',dateCaptured:'2026-05-21',competitor:'Kueski',channel:'Meta (page confirmed active)',adStatus:'active',
+   sourceUrl:'https://www.facebook.com/KueskiPay/',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://www.kueskipay.com/',
+   headline:'Compra Ahora y Paga Después Sin Tarjeta de Crédito',
+   adCopySummary:'Promotes BNPL at 11,000+ stores. Key messages: sin tarjeta, sin pago inicial, paga en quincenas. Instagram @mikueski active (18K followers).',
+   hook:'BNPL',
+   promoMechanics:'2% cashback comprando con Kueski Pay; hasta 10% cashback en temporadas especiales',
+   targetSegment:'E-commerce shopper / Underbanked user',
+   cta:'Descargar app / Crear cuenta',
+   notes:'Facebook page KueskiPay confirmed active. Instagram @mikueski confirmed active (736 posts). Specific paid ad creatives not retrievable — Meta Ads Library access blocked.'},
+  // ── NU MÉXICO ──
+  {id:'NU-001',dateCaptured:'2026-05-21',competitor:'Nu',channel:'Meta (public post)',adStatus:'active',
+   sourceUrl:'https://www.facebook.com/nu.mx/posts/solicita-tu-tarjeta-de-cr%C3%A9dito-nu-deja-ya-de-pagar-anualidad-y-usa-tu-dinero-en-/1112530090919102/',
+   creativeUrl:'',screenshotUrl:'',landingPageUrl:'https://nu.com.mx/',
+   headline:'Solicita tu Tarjeta de Crédito Nu. Deja ya de pagar anualidad.',
+   adCopySummary:'Zero annual fee credit card. Messaging targets annual-fee pain point of traditional banks. Post engagement: 3,400 reactions, 95 comments, 306 shares.',
+   hook:'No annual fee',
+   promoMechanics:'No explicit promo — product awareness. Sin anualidad de por vida.',
+   targetSegment:'Young salaried worker / First-time borrower',
+   cta:'Install now (Google Play)',
+   notes:'Post date: Apr 28, 2025. Verified Facebook account nu.mx. Organic post — paid ad library entry not confirmable due to Meta Ads Library access block.'},
+  {id:'NU-002',dateCaptured:'2026-05-21',competitor:'Nu',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://nu.com.mx/',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://nu.com.mx/',
+   headline:'Nu: Tarjeta de crédito y cuenta. Finanzas claras y humanas.',
+   adCopySummary:'Credit card with no annual fee + Cuenta Nu savings with up to 13% annual return (Cajitas). NuPlus loyalty program offering points on purchases.',
+   hook:'No annual fee',
+   promoMechanics:'Tarjeta con $0 anualidad; Cuenta Nu hasta 13.00% en Cajitas; NuPlus programa de puntos (offer valid Feb 9 – Jun 2, 2026)',
+   targetSegment:'Young salaried worker / E-commerce shopper',
+   cta:'Solicita tu tarjeta / Descarga la app',
+   notes:'NuPlus loyalty program rolled out May 2025 to select users. Savings yield currently 13.00%. Banking licence fully active Feb 2026.'},
+  // ── PLATA ──
+  {id:'PL-001',dateCaptured:'2026-05-21',competitor:'Plata',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://www.platacard.mx/',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://www.platacard.mx/',
+   headline:'Solicítala antes del 22 de mayo sin anualidad y obtén hasta $200,000 de línea de crédito',
+   adCopySummary:'Time-gated no-annual-fee offer with countdown timer. Up to 15% cashback in 4 selectable monthly categories. Credit line up to $200,000. Next-day card delivery. Apple Pay integration.',
+   hook:'Cashback',
+   promoMechanics:'Hasta 15% cashback en hasta 4 categorías mensuales elegibles; sin anualidad (oferta limitada, cuenta regresiva activa); 2 meses sin intereses especial',
+   targetSegment:'Young salaried worker / E-commerce shopper',
+   cta:'Obtener tarjeta',
+   notes:'Website showed "Queda 1 día" urgency countdown as of research date (May 21, 2026). App rating 4.9. Available in 12+ Mexican cities. Banco Plata regulated bank since Feb 2026.'},
+  // ── MERCADO PAGO ──
+  {id:'MP-001',dateCaptured:'2026-05-21',competitor:'Mercado Pago',channel:'Meta (public video post)',adStatus:'active',
+   sourceUrl:'https://www.facebook.com/mercadopago.mex/videos/tu-dinero-crece-con-mercado-pago/1216969006487451/',
+   creativeUrl:'',screenshotUrl:'',landingPageUrl:'https://www.mercadopago.com.mx/cuenta',
+   headline:'Tu dinero crece con Mercado Pago',
+   adCopySummary:'Promotes digital account where money grows daily and remains available to spend at any time. Multiple video posts with this "Tu dinero crece" theme confirmed on Facebook.',
+   hook:'Savings yield',
+   promoMechanics:'Hasta 13% de rendimiento anual (requiere depósito mínimo $3,000/mes; límite máximo $25,000 pesos)',
+   targetSegment:'Young salaried worker / Underbanked user',
+   cta:'Not confirmed from post (implied: Descarga la app)',
+   notes:'Current yield 13% (reduced from 15% and 14% in prior campaigns). Official Mercado Pago MX Facebook page. Paid ad library entry not confirmable — Meta Ads Library access blocked.'},
+  {id:'MP-002',dateCaptured:'2026-05-21',competitor:'Mercado Pago',channel:'Meta (public video post)',adStatus:'inactive',
+   sourceUrl:'https://www.facebook.com/mercadopago.mex/videos/a-trav%C3%A9s-de-mercado-pago-tu-dinero-crece-hasta-un-15-y-est%C3%A1-siempre-disponible-p/485330287961541/',
+   creativeUrl:'',screenshotUrl:'',landingPageUrl:'https://www.mercadopago.com.mx/cuenta',
+   headline:'A través de Mercado Pago tu dinero crece hasta un 15%',
+   adCopySummary:'Earlier version of "Tu dinero crece" campaign at 15% yield. Post still accessible but offer no longer valid — yield reduced to 13% from Oct 2025.',
+   hook:'Savings yield',
+   promoMechanics:'15% de rendimiento anual (no longer active — rate reduced to 13% since Oct 2025)',
+   targetSegment:'Young salaried worker / Underbanked user',
+   cta:'Not confirmed',
+   notes:'Included as historical reference to illustrate campaign evolution. 15% rate discontinued.'},
+  // ── STORI ──
+  {id:'ST-001',dateCaptured:'2026-05-21',competitor:'Stori',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://www.storicard.com/stori-card',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://www.storicard.com/stori-card',
+   headline:'Tu tarjeta de crédito con cashback, MSI y sin anualidad',
+   adCopySummary:'Entry-level card for underbanked users. 99% approval rate, no annual fee, up to 10% cashback in preferred categories, credit line up to $220,000. 5 million Mexican users.',
+   hook:'No annual fee',
+   promoMechanics:'Sin anualidad de por vida; hasta 10% cashback en categorías seleccionadas; MSI en tiendas participantes (Temu, Nike, Amazon, Shein)',
+   targetSegment:'First-time borrower / Underbanked user',
+   cta:'Quiero mi tarjeta',
+   notes:'Stori Facebook page (Stori.MX) confirmed active. 99% approval claim. Card in ~5 minutes via app. Meta Ads Library access blocked — paid entries not confirmable.'},
+  {id:'ST-002',dateCaptured:'2026-05-21',competitor:'Stori',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://www.storicard.com/stori-black',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://www.storicard.com/stori-black',
+   headline:'Bienvenido al mundo Black: La tarjeta con cashback',
+   adCopySummary:'Premium card offering 1% cashback on all purchases, no annual fee, deferred payments up to 12 months, credit line up to $230,000.',
+   hook:'Cashback',
+   promoMechanics:'1% cashback en todas las compras; sin anualidad de por vida; difiere tus compras hasta 12 meses',
+   targetSegment:'Young salaried worker / E-commerce shopper',
+   cta:'Obtener mi Stori Black',
+   notes:'Facebook page confirmed posts about "Stori Black con cashback en TODO." 2.5M cardholders cited.'},
+  // ── KLAR ──
+  {id:'KL-001',dateCaptured:'2026-05-21',competitor:'Klar',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://www.klar.mx/credito',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://www.klar.mx/credito',
+   headline:'La Tarjeta de crédito sin anualidad ni cobros ocultos',
+   adCopySummary:'No annual fee, no hidden charges. Instant approval (3 minutes). Cashback (not points). International Mastercard. 7 million users. Klarfest promotion active.',
+   hook:'No annual fee',
+   promoMechanics:'Klarfest (May 25 – Jun 2, 2026): hasta 15% cashback en compras a MSI (supermercados, viajes, tecnología, Amazon, Mercado Libre); Klar Plus: hasta 3% cashback',
+   targetSegment:'Young salaried worker / E-commerce shopper',
+   cta:'Solicítala / Obtener tarjeta',
+   notes:'Klarfest promo active May 25 – Jun 2, 2026. Tagline: "Olvídate de las comisiones. Aquí solo hay cashback y beneficios reales." 7M users.'},
+  {id:'KL-002',dateCaptured:'2026-05-21',competitor:'Klar',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://www.klar.mx/platino',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://www.klar.mx/platino',
+   headline:'La tarjeta de crédito para tu estilo de vida exclusivo',
+   adCopySummary:'Metal premium card. Starting credit line MXN 50,000. Up to 6% cashback by category (gas, subscriptions). VIP airport lounge access, concierge, 15% investment returns.',
+   hook:'Cashback',
+   promoMechanics:'6% cashback en gasolineras y suscripciones; 3% en supermercados, telecom, delivery, movilidad; anualidad $1,500 (condonable con $60,000 en gasto en primeros 3 meses); Klarfest hasta 15% en MSI',
+   targetSegment:'Young salaried worker (premium segment)',
+   cta:'OBTENER PLATINO',
+   notes:'Annual fee exists (unlike base card) but waivable. Tagline: "Platino es más que una tarjeta: es una declaración de éxito."'},
+  // ── DIDI ──
+  {id:'DD-001',dateCaptured:'2026-05-21',competitor:'DiDi',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://didifinance.com/tarjeta-de-credito',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://didifinance.com/tarjeta-de-credito',
+   headline:'DiDi Card: tarjeta de crédito sin anualidad y CASHBACK',
+   adCopySummary:'No annual fee for life, no hidden commissions. Up to 6% cashback in user-selected category. 2% guaranteed on supermarkets, gas, DiDi app. Dynamic CVV, 100% digital. Promo period May 25 – Jun 2.',
+   hook:'Cashback',
+   promoMechanics:'6% cashback en categoría elegida (aerolíneas, videojuegos, mascotas, cine, farmacias, telefonía); 2% en supermercados, gasolineras y pagos DiDi; "Llegaron las ofertas más hot" válida 25 mayo–2 junio 2026',
+   targetSegment:'Young salaried worker / E-commerce shopper',
+   cta:'Obtener tarjeta / Ir a registrarme',
+   notes:'DiDi Card 2M+ users in Mexico. Promo active May 25 – Jun 2, 2026. Meta Ads Library access blocked.'},
+  {id:'DD-002',dateCaptured:'2026-05-21',competitor:'DiDi',channel:'Meta (public post)',adStatus:'active',
+   sourceUrl:'https://www.facebook.com/didicardmx/posts/con-didi-card-t%C3%BA-escoges-d%C3%B3nde-obtener-6-de-cashback-para-lo-que-quieres-y-lo-qu/797695740009854/',
+   creativeUrl:'',screenshotUrl:'',landingPageUrl:'https://didifinance.com/tarjeta-de-credito/cashback/',
+   headline:'Con DiDi Card, tú escoges dónde obtener 6% de cashback',
+   adCopySummary:'Facebook post by verified DiDi Finanzas account. Copy: "Para lo que quieres y lo que necesitas, lo bueno es que hay DiDi Card." Promotes user-selectable 6% cashback. 210 shares.',
+   hook:'Cashback',
+   promoMechanics:'6% de cashback en la categoría que elijas',
+   targetSegment:'Young salaried worker / E-commerce shopper',
+   cta:'Learn more',
+   notes:'Post date: Jan 27, 2025. 210 shares. Posted by DiDi Finanzas (verified). Direct Facebook post — paid library entry not confirmable due to access block.'},
+  {id:'DD-003',dateCaptured:'2026-05-21',competitor:'DiDi',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://didifinance.com/prestamos',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://didifinance.com/prestamos',
+   headline:'Con DiDi Préstamos obtén hasta $46,800 en minutos',
+   adCopySummary:'Revolving credit line $300–$46,800 MXN. Approved in 5 minutes. No income documentation or guarantor. 100% online, 24/7. Pay via SPEI or OXXO. Monthly rate 3.5%–18%, CAT promedio 400%.',
+   hook:'Instant approval',
+   promoMechanics:'No explicit promo — product awareness. Tagline: "Tu crédito 100% digital. Sin estrés, sin complicaciones."',
+   targetSegment:'Emergency cash borrower / First-time borrower',
+   cta:'Registrarse / Continuar',
+   notes:'10M+ users. DiDiPrestamosMX Facebook page confirmed (33,841 likes, redirected to @DiDiFinanzas). CAT promedio 400%.'},
+  // ── BAUBAP ──
+  {id:'BB-001',dateCaptured:'2026-05-21',competitor:'Baubap',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://www.baubap.com/',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://www.baubap.com/',
+   headline:'Préstamos al instante, sin buró',
+   adCopySummary:'Microloans $500–$9,000 MXN. No credit bureau check — evaluation based on device data. Approval decision in 10 minutes. No upfront fees. "Va de Vuelta" returns % of interest for on-time payments.',
+   hook:'No buró / No credit history',
+   promoMechanics:'Va de Vuelta: devuelve porcentaje de interés por pagos puntuales; Invita y Gana: $100 MXN+ por referido exitoso; Estrellas Baubap: programa de lealtad',
+   targetSegment:'Emergency cash borrower / Underbanked user / First-time borrower',
+   cta:'Obtén el tuyo ahora',
+   notes:'Tagline: "A fuerza, ni los zapatos entran" (non-coercive lending). SOFOM ENR supervised by CNBV. Meta Ads Library access blocked. Facebook group confirmed active.'},
+  {id:'BB-002',dateCaptured:'2026-01-15',competitor:'Baubap',channel:'In-app / WhatsApp push',adStatus:'inactive',
+   sourceUrl:'https://www.baubap.com/aprobacion-garantizada-terminos-y-condiciones-enero2025',
+   creativeUrl:'',screenshotUrl:'',landingPageUrl:'https://www.baubap.com/',
+   headline:'Aprobación Garantizada — Préstamos que cuidan tu futuro financiero',
+   adCopySummary:'WhatsApp or in-app push to eligible users. If user pays full current loan before Jan 16, 2025, Baubap guarantees next loan approval.',
+   hook:'Instant approval',
+   promoMechanics:'Aprobación garantizada del siguiente préstamo si pagas tu crédito actual antes del 16 de enero de 2025',
+   targetSegment:'Repeat borrower',
+   cta:'Not specified (in-app / WhatsApp)',
+   notes:'Jan 2025 edition now inactive. Evergreen "aprobación garantizada" page exists at baubap.com suggesting recurring campaign pattern.'},
+  // ── TALA ──
+  {id:'TL-001',dateCaptured:'2026-05-21',competitor:'Tala',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://talamobile.mx/',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://talamobile.mx/',
+   headline:'Con Tala, pedir prestado para salir adelante, se vale',
+   adCopySummary:'Loans up to $22,000 MXN in minutes. No credit bureau, no income proof, no co-signer. Repayment 15 days–4 months. 4M Mexican clients, 20M loans in Mexico.',
+   hook:'No buró / No credit history',
+   promoMechanics:'No explicit promo — product awareness. "Crece con Tala": progressive credit limit growth with on-time payments.',
+   targetSegment:'Emergency cash borrower / Underbanked user / First-time borrower',
+   cta:'¡Descarga y aplica!',
+   notes:'Taglines: "Su futuro sigue creciendo" / "Préstamos que crecen contigo." TALA MOBILE S.A.P.I. DE C.V., SOFOM ENR. CONDUSEF SIPRES registered. Meta Ads Library access blocked.'},
+  // ── RAPPICARD ──
+  {id:'RC-001',dateCaptured:'2026-05-21',competitor:'RappiCard',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://rappicard.mx/',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://rappicard.mx/',
+   headline:'RappiCard, una tarjeta de crédito sin anualidad',
+   adCopySummary:'No annual fee, no hidden costs. Up to 5% cashback (3% on Rappi Travel, restaurants, pharmacies, supermarkets, gift cards; 1% everywhere else). Apply in under 5 minutes. MSI at hundreds of merchants.',
+   hook:'No annual fee',
+   promoMechanics:'3% cashback en Rappi Travel, restaurantes, farmacias, supermercados y tarjetas de regalo; 1% en todas las demás compras; MSI en Amazon, Mercado Libre, Nike, Aeroméxico, Liverpool',
+   targetSegment:'Young salaried worker / E-commerce shopper',
+   cta:'Solicita tu RappiCard',
+   notes:'Banorte acquired 44.28% stake in 2025. Buen Fin 2025 campaign confirmed: $150 cashback per +$2,500 purchase at Amazon, Liverpool, Walmart, Zara, Adidas, Shein (up to 5 transactions). Meta access blocked.'},
+  // ── UALÁ ──
+  {id:'UA-001',dateCaptured:'2026-05-21',competitor:'Ualá',channel:'Landing Page',adStatus:'active',
+   sourceUrl:'https://www.uala.mx/tarjeta-credito-garantizada',creativeUrl:'',screenshotUrl:'',
+   landingPageUrl:'https://www.uala.mx/tarjeta-credito-garantizada',
+   headline:'Mejora tu historial crediticio con una tarjeta garantizada',
+   adCopySummary:'Guaranteed credit card for users without credit history or with poor bureau. 99% approval. Backed by a guarantee deposit (returns up to 5% in Ualá account). No fees. 100% digital in 3 minutes.',
+   hook:'No buró / No credit history',
+   promoMechanics:'Sin anualidad; sin costo de apertura, mantenimiento o cierre; depósito garantía genera hasta 5% de rendimiento en cuenta Ualá',
+   targetSegment:'First-time borrower / Underbanked user',
+   cta:'Solicítala',
+   notes:'Launched Sep 2024. 99% approval via IMSS/CURP-based credit evaluation (no traditional buró). Also offers personal loans up to $20,000 (24 months). Operates as Banco Ualá México (full banking licence).'},
 ],
 
 productItems: {
@@ -759,10 +894,12 @@ macroData: {
 const state = {
   tab: 'digest',
   competitor: 'all',
-  channel: 'all',
   search: '',
   productTab: 'kueski',
   chartsInit: {},
+  mktChannel: 'all',
+  mktHook: 'all',
+  mktStatus: 'all',
 };
 
 const COMPETITORS = ['Nu','Plata','Kueski','Mercado Pago','Klar','Stori','DiDi','Macro','Regulatory','Baubap'];
@@ -851,47 +988,92 @@ function renderDigest(){
 function renderMarketing(){
   const q = state.search;
   const comp = state.competitor;
-  const chan = state.channel;
-  const items = DATA.marketingItems.filter(m =>
-    matchesComp(m.competitor, comp) &&
-    (chan === 'all' || (m.channel||'').toLowerCase().includes(chan.toLowerCase())) &&
-    matchesSearch([m.hook, m.promoMechanics, m.competitor, m.channel, m.targetSegment, m.screditoCounterMove], q)
-  );
 
-  const aggrColors = {high:'var(--red)',medium:'var(--amber)',low:'var(--green)'};
-  const cards = items.length ? items.map(m => `
+  const ALL_CHANNELS = ['All','Meta','Landing Page','In-app / WhatsApp push'];
+  const ALL_HOOKS = ['All','No annual fee','Cashback','BNPL','No buró / No credit history','0% interest first loan','Instant approval','Savings yield','Emergency cash','Trust / security','App convenience'];
+  const ALL_STATUSES = ['All','Active','Inactive'];
+
+  const items = DATA.marketingItems.filter(m => {
+    if(!matchesComp(m.competitor, comp)) return false;
+    if(state.mktChannel !== 'all' && !(m.channel||'').toLowerCase().includes(state.mktChannel.toLowerCase())) return false;
+    if(state.mktHook !== 'all' && !(m.hook||'').toLowerCase().includes(state.mktHook.toLowerCase())) return false;
+    if(state.mktStatus !== 'all' && (m.adStatus||'').toLowerCase() !== state.mktStatus.toLowerCase()) return false;
+    if(!matchesSearch([m.headline,m.adCopySummary,m.hook,m.promoMechanics,m.competitor,m.channel,m.targetSegment,m.notes], q)) return false;
+    return true;
+  });
+
+  function statusBadge(s){
+    const lc=(s||'').toLowerCase();
+    if(lc==='active') return `<span class="mkt-status-badge mkt-status-active">Active</span>`;
+    if(lc==='inactive') return `<span class="mkt-status-badge mkt-status-inactive">Inactive</span>`;
+    return `<span class="mkt-status-badge mkt-status-noads">${escHtml(s)}</span>`;
+  }
+
+  function makeChips(list, stateKey, current){
+    return list.map(v => {
+      const val = v.toLowerCase()==='all' ? 'all' : v;
+      return `<button class="chip ${val===current?'active':''}" data-mkt="${stateKey}" data-val="${escHtml(val)}">${escHtml(v)}</button>`;
+    }).join('');
+  }
+
+  const cards = items.length ? items.map(m => {
+    const links = [];
+    if(m.sourceUrl) links.push(`<a class="mkt-link" href="${m.sourceUrl}" target="_blank">Source ↗</a>`);
+    if(m.creativeUrl) links.push(`<a class="mkt-link" href="${m.creativeUrl}" target="_blank">Creative ↗</a>`);
+    if(m.screenshotUrl) links.push(`<a class="mkt-link" href="${m.screenshotUrl}" target="_blank">Screenshot ↗</a>`);
+    if(m.landingPageUrl && m.landingPageUrl !== m.sourceUrl) links.push(`<a class="mkt-link" href="${m.landingPageUrl}" target="_blank">Landing page ↗</a>`);
+    const hasCreative = m.creativeUrl || m.screenshotUrl;
+    const previewHtml = hasCreative
+      ? `<div class="mkt-screenshot"><a href="${m.creativeUrl||m.screenshotUrl}" target="_blank">View creative ↗</a></div>`
+      : `<div class="mkt-screenshot" style="color:var(--muted);font-size:.68rem">Preview unavailable</div>`;
+    return `
     <div class="mkt-card">
       <div class="mkt-header">
-        <div>
-          <div class="mkt-comp">${escHtml(m.competitor)}</div>
-          <span class="mkt-channel-badge">${escHtml(m.channel)}</span>
-        </div>
-        <div style="text-align:right">
-          <div class="mkt-date">${fmtDate(m.dateCaptured)}</div>
-          <span class="aggr-badge ${m.aggressiveness}">${(m.aggressiveness||'').toUpperCase()}</span>
-        </div>
+        <div class="mkt-comp">${escHtml(m.competitor)}</div>
+        ${statusBadge(m.adStatus)}
       </div>
-      <div class="mkt-screenshot">📸 <span>Screenshot placeholder</span></div>
+      <div class="mkt-meta-row">
+        <span class="mkt-channel-badge">${escHtml(m.channel)}</span>
+        <span class="mkt-hook-badge">${escHtml(m.hook)}</span>
+        <span class="mkt-date">${fmtDate(m.dateCaptured)}</span>
+      </div>
+      ${previewHtml}
       <div class="mkt-body">
-        <div class="mkt-hook">${escHtml(m.hook)}</div>
-        <div class="mkt-mechanics">${escHtml(m.promoMechanics)}</div>
-        <div class="mkt-row">
-          <div class="mkt-field"><strong>${escHtml(m.targetSegment)}</strong>Target segment</div>
-          <div class="mkt-field"><strong>${escHtml(m.cta)}</strong>CTA</div>
-        </div>
-        <div class="mkt-counter">${escHtml(m.screditoCounterMove)}</div>
+        <div class="mkt-headline">${escHtml(m.headline)}</div>
+        <div class="mkt-field-row"><span class="mkt-field-label">Ad copy</span><span class="mkt-field-val">${escHtml(m.adCopySummary)}</span></div>
+        <div class="mkt-field-row"><span class="mkt-field-label">Promo</span><span class="mkt-field-val">${escHtml(m.promoMechanics)}</span></div>
+        <div class="mkt-field-row"><span class="mkt-field-label">Segment</span><span class="mkt-field-val">${escHtml(m.targetSegment)}</span></div>
+        <div class="mkt-field-row"><span class="mkt-field-label">CTA</span><span class="mkt-field-val">${escHtml(m.cta)}</span></div>
+        ${m.notes ? `<div class="mkt-field-row"><span class="mkt-field-label">Notes</span><span class="mkt-field-val" style="color:var(--muted)">${escHtml(m.notes)}</span></div>` : ''}
       </div>
-    </div>
-  `).join('') : `<div class="empty-state">🔍<p>No marketing items match the current filter.</p></div>`;
+      ${links.length ? `<div class="mkt-links">${links.join('')}</div>` : ''}
+    </div>`;
+  }).join('') : `<div class="empty-state">🔍<p>No ads match the current filter. <button onclick="clearMktFilters()" style="background:none;border:none;color:var(--navy-light);cursor:pointer;font-size:.85rem;text-decoration:underline">Clear filters</button></p></div>`;
 
   document.getElementById('panel-marketing').innerHTML = `
-    <div class="panel-header">
-      <div class="panel-title">Competitor Marketing Feed</div>
-      <div class="panel-sub">How competitors are acquiring users — hooks, mechanics, and SCredito counter-moves</div>
+    <div class="mkt-feed-header">
+      <div class="mkt-feed-title">Latest active competitor ads — Meta Ads Library &amp; Google Ads Transparency Center</div>
+      <div class="mkt-feed-meta">Last captured: 2026-05-21 &nbsp;·&nbsp; ${items.length} of ${DATA.marketingItems.length} entries shown &nbsp;·&nbsp; Meta Ads Library and Google Ads Transparency Center require JavaScript — paid ad library entries not directly accessible; data sourced from landing pages and confirmed public posts</div>
+    </div>
+    <div class="mkt-inline-filters" id="mktFilters">
+      <div class="mkt-filter-row"><span class="mkt-filter-label">Channel</span>${makeChips(ALL_CHANNELS,'mktChannel',state.mktChannel)}</div>
+      <div class="mkt-filter-row"><span class="mkt-filter-label">Hook</span>${makeChips(ALL_HOOKS,'mktHook',state.mktHook)}</div>
+      <div class="mkt-filter-row"><span class="mkt-filter-label">Status</span>${makeChips(ALL_STATUSES,'mktStatus',state.mktStatus)}</div>
     </div>
     <div class="marketing-grid">${cards}</div>
-    ${implicationBox('The dominant hooks are: (1) No annual fee (Nu, Plata, Klar, Stori) — table stakes now, not differentiators. (2) Cashback 15% (Plata) — copy this if interchange cap doesn\'t pass. (3) No buró required (Kueski, Baubap) — strongest hook for the underbanked segment SCredito targets. (4) In-person onboarding (Plata) — highest conversion for the non-digital user.')}
   `;
+
+  document.getElementById('mktFilters').querySelectorAll('.chip[data-mkt]').forEach(ch => {
+    ch.addEventListener('click', () => {
+      state[ch.dataset.mkt] = ch.dataset.val;
+      renderMarketing();
+    });
+  });
+}
+
+function clearMktFilters(){
+  state.mktChannel = 'all'; state.mktHook = 'all'; state.mktStatus = 'all';
+  renderMarketing();
 }
 
 // ═══════════════════════════════════════════
@@ -1177,10 +1359,6 @@ function switchTab(tab){
   state.tab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===tab));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id==='panel-'+tab));
-  // show channel filter only on marketing tab
-  const showChan = tab === 'marketing';
-  document.getElementById('channelFilterLabel').style.display = showChan ? '' : 'none';
-  document.getElementById('channelChips').style.display = showChan ? '' : 'none';
   renderActiveTab();
 }
 
@@ -1198,7 +1376,7 @@ function renderActiveTab(){
 // FILTER CHIPS SETUP
 // ═══════════════════════════════════════════
 function setupChips(){
-  const compList = ['All','Nu','Plata','Kueski','Mercado Pago','Klar','Stori','DiDi','Regulatory','Macro'];
+  const compList = ['All','Nu','Plata','Kueski','Mercado Pago','Klar','Stori','DiDi','Baubap','Tala','RappiCard','Ualá','Regulatory','Macro'];
   const cc = document.getElementById('competitorChips');
   cc.innerHTML = compList.map(c => {
     const val = c.toLowerCase() === 'all' ? 'all' : c;
@@ -1208,21 +1386,6 @@ function setupChips(){
   cc.querySelectorAll('.chip').forEach(ch => {
     ch.addEventListener('click', () => {
       state.competitor = ch.dataset.comp;
-      setupChips(); // re-render chips
-      renderActiveTab();
-    });
-  });
-
-  const chanList = ['All','Social/Meta','TikTok','Google / SEO','App / In-app','Marketplace','Influencer'];
-  const chc = document.getElementById('channelChips');
-  chc.innerHTML = chanList.map(c => {
-    const val = c.toLowerCase() === 'all' ? 'all' : c;
-    const active = state.channel === val || (val === 'all' && state.channel === 'all');
-    return `<button class="chip ${active?'active':''}" data-chan="${val}">${c}</button>`;
-  }).join('');
-  chc.querySelectorAll('.chip').forEach(ch => {
-    ch.addEventListener('click', () => {
-      state.channel = ch.dataset.chan;
       setupChips();
       renderActiveTab();
     });
