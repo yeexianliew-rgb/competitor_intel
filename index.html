@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCredito — Mexico Credit Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0f2342;--navy-mid:#1a3a6b;--navy-light:#2a5caa;
+  --green:#00a878;--green-dark:#007a58;--green-light:#e0f7f1;
+  --amber:#f59e0b;--amber-light:#fef3c7;
+  --red:#e53e3e;--red-light:#fff5f5;
+  --surface:#f5f7fc;--border:#dde5f4;--text:#1a2332;--muted:#5c6b84;
+  --topbar-h:52px;--filterbar-h:44px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);font-size:0.875rem}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:#b0c4de;border-radius:3px}
+
+/* ── TOP BAR ── */
+#topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--topbar-h);
+  background:var(--navy);display:flex;align-items:center;
+  gap:16px;padding:0 20px;z-index:300;
+  box-shadow:0 2px 12px rgba(0,0,0,.25)
+}
+.brand{display:flex;align-items:baseline;gap:8px;flex-shrink:0}
+.brand-eye{font-size:.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--green);border:1px solid var(--green);padding:2px 7px;border-radius:3px}
+.brand-name{font-family:'DM Serif Display',serif;font-size:.95rem;color:#fff}
+.tab-nav{display:flex;gap:2px;flex:1;justify-content:center}
+.tab-btn{
+  background:transparent;border:none;color:rgba(255,255,255,.55);
+  font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:600;
+  padding:8px 14px;border-radius:4px;cursor:pointer;
+  letter-spacing:.3px;transition:all .2s;white-space:nowrap;
+  border-bottom:2px solid transparent
+}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,.07)}
+.tab-btn.active{color:#fff;border-bottom-color:var(--green);background:rgba(0,168,120,.12)}
+.topbar-meta{font-size:.68rem;color:rgba(255,255,255,.45);white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:5px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── FILTER BAR ── */
+#filterbar{
+  position:fixed;top:var(--topbar-h);left:0;right:0;height:var(--filterbar-h);
+  background:#fff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:16px;padding:0 20px;z-index:200;
+}
+.filter-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);white-space:nowrap}
+.chips{display:flex;gap:5px;flex-wrap:nowrap;overflow-x:auto}
+.chip{
+  font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:12px;
+  border:1px solid var(--border);background:var(--surface);color:var(--muted);
+  cursor:pointer;white-space:nowrap;transition:all .15s
+}
+.chip:hover{border-color:var(--navy);color:var(--navy)}
+.chip.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip.c-nu.active{background:#00a878;border-color:#00a878}
+.chip.c-plata.active{background:var(--navy);border-color:var(--navy)}
+.chip.c-kueski.active{background:#007a58;border-color:#007a58}
+.chip.c-mp.active{background:var(--amber);border-color:var(--amber);color:#fff}
+.chip.c-klar.active{background:var(--red);border-color:var(--red)}
+.chip.c-stori.active{background:#92400e;border-color:#92400e}
+.chip.c-didi.active{background:var(--red);border-color:var(--red)}
+.filter-search{margin-left:auto;flex-shrink:0}
+#searchInput{
+  border:1px solid var(--border);border-radius:6px;padding:5px 10px;
+  font-size:.78rem;font-family:'DM Sans',sans-serif;color:var(--text);
+  background:var(--surface);width:180px;outline:none
+}
+#searchInput:focus{border-color:var(--navy);background:#fff}
+
+/* ── PANELS ── */
+.panel-container{margin-top:calc(var(--topbar-h) + var(--filterbar-h));min-height:calc(100vh - var(--topbar-h) - var(--filterbar-h))}
+.tab-panel{display:none;padding:24px 28px 60px}
+.tab-panel.active{display:block}
+
+/* ── PANEL HEADER ── */
+.panel-header{margin-bottom:20px}
+.panel-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:3px}
+.panel-sub{font-size:.8rem;color:var(--muted)}
+
+/* ── DIGEST CARDS ── */
+.digest-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.digest-card{
+  background:#fff;border-radius:8px;border:1px solid var(--border);
+  border-left:4px solid var(--border);padding:14px 18px;
+  display:grid;grid-template-columns:1fr auto;gap:10px;
+  transition:box-shadow .2s
+}
+.digest-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.digest-card.urgency-high{border-left-color:var(--red)}
+.digest-card.urgency-watch{border-left-color:var(--amber)}
+.digest-card.urgency-info{border-left-color:var(--green)}
+.dc-left{min-width:0}
+.dc-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.urgency-badge{font-size:.6rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border-radius:3px}
+.urgency-badge.high{background:var(--red-light);color:var(--red)}
+.urgency-badge.watch{background:var(--amber-light);color:#92400e}
+.urgency-badge.info{background:var(--green-light);color:var(--green-dark)}
+.comp-badge{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--surface);color:var(--navy);border:1px solid var(--border)}
+.dc-date{font-size:.67rem;color:var(--muted)}
+.dc-title{font-size:.92rem;font-weight:700;color:var(--navy);margin-bottom:6px}
+.dc-title a{color:inherit;text-decoration:none}
+.dc-title a:hover{color:var(--green-dark);text-decoration:underline}
+.dc-why{font-size:.8rem;color:#4a5568;line-height:1.55;margin-bottom:6px}
+.dc-why strong{color:var(--navy)}
+.dc-action{
+  font-size:.78rem;font-weight:600;color:var(--green-dark);
+  background:var(--green-light);border-radius:4px;padding:5px 10px;
+  border-left:3px solid var(--green)
+}
+.dc-action::before{content:"→ SCredito: "}
+
+/* ── UPCOMING TABLE ── */
+.upcoming-section{background:#fff;border-radius:8px;border:1px solid var(--border);padding:16px 18px;margin-bottom:24px}
+.section-eyebrow{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:10px}
+.upcoming-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.upcoming-item{background:var(--surface);border-radius:6px;padding:8px 12px;border-left:3px solid var(--border)}
+.upcoming-item.soon{border-left-color:var(--amber)}
+.upcoming-item.critical{border-left-color:var(--red)}
+.up-date{font-size:.67rem;font-weight:700;color:var(--green-dark);margin-bottom:2px}
+.up-title{font-size:.78rem;font-weight:600;color:var(--navy)}
+.up-note{font-size:.7rem;color:var(--muted);margin-top:2px}
+
+/* ── MARKETING CARDS ── */
+.marketing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:28px}
+.mkt-card{background:#fff;border-radius:8px;border:1px solid var(--border);border-top:3px solid var(--navy);overflow:hidden}
+.mkt-header{padding:12px 14px 8px;display:flex;justify-content:space-between;align-items:flex-start}
+.mkt-comp{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.mkt-date{font-size:.65rem;color:var(--muted)}
+.mkt-screenshot{height:80px;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:.75rem}
+.mkt-body{padding:10px 14px}
+.mkt-channel-badge{display:inline-block;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:3px;background:var(--surface);border:1px solid var(--border);color:var(--navy);margin-bottom:6px}
+.mkt-hook{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:4px}
+.mkt-mechanics{font-size:.75rem;color:#4a5568;line-height:1.5;margin-bottom:8px}
+.mkt-row{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.mkt-field{font-size:.7rem;color:var(--muted)}
+.mkt-field strong{display:block;font-size:.75rem;color:var(--text);font-weight:600}
+.aggr-badge{font-size:.65rem;font-weight:800;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px}
+.aggr-badge.high{background:var(--red-light);color:var(--red)}
+.aggr-badge.medium{background:var(--amber-light);color:#92400e}
+.aggr-badge.low{background:var(--green-light);color:var(--green-dark)}
+.mkt-counter{background:var(--navy);color:#fff;font-size:.75rem;font-weight:600;padding:8px 12px;margin:0 -14px -10px;border-top:1px solid rgba(255,255,255,.1)}
+.mkt-counter::before{content:"↩ Counter: ";opacity:.6}
+
+/* ── PRODUCT FEED ── */
+.prod-subnav{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.prod-tab-btn{font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
+.prod-tab-btn:hover{border-color:var(--navy);color:var(--navy)}
+.prod-tab-btn.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px}
+.prod-card{background:#fff;border-radius:8px;border:1px solid var(--border);border-top:4px solid var(--navy);padding:16px}
+.prod-type-badge{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:2px 8px;border-radius:3px;display:inline-block;margin-bottom:8px}
+.type-bnpl{background:var(--green-light);color:var(--green-dark)}
+.type-loan{background:var(--amber-light);color:#92400e}
+.type-card{background:#e8eeff;color:var(--navy-mid)}
+.type-savings{background:var(--surface);color:var(--muted)}
+.type-wallet{background:#f3e8ff;color:#6b21a8}
+.prod-name{font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:10px}
+.prod-specs{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.spec-row{display:flex;justify-content:space-between;font-size:.75rem;border-bottom:1px solid var(--surface);padding-bottom:4px}
+.spec-label{color:var(--muted);font-weight:500}
+.spec-value{color:var(--text);font-weight:600;text-align:right;max-width:55%}
+.prod-promise{font-size:.75rem;font-style:italic;color:var(--navy-mid);margin-bottom:8px;padding:6px 8px;background:var(--surface);border-radius:4px}
+.prod-weakness{font-size:.73rem;color:#92400e;background:var(--amber-light);padding:6px 10px;border-radius:4px;border-left:3px solid var(--amber)}
+.prod-weakness::before{content:"⚡ Exploit: "}
+.threat-section{background:#fff;border:1px solid var(--border);border-top:4px solid var(--red);border-radius:8px;padding:20px;margin-bottom:24px}
+.threat-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--red);margin-bottom:8px}
+.threat-bullets{list-style:none;display:flex;flex-direction:column;gap:6px}
+.threat-bullets li{font-size:.8rem;color:#4a5568;padding-left:16px;position:relative;line-height:1.5}
+.threat-bullets li::before{content:"→";position:absolute;left:0;color:var(--red);font-weight:700}
+
+/* ── SENTIMENT ── */
+.sentiment-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;margin-bottom:28px}
+.sent-card{background:#fff;border-radius:8px;border:1px solid var(--border);overflow:hidden}
+.sent-header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.sent-comp{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--navy)}
+.sent-score{font-family:'DM Serif Display',serif;font-size:1.3rem}
+.sent-score.good{color:var(--green-dark)}
+.sent-score.ok{color:#92400e}
+.sent-score.bad{color:var(--red)}
+.sent-body{padding:14px 16px}
+.sent-section-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px}
+.tag-list{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.stag{font-size:.67rem;font-weight:600;padding:2px 8px;border-radius:10px}
+.stag-red{background:var(--red-light);color:var(--red);border:1px solid #fc8181}
+.stag-green{background:var(--green-light);color:var(--green-dark);border:1px solid #b2ddd3}
+.sent-quote{background:var(--surface);border-left:3px solid var(--border);border-radius:0 4px 4px 0;padding:7px 10px;font-size:.74rem;font-style:italic;color:#4a5568;margin-bottom:6px;line-height:1.5}
+.sent-opp{background:var(--navy);color:#fff;font-size:.74rem;font-weight:600;padding:8px 12px;border-radius:0 0 6px 6px;margin:10px -16px -14px;line-height:1.5}
+.sent-opp::before{content:"↗ SCredito: ";color:var(--green);font-weight:800}
+.sent-sources{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.src-chip{font-size:.62rem;padding:1px 7px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+
+/* ── BUSINESS STATS ── */
+.threat-summary-table{margin-bottom:24px;overflow-x:auto}
+.threat-table{width:100%;border-collapse:collapse;font-size:.78rem;background:#fff;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.threat-table thead tr{background:var(--navy);color:#fff}
+.threat-table th{padding:9px 12px;text-align:left;font-size:.7rem;font-weight:600;white-space:nowrap}
+.threat-table tbody tr{transition:background .1s}
+.threat-table tbody tr:nth-child(even){background:var(--surface)}
+.threat-table tbody tr:hover{background:#e8f4f0}
+.threat-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.threat-row-high td:first-child{border-left:3px solid var(--red)}
+.threat-row-medium td:first-child{border-left:3px solid var(--amber)}
+.threat-row-low td:first-child{border-left:3px solid var(--green)}
+.t-badge{display:inline-block;font-size:.63rem;font-weight:800;padding:2px 7px;border-radius:3px;text-transform:uppercase;letter-spacing:.4px}
+.t-high{background:var(--red-light);color:var(--red)}
+.t-medium{background:var(--amber-light);color:#92400e}
+.t-low{background:var(--green-light);color:var(--green-dark)}
+.t-strong{background:var(--green-light);color:var(--green-dark)}
+.t-mixed{background:var(--amber-light);color:#92400e}
+.t-weak{background:var(--red-light);color:var(--red)}
+.t-unknown{background:var(--surface);color:var(--muted)}
+.est{font-size:.65rem;color:var(--muted);font-style:italic}
+
+.biz-accordion{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+.biz-row{background:#fff;border-radius:8px;border:1px solid var(--border);overflow:hidden}
+.biz-header{
+  padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;
+  transition:background .15s
+}
+.biz-header:hover{background:var(--surface)}
+.biz-comp-name{font-weight:700;color:var(--navy);font-size:.88rem;min-width:120px}
+.biz-pills{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.biz-pill{font-size:.68rem;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px 8px;color:var(--text)}
+.biz-pill span{color:var(--muted);font-size:.62rem;display:block}
+.biz-badges{display:flex;gap:5px;margin-left:auto}
+.biz-detail{display:none;border-top:1px solid var(--border);padding:16px}
+.biz-detail.open{display:block}
+.biz-ue-table{width:100%;border-collapse:collapse;font-size:.77rem;margin-bottom:10px}
+.biz-ue-table th{text-align:left;padding:6px 10px;background:var(--surface);font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.biz-ue-table td{padding:7px 10px;border-bottom:1px solid var(--surface)}
+.biz-implication{font-size:.78rem;font-weight:600;color:var(--green-dark);background:var(--green-light);padding:8px 12px;border-radius:4px;border-left:3px solid var(--green)}
+.biz-implication::before{content:"SCredito: "}
+
+/* ── MACRO ── */
+.macro-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:24px}
+.macro-kpi{background:#fff;border-radius:8px;border:1px solid var(--border);border-top:3px solid var(--navy);padding:14px 16px}
+.macro-kpi.green{border-top-color:var(--green)}
+.macro-kpi.amber{border-top-color:var(--amber)}
+.macro-kpi.red{border-top-color:var(--red)}
+.mkpi-val{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);line-height:1}
+.macro-kpi.green .mkpi-val{color:var(--green-dark)}
+.macro-kpi.amber .mkpi-val{color:#92400e}
+.macro-kpi.red .mkpi-val{color:var(--red)}
+.mkpi-label{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-top:4px}
+.mkpi-note{font-size:.7rem;color:#4a5568;margin-top:5px;line-height:1.4}
+.macro-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.chart-box{background:#fff;border-radius:8px;border:1px solid var(--border);padding:16px}
+.chart-box canvas{max-height:220px}
+.chart-title{font-size:.75rem;font-weight:700;color:var(--navy);margin-bottom:10px}
+.cal-table{width:100%;border-collapse:collapse;font-size:.78rem;background:#fff;border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-bottom:16px}
+.cal-table thead tr{background:var(--navy);color:#fff}
+.cal-table th{padding:8px 12px;font-size:.7rem;font-weight:600;text-align:left}
+.cal-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
+.cal-table tbody tr:hover{background:var(--surface)}
+
+/* ── IMPLICATION BOX ── */
+.implication-box{
+  background:var(--amber-light);border:1px solid var(--amber);
+  border-radius:8px;padding:16px 20px;margin-bottom:8px
+}
+.imp-title{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#92400e;margin-bottom:6px}
+.imp-body{font-size:.83rem;font-weight:600;color:var(--navy);line-height:1.6}
+
+/* ── VERDICT BOX ── */
+.verdict-box{border-radius:8px;padding:16px 20px;margin-bottom:8px;border:1px solid}
+.verdict-box.favorable{background:var(--green-light);border-color:var(--green)}
+.verdict-box.neutral{background:var(--amber-light);border-color:var(--amber)}
+.verdict-box.risky{background:var(--red-light);border-color:var(--red)}
+.verdict-label{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.verdict-box.favorable .verdict-label{color:var(--green-dark)}
+.verdict-box.neutral .verdict-label{color:#92400e}
+.verdict-box.risky .verdict-label{color:var(--red)}
+.verdict-text{font-size:.85rem;font-weight:600;color:var(--navy);line-height:1.55}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty-state p{font-size:.85rem;margin-top:6px}
+
+/* ── SECTION DIVIDER ── */
+.section-hed{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+
+/* ── SOURCE LINK ── */
+a.src{font-size:.65rem;color:var(--navy-light);text-decoration:none}
+a.src:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="brand">
+    <div class="brand-eye">SCredito</div>
+    <div class="brand-name">Mexico Credit Intelligence</div>
+  </div>
+  <nav class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="digest">Daily Digest</button>
+    <button class="tab-btn" data-tab="marketing">Marketing Feed</button>
+    <button class="tab-btn" data-tab="products">Product Feed</button>
+    <button class="tab-btn" data-tab="sentiment">Sentiment</button>
+    <button class="tab-btn" data-tab="business">Business &amp; UE</button>
+    <button class="tab-btn" data-tab="macro">Macro</button>
+  </nav>
+  <div class="topbar-meta">
+    <span class="live-dot"></span>
+    Last updated: May 21, 2026
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div id="filterbar">
+  <span class="filter-label">Competitor</span>
+  <div class="chips" id="competitorChips"></div>
+  <span class="filter-label channel-filter-label" id="channelFilterLabel" style="display:none">Channel</span>
+  <div class="chips channel-filter" id="channelChips" style="display:none"></div>
+  <div class="filter-search">
+    <input type="search" id="searchInput" placeholder="Search…" autocomplete="off">
+  </div>
+</div>
+
+<!-- TAB PANELS -->
+<div class="panel-container">
+  <div id="panel-digest" class="tab-panel active"></div>
+  <div id="panel-marketing" class="tab-panel"></div>
+  <div id="panel-products" class="tab-panel"></div>
+  <div id="panel-sentiment" class="tab-panel"></div>
+  <div id="panel-business" class="tab-panel"></div>
+  <div id="panel-macro" class="tab-panel"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+const DATA = {
+
+newsItems: [
+  {id:'n1',date:'2026-04-10',title:'Plata raises $1.5B at $5B valuation — Series C',
+   category:'funding',competitor:'Plata',
+   sourceUrl:'https://techfundingnews.com/2026/04/plata-series-c-5-billion/',
+   summary:'$5B valuation on $600M+ annualised revenue. 3.5M users, $800M loan portfolio. Banking licence fully operational Feb 2026.',
+   whyItMatters:'Plata now has $2B+ in capital to acquire at scale. Deposit product imminent — targets the same underbanked segment SCredito serves. Speed of growth (3.5M users in 3 years) is the benchmark to beat.',
+   screditoAction:'Accelerate product differentiation before Plata\'s deposit launch locks users in.',
+   urgency:'high'},
+  {id:'n2',date:'2026-05-07',title:'Banxico cuts policy rate 25bps to 6.50%',
+   category:'macro',competitor:'Macro',
+   sourceUrl:'https://banxico.org.mx/publicaciones-y-prensa/anuncios-de-las-decisiones-de-politica-monetaria.html',
+   summary:'8th consecutive cut. Down from 11.25% peak (2023). Fintech deposit costs (12–15%) still far above policy rate.',
+   whyItMatters:'NIM compression continues short-term, but easing is structural tailwind. Cost of debt funding will fall 6–9 months after each cut. Players with debt-funded books (Plata, Kueski) benefit faster than deposit-funded (Nu).',
+   screditoAction:'Lock in debt facility rates now. Model break-even assuming 300bps further cuts by end 2026.',
+   urgency:'watch'},
+  {id:'n3',date:'2025-11-15',title:'Klar write-offs (MXN 233M/mo) now exceed provisions (MXN 217M/mo)',
+   category:'competitor',competitor:'Klar',
+   sourceUrl:'https://legalparadox.com/klar-cnbv-noviembre-2025',
+   summary:'CNBV Nov 2025 data. Balance sheet eroding faster than provisioned. Adj. NPL 30%+. Operating loss MXN -686M/yr.',
+   whyItMatters:'Klar is the most distressed player in the peer group. Its 3M+ users are churnable — many already complaint-heavy. Capital call or distressed sale is possible in 2026.',
+   screditoAction:'Target Klar\'s churning users with transparent pricing and faster limit increases.',
+   urgency:'high'},
+  {id:'n4',date:'2026-02-01',title:'Nu Mexico receives full banking operations authorisation (CNBV)',
+   category:'competitor',competitor:'Nu',
+   sourceUrl:'https://nu.com.mx/blog/nu-banco/',
+   summary:'SOFIPO→bank conversion complete. Unlocks: payroll portability, 16× IPAB insurance, SME lending, higher product limits.',
+   whyItMatters:'Nu can now acquire users via employers at near-zero CAC. Payroll account position was the last product gap vs traditional banks. Competitive positioning shifts from card-first to full-bank.',
+   screditoAction:'Do not compete with Nu on payroll. Own checkout BNPL — Nu has no product there.',
+   urgency:'watch'},
+  {id:'n5',date:'2025-07-01',title:'CNBV proposes 0.6% interchange cap (down from 1.35%)',
+   category:'regulatory',competitor:'Regulatory',
+   sourceUrl:'https://cnbv.gob.mx/Prensa/Paginas/ComunicadosdePrensa.aspx',
+   summary:'Draft proposal to cap card interchange at 0.6%. Would reduce Nu MX interchange income by ~55% (MXN 1.9B → ~MXN 850M). Applies to all card issuers.',
+   whyItMatters:'Nu, Klar, and Stori fund cashback/rewards via interchange. A cap forces repricing or cuts rewards — eroding their key acquisition hook. Decision still pending.',
+   screditoAction:'Build revenue model on loan interest, not interchange. If cap passes, Nu\'s cashback advantage collapses — exploit that window.',
+   urgency:'high'},
+  {id:'n6',date:'2025-12-15',title:'Kueski BNPL contribution margin confirmed positive; 30M+ loans, 90% recurrence',
+   category:'competitor',competitor:'Kueski',
+   sourceUrl:'https://mexicobusiness.news/fintech/news/kueski-bnpl-profitability-2025',
+   summary:'Management confirmed BNPL is contribution-margin positive and covers opex. 30M+ cumulative loans. Amazon partnership active.',
+   whyItMatters:'Kueski is the only BNPL player with proven unit economics. They will raise or IPO from a position of strength. Amazon exclusivity means entering their merchant channel is blocked.',
+   screditoAction:'Do not enter Kueski\'s Amazon/top-150 merchant territory. Find the verticals and merchants they ignore.',
+   urgency:'info'},
+],
+
+upcomingEvents: [
+  {date:'Jun 1–6, 2026',title:'Hot Sale 2026',note:'Mexico\'s biggest e-commerce event. All BNPL players activate. Kueski main sponsor. Monitor promo spend.',type:'critical'},
+  {date:'Jun 26, 2026',title:'Banxico rate decision',note:'Consensus: -25bps to 6.25%. 9th consecutive cut.',type:'soon'},
+  {date:'~Aug 2026',title:'Nu Holdings Q2 2026 earnings',note:'Watch: Mexico NPL trend, deposit cost, banking product KPIs.',type:'normal'},
+  {date:'~Aug 2026',title:'Plata first CNBV bank reporting',note:'First public look at deposit volumes, NPL, and product mix post-banking-licence.',type:'soon'},
+  {date:'Q3 2026 TBD',title:'CNBV interchange cap final decision',note:'If passed at 0.6%: reshapes card-issuer economics entirely. Monitor closely.',type:'critical'},
+  {date:'~Q3 2026',title:'Plata deposit product launch',note:'Expected post-banking-licence. Will compete directly for Nu\'s deposit users.',type:'soon'},
+  {date:'Nov 14–17, 2026',title:'Buen Fin 2026',note:'Kueski heavy BNPL activation. Plata likely runs cashback boost. Nu MSI offers.',type:'critical'},
+],
+
+marketingItems: [
+  {id:'m1',dateCaptured:'2025-01-15',competitor:'Nu',channel:'Social/Meta',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'First credit / Financial transformation',
+   promoMechanics:'UGC campaign: real customer stories ("first loan," "first savings"). Jan–Mar 2025. 10M+ users milestone activation.',
+   targetSegment:'First-time credit users; underbanked adults',
+   cta:'Download Nu',aggressiveness:'medium',
+   screditoCounterMove:'Nu owns the emotional "first credit" story at scale. Do not copy — find the second credit moment: limit increase, loyalty, graduation to better products.'},
+  {id:'m2',dateCaptured:'2025-01-01',competitor:'Nu',channel:'App / In-app',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'12.25% savings yield (Cajitas Turbo)',
+   promoMechanics:'In-app push + landing page. "Earn while you sleep." Direct head-to-head vs bank savings accounts. Upgraded to 15% for Cajitas Turbo goals.',
+   targetSegment:'Existing Nu users; deposit acquisition from traditional banks',
+   cta:'Open Cajitas',aggressiveness:'high',
+   screditoCounterMove:'Ignore the deposit rate war — SCredito is a lender, not a bank. Nu\'s deposit cost (12.25%) is a P&L problem, not a strength.'},
+  {id:'m3',dateCaptured:'2025-11-01',competitor:'Plata',channel:'Meta / TikTok',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'Up to 15% cashback',
+   promoMechanics:'Performance ads targeting card-savvy 25–40 segment. "Real cashback — not points." Buen Fin boost to 15% on all purchases. Funded by interchange.',
+   targetSegment:'Mid-income card users; Nu card holders',
+   cta:'Get your Plata card',aggressiveness:'high',
+   screditoCounterMove:'Copy this. If interchange cap passes, Plata can\'t sustain 15% cashback. SCredito should offer a comparable hook funded differently (loyalty, lower APR, faster limit increases).'},
+  {id:'m4',dateCaptured:'2025-06-01',competitor:'Plata',channel:'Influencer / Offline',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'In-person card — trusted, not just an app',
+   promoMechanics:'City-by-city brand ambassador rollout: Ciudad Juárez, Monterrey, CDMX. Face-to-face onboarding at stands. Converts "I don\'t trust a phone app" segment.',
+   targetSegment:'First-time digital credit users in mid-sized cities',
+   cta:'Solicita tu tarjeta',aggressiveness:'medium',
+   screditoCounterMove:'Copy the city rollout model for SCredito\'s launch markets. In-person onboarding has 3–5× conversion vs pure digital for the underbanked segment.'},
+  {id:'m5',dateCaptured:'2024-11-15',competitor:'Kueski',channel:'Google / Landing page',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'No buró needed + 15% Buen Fin discount',
+   promoMechanics:'Coupon KUESKIBUENFIN: 15% off, MXN 2,500 min spend, MXN 600 max discount. Native placement on 150+ merchant checkout pages. Nov 15–18 2024.',
+   targetSegment:'E-commerce shoppers without credit cards; price-sensitive buyers',
+   cta:'Compra ahora, paga después',aggressiveness:'high',
+   screditoCounterMove:'Kueski owns the Buen Fin / Hot Sale checkout moment. SCredito should identify the merchant categories Kueski has NOT activated (local services, B2B, subscription).'},
+  {id:'m6',dateCaptured:'2024-01-01',competitor:'Kueski',channel:'Marketplace / Amazon',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'Buy now, pay in installments at Amazon',
+   promoMechanics:'BNPL displayed at Amazon.com.mx checkout alongside credit cards and OXXO. First fintech main sponsor of Hot Sale. "No se necesita tarjeta de crédito."',
+   targetSegment:'Amazon MX shoppers without credit cards (estimated 40%+ of MX Amazon users)',
+   cta:'Elige Kueski Pay',aggressiveness:'high',
+   screditoCounterMove:'Do not match this. Amazon partnership is exclusive. Find the Shopee, Liverpool, and regional e-commerce moments instead.'},
+  {id:'m7',dateCaptured:'2025-03-01',competitor:'Kueski',channel:'Google / SEO',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'#1 most ethical lender in Mexico (AMITAI)',
+   promoMechanics:'4× AMITAI award leveraged in performance marketing. Counters high-APR perception. Message: "Más transparente que el banco." Targets users burned by informal lenders.',
+   targetSegment:'Users comparing lenders; users who had bad experience with predatory apps',
+   cta:'Ver mi límite de crédito',aggressiveness:'low',
+   screditoCounterMove:'Ethics / transparency is table stakes in 2026. SCredito must show CAT clearly and match Kueski\'s CONDUSEF compliance record to compete in this trust market.'},
+  {id:'m8',dateCaptured:'2025-01-01',competitor:'Mercado Pago',channel:'Marketplace / Landing',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'"Tu historial de ventas es tu crédito"',
+   promoMechanics:'Pre-approval shown in seller dashboard for Mercado Libre sellers with 90+ days revenue history. Zero friction — no application, no paperwork. 63% of recipients never had a formal loan.',
+   targetSegment:'Mercado Libre SME sellers; informal business owners',
+   cta:'Ver mi crédito disponible',aggressiveness:'high',
+   screditoCounterMove:'Do not compete in SME seller credit — Mercado Pago\'s data moat is unbeatable for ML sellers. Find SMEs outside the Mercado Libre ecosystem.'},
+  {id:'m9',dateCaptured:'2025-06-01',competitor:'Mercado Pago',channel:'Meta / Performance',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'15% savings yield — earn more than Nubank',
+   promoMechanics:'Explicit Nu comparison in performance ads. "Gana más que con Nu." Targets Nu deposit holders. Savings rate cut from 16.5%→15% without notice in 2025 caused backlash.',
+   targetSegment:'Nu depositors; savers looking for higher yield',
+   cta:'Abre tu cuenta Mercado Pago',aggressiveness:'high',
+   screditoCounterMove:'SCredito is not a savings product — ignore this battle. But note: Mercado Pago\'s account freeze complaints are an opening for trust-based positioning.'},
+  {id:'m10',dateCaptured:'2025-09-01',competitor:'DiDi',channel:'App / Push notification',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'Emergency cash in minutes — for DiDi users',
+   promoMechanics:'In-app push to active DiDi riders and drivers. "Dinero de emergencia en minutos." Pre-scored from ride history. No paperwork required.',
+   targetSegment:'Gig economy workers; DiDi drivers and frequent riders',
+   cta:'Ver mi límite',aggressiveness:'medium',
+   screditoCounterMove:'DiDi owns gig workers via ride data. SCredito should target the non-gig informal worker — market stall owners, domestic workers, day laborers — where DiDi has no data.'},
+  {id:'m11',dateCaptured:'2025-08-01',competitor:'Stori',channel:'Meta',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'Aprobación aunque te hayan rechazado antes',
+   promoMechanics:'Direct targeting of users rejected by banks and other fintechs. "Te damos la oportunidad que otros no te dan." Low initial limit but guaranteed approval message.',
+   targetSegment:'Credit-rejected adults; thin-file borrowers',
+   cta:'Solicita tu Stori Card',aggressiveness:'medium',
+   screditoCounterMove:'Stori\'s 13.1% NPL reveals the cost of blanket low-rejection messaging. SCredito should promise "fair assessment," not "guaranteed approval" — better long-term brand.'},
+  {id:'m12',dateCaptured:'2025-10-01',competitor:'Klar',channel:'Google',
+   creativeUrl:'',screenshotUrl:'',
+   hook:'Crédito para empresas — sin burocracia (Klar Empresarial)',
+   promoMechanics:'Post-Tribal acquisition SME pivot. Targets small business owners. "Cuenta 360 para tu negocio." Still early-stage acquisition — ad spend appears low.',
+   targetSegment:'Small business owners; self-employed professionals',
+   cta:'Solicitar para mi empresa',aggressiveness:'low',
+   screditoCounterMove:'Klar\'s SME pivot is capital-constrained and NPL-stressed. If SCredito has an SME product, now is the window — Klar cannot invest aggressively in 2026.'},
+],
+
+productItems: {
+  kueski: [
+    {id:'p-k1',productName:'Kueski Pay',productType:'bnpl',
+     aprCat:'0–30% (merchant-subsidised or customer-borne)',
+     creditLimit:'MXN 200–25,000',tenure:'2–6 installments',
+     approvalSpeed:'Minutes (AI scoring)',kycRequirements:'No buró required; CURP + phone',
+     repaymentOptions:'Fortnightly (quincena) or monthly',fees:'Late fee: MXN 100–300',
+     rewards:'None',distribution:'Amazon MX, 10,000+ merchants, in-store QR',
+     promise:'"Buy now, pay later — no credit card needed"',
+     weaknessToExploit:'CAT can reach 200%+ for cash component; users complain "pides 5K, pagas 10K." No direct limit increase pathway for good payers.'},
+    {id:'p-k2',productName:'Kueski Cash',productType:'loan',
+     aprCat:'100–200% CAT (short-tenor microloans)',
+     creditLimit:'MXN 200–25,000',tenure:'7–90 days',
+     approvalSpeed:'Minutes',kycRequirements:'No buró; mobile phone scoring',
+     repaymentOptions:'Single payment at end of term',fees:'High late fees; no grace period',
+     rewards:'None',distribution:'Kueski app only',
+     promise:'"Emergency cash in minutes — no rejection"',
+     weaknessToExploit:'Highest CAT in peer group; predatory perception. No hardship arrangement. Users trapped in high-cost rollover cycles.'},
+  ],
+  nu: [
+    {id:'p-n1',productName:'Nu Credit Card',productType:'card',
+     aprCat:'40–80% APR (CAT)',creditLimit:'MXN 500–50,000+',tenure:'Revolving',
+     approvalSpeed:'Minutes (digital)',kycRequirements:'INE + selfie + CURP',
+     repaymentOptions:'Minimum, fixed, or full — flexible',fees:'No annual fee; late fee standard',
+     rewards:'No cashback (weakness vs Plata)',distribution:'Digital-only; OXXO cash-in',
+     promise:'"The card that says yes — with no annual fee"',
+     weaknessToExploit:'No cashback. Credit limits stay low for months. Premium card delayed. Deposit cost makes interest rates non-competitive.'},
+    {id:'p-n2',productName:'Nu Personal Loan',productType:'loan',
+     aprCat:'30–60% APR',creditLimit:'Up to MXN 150,000',tenure:'3–36 months',
+     approvalSpeed:'Minutes (existing users)',kycRequirements:'Existing Nu user required',
+     repaymentOptions:'Fixed monthly installments',fees:'Origination fee; late fee',
+     rewards:'None',distribution:'Nu app (existing customers only)',
+     promise:'"Cash when you need it — no paperwork"',
+     weaknessToExploit:'Only available to existing Nu customers. Rate not competitive vs payroll alternatives. 6.83% NPL suggests poor credit selection.'},
+    {id:'p-n3',productName:'Cuenta Nu (Savings)',productType:'savings',
+     aprCat:'12.25% yield (to customer)',creditLimit:'N/A',tenure:'Demand',
+     approvalSpeed:'Instant',kycRequirements:'Same as card',
+     repaymentOptions:'N/A',fees:'None',
+     rewards:'12.25% yield + Cajitas Turbo 15%',distribution:'Nu app',
+     promise:'"Your money earning every day"',
+     weaknessToExploit:'12.25% deposit cost is Nu\'s biggest P&L problem. Savings rate cut would trigger mass user defection — proven by Mercado Pago\'s backlash when they cut from 16.5%.'},
+  ],
+  plata: [
+    {id:'p-pl1',productName:'Plata Card',productType:'card',
+     aprCat:'>30% APR (~70% gross yield on portfolio)',
+     creditLimit:'Avg MXN 10,000 (avg loan $200)',tenure:'60-day grace period + installments',
+     approvalSpeed:'Minutes; in-person option in some cities',kycRequirements:'INE + selfie; in-person option',
+     repaymentOptions:'60-day full payment or interest-free installments',
+     fees:'No annual fee; high APR on revolving balance',
+     rewards:'Up to 15% cashback (select categories)',distribution:'Digital + brand ambassador cities',
+     promise:'"15% cashback + 60-day window — better than any bank"',
+     weaknessToExploit:'APR not immediately obvious to users. Initial limits low (MXN 3–5K). In-person verification adds friction vs Nu\'s fully digital flow. Breakeven Q2 2028.'},
+  ],
+  mp: [
+    {id:'p-mp1',productName:'Mercado Crédito (Consumer)',productType:'bnpl',
+     aprCat:'25–60% APR',creditLimit:'MXN 500–80,000',tenure:'1–12 months',
+     approvalSpeed:'Instant (existing ML users)',kycRequirements:'Mercado Libre account history',
+     repaymentOptions:'Monthly installments',fees:'Late fee standard',
+     rewards:'Tied to ML purchase loyalty',distribution:'Mercado Libre checkout (native)',
+     promise:'"Buy on installments — automatically"',
+     weaknessToExploit:'Only available within Mercado Libre ecosystem. Account freezes are #1 complaint. Non-ML users cannot access the product.'},
+    {id:'p-mp2',productName:'MP Savings',productType:'savings',
+     aprCat:'15% yield',creditLimit:'N/A',tenure:'Demand',
+     approvalSpeed:'Instant',kycRequirements:'MP account',
+     repaymentOptions:'N/A',fees:'None',
+     rewards:'15% yield',distribution:'Mercado Pago app',
+     promise:'"Earn more than a bank"',
+     weaknessToExploit:'Rate cut (16.5%→15%) without notice caused user backlash. Account freeze risk — users afraid to hold large balances. Trust gap for non-ML power users.'},
+  ],
+  stori: [
+    {id:'p-st1',productName:'Stori Card',productType:'card',
+     aprCat:'60–100% CAT',creditLimit:'MXN 500–30,000',tenure:'Revolving',
+     approvalSpeed:'Minutes',kycRequirements:'INE + selfie; no bureau required',
+     repaymentOptions:'Minimum or full',fees:'No annual fee; high revolving APR',
+     rewards:'None',distribution:'Digital-only',
+     promise:'"The card for people banks rejected"',
+     weaknessToExploit:'Highest APR in peer group. 13.1% NPL. No rewards. No product beyond the card. Profitability achieved by pricing over deteriorating book — not by underwriting skill.'},
+  ],
+  klar: [
+    {id:'p-kl1',productName:'Klar Credit Card',productType:'card',
+     aprCat:'40–90% APR',creditLimit:'Up to MXN 50,000',tenure:'Revolving',
+     approvalSpeed:'Minutes',kycRequirements:'INE + selfie',
+     repaymentOptions:'Flexible',fees:'No annual fee',
+     rewards:'None',distribution:'Digital',
+     promise:'"Banking that works for you"',
+     weaknessToExploit:'Adj. NPL 30%+. Write-offs exceed provisions. Growth stopped at 3M users. SME pivot burns capital. High risk of capital call — users may not be supported long-term.'},
+    {id:'p-kl2',productName:'Klar Personal Loan',productType:'loan',
+     aprCat:'60–120% CAT',creditLimit:'Up to MXN 100,000',tenure:'3–24 months',
+     approvalSpeed:'Minutes (existing users)',kycRequirements:'Existing Klar customer',
+     repaymentOptions:'Monthly installments',fees:'Origination fee',
+     rewards:'None',distribution:'Klar app',
+     promise:'"Cash when you need it"',
+     weaknessToExploit:'Only for existing users. NPL stress means underwriting is tightening. Users with good credit can be poached with better rates elsewhere.'},
+  ],
+  didi: [
+    {id:'p-dd1',productName:'DiDi Préstamos',productType:'loan',
+     aprCat:'60–120% CAT',creditLimit:'MXN 200–46,800',tenure:'Up to 180 days',
+     approvalSpeed:'Minutes (DiDi users)',kycRequirements:'Active DiDi account; no buró',
+     repaymentOptions:'Single or installment',fees:'High APR; late fees',
+     rewards:'None',distribution:'DiDi app only — captive to ride-hailing users',
+     promise:'"Emergency cash for DiDi users"',
+     weaknessToExploit:'Only available to DiDi users. Chinese parent regulatory risk (CNBV scrutiny). Financial services arm still early-stage. No product for non-DiDi users.'},
+    {id:'p-dd2',productName:'DiDi Card',productType:'card',
+     aprCat:'40–80% APR',creditLimit:'Up to MXN 46,800',tenure:'Revolving',
+     approvalSpeed:'Minutes',kycRequirements:'Active DiDi account',
+     repaymentOptions:'Minimum or full',fees:'No annual fee',
+     rewards:'DiDi ride credits',distribution:'DiDi app',
+     promise:'"Card + rides — everything in one app"',
+     weaknessToExploit:'Locked to DiDi ecosystem. Ride credits only valuable to active riders. China ownership creates trust gap with regulators and some users.'},
+  ],
+  baubap: [
+    {id:'p-bb1',productName:'Baubap Préstamo Personal',productType:'loan',
+     aprCat:'130–360% CAT',creditLimit:'MXN 500–20,000',tenure:'7–90 days',
+     approvalSpeed:'Minutes',kycRequirements:'CURP + selfie + phone',
+     repaymentOptions:'Single payment',fees:'Very high late fees; rollover traps',
+     rewards:'None',distribution:'Baubap app; Google / App Store',
+     promise:'"Dinero en 10 minutos, sin buró"',
+     weaknessToExploit:'Predatory APR (130–360% CAT). No bureau reporting. User complaints about collection harassment. Regulatory risk. Easy to position SCredito as ethical alternative.'},
+    {id:'p-bb2',productName:'Tala Préstamo',productType:'loan',
+     aprCat:'100–300% CAT',creditLimit:'MXN 500–10,000',tenure:'30 days',
+     approvalSpeed:'Minutes',kycRequirements:'Smartphone data scoring',
+     repaymentOptions:'Single payment',fees:'High; daily compounding',
+     rewards:'Limit increases for repeat borrowers',distribution:'Tala app; Africa / Asia model transplanted to MX',
+     promise:'"Tu teléfono es tu buró"',
+     weaknessToExploit:'Very high APR. Thin product (cash loan only). No bureau reporting. Good behavior unrewarded beyond limit increases. Strong opportunity for bureau-reporting alternative.'},
+  ],
+},
+
+sentimentItems: [
+  {id:'s1',competitor:'Nu',sources:['App Store MX','Google Play','Reddit','CONDUSEF'],
+   score:'4.6 / 5',scoreTier:'good',
+   complaints:['Credit limit stays low for months without explanation','Premium card delayed — no ETA communicated','Customer service escalation slow for disputes'],
+   praises:['Zero annual fee — rare in Mexico','Instant digital onboarding','Cajitas 12.25% yield','No hidden fees'],
+   quotes:['"Llevo 8 meses y mi límite sigue en MXN 3,000, ya pagué todo a tiempo y nada cambia"','"La mejor tarjeta que he tenido — aprobaron en 5 minutos y nunca me han cobrado de más"'],
+   screditoOpportunity:'Exploit the limit stagnation complaint. SCredito should show a transparent limit increase timeline and communicate it upfront. Users switching from Nu want to know when they graduate.'},
+  {id:'s2',competitor:'Plata',sources:['App Store MX','Google Play','Reddit'],
+   score:'4.3 / 5',scoreTier:'good',
+   complaints:['High APR not obvious until statement','Credit limit starts low (MXN 3–5K for most)','In-person verification seen as friction in non-ambassador cities'],
+   praises:['15% cashback is real and credited fast','60-day payment window feels generous','Fast approval including for bank-rejected users'],
+   quotes:['"Me cobraron 38% de intereses que no esperaba — hubiera leído bien el contrato"','"El cashback llega en 24 hrs, es real, ningún banco me da esto"'],
+   screditoOpportunity:'Plata\'s APR opacity is the weakness. SCredito should show total cost of credit (CAT) front-and-center at application — turn transparency into a marketing message.'},
+  {id:'s3',competitor:'Kueski',sources:['CONDUSEF','Trustpilot','App Store MX','Reddit'],
+   score:'9.86 / 10 (CONDUSEF)',scoreTier:'good',
+   complaints:['"Si pides MXN 5,000 pagas MXN 10,000" — CAT is the top complaint','Late payment fees steep; no grace period','No hardship arrangement for users in difficulty'],
+   praises:['Fastest approval in the market — minutes','No buró required; first credit for many users','Amazon checkout integration seamless','CONDUSEF #1 service rating'],
+   quotes:['"Tasa muy alta pero cuando necesitas dinero urgente no hay nada más rápido"','"Kueski es para emergencias, no para el día a día — caro pero confiable"'],
+   screditoOpportunity:'CAT transparency and hardship policy. Kueski users understand the high cost but feel trapped. SCredito can offer a "graduate out of Kueski Cash" product for repeat borrowers with good history.'},
+  {id:'s4',competitor:'Mercado Pago',sources:['App Store MX','Google Play','Reddit','Facebook groups'],
+   score:'4.1 / 5',scoreTier:'ok',
+   complaints:['Account freezes with funds held, no explanation','Savings rate cut (16.5%→15%) without notice','Fraud detection flags legitimate transactions'],
+   praises:['QR accepted everywhere (1M+ terminals)','15% savings yield','Instant SME credit in seller dashboard','OXXO cash-in network'],
+   quotes:['"Me congelaron la cuenta con MXN 8,000 adentro y tardé 3 semanas en recuperar mi dinero"','"Para pagos es lo mejor de México — uso todos los días sin problemas"'],
+   screditoOpportunity:'Account freeze is the single biggest trust gap. SCredito should explicitly promise "your money is never frozen without 24hr prior notice" — directly exploits the top Mercado Pago complaint.'},
+  {id:'s5',competitor:'Klar',sources:['App Store MX','Google Play','CONDUSEF'],
+   score:'3.8 / 5',scoreTier:'ok',
+   complaints:['App crashes during verification','Limit increase requests ignored for months','SME product (Empresarial) confusing UX','Collections aggressive relative to loan size'],
+   praises:['No annual fee','Low deposit rate (3.5%) helps cost of funds','SME pivot acknowledged as needed'],
+   quotes:['"La app tarda una eternidad en cargar y siempre falla cuando más la necesito"','"Mi límite lleva 4 meses en MXN 5,000, pago puntual, y no me explican por qué no sube"'],
+   screditoOpportunity:'Klar\'s NPL stress means they are tightening credit while their user base expects growth. Users with good payment history are being underserved — SCredito can poach these with targeted limit increase offers.'},
+  {id:'s6',competitor:'Stori',sources:['App Store MX','Google Play','CONDUSEF'],
+   score:'3.6 / 5',scoreTier:'bad',
+   complaints:['APR not clearly disclosed upfront','Minimum payment traps users in revolving debt','Customer service hard to reach'],
+   praises:['Approves users banks reject','Low starting limit reduces risk of overspending','No annual fee'],
+   quotes:['"Me cobraron más de lo que esperaba — la letra chica es muy engañosa"','"Es la única que me aprobó, le doy 5 estrellas por eso aunque sea cara"'],
+   screditoOpportunity:'Stori users accept high APR because they have no alternatives. SCredito should offer a "move up" product: better rate + bureau reporting for Stori users who have 6+ months clean payment history.'},
+],
+
+businessStats: [
+  {id:'b1',competitor:'Nu',users:'14M+',loanOS:'~$1.0B',revenue:'$808M (FY2025, disclosed)',
+   funding:'$2.8B+ raised; NYSE listed; Berkshire Hathaway + Softbank investors',
+   fundingAdvantage:'Public equity market; $4.5B deposit base (12.25% cost)',
+   estCAC:'~$10–15 (digital-first; OXXO network)',estPromoBurn:'MXN 1.9B interchange subsidising zero-fee card',
+   npl:'6.83% IMOR; adj. ~8%',monetisation:'Revolving interest + interchange + float on deposits',
+   distribution:'Digital; OXXO cash-in network; banking licence',
+   ueQuality:'mixed',ueConfidence:'high',threatLevel:'high',
+   threatWhy:'14M users, $808M revenue, banking licence. NPL and deposit cost are the structural weakness — not volume.',
+   implication:'Nu is the floor for SCredito\'s product quality. Must match: zero annual fee, instant approval, clear pricing. Do not try to out-scale Nu.'},
+  {id:'b2',competitor:'Plata',users:'3.5M',loanOS:'$800M (disclosed Apr 2026)',revenue:'$600M+ annualised (disclosed)',
+   funding:'$2B+ (equity + debt); $5B Series C valuation; Kora, Nomura, TelevisaUnivision',
+   fundingAdvantage:'$500M Nomura facility at ~15% cost; no deposit overhang',
+   estCAC:'~$25–40 (ambassador model + TelevisaUnivision media)',estPromoBurn:'15% cashback funded by interchange (~$150M/yr est.)',
+   npl:'15% (improving from 33%); breakeven Q2 2028',monetisation:'70% gross yield on card portfolio; interchange',
+   distribution:'Digital + city ambassador rollout; banking licence (Feb 2026)',
+   ueQuality:'mixed',ueConfidence:'high',threatLevel:'high',
+   threatWhy:'Fastest-scaling challenger. $2B+ capital. Ex-Tinkoff DNA. Banking licence enables payroll — changes CAC equation.',
+   implication:'Plata is the highest growth threat. SCredito must differentiate before Plata\'s deposit launch locks users in via yield.'},
+  {id:'b3',competitor:'Kueski',users:'n/d active (30M+ cumulative loans)',loanOS:'~$100–150M est.',revenue:'~$418M est. (ZoomInfo / public sources)',
+   funding:'~$480M total raised; Victory Park Capital credit facility',
+   fundingAdvantage:'Debt-funded (not deposit-funded); lower regulatory burden; no SOFIPO deposit cost',
+   estCAC:'~$0 (merchant distribution = no paid acquisition for BNPL)',estPromoBurn:'Seasonal: Buen Fin/Hot Sale coupon activation; otherwise low',
+   npl:'~2–3% est. (best in peer group)',monetisation:'MDR (3–5% merchant) + high-CAT cash loan interest',
+   distribution:'Amazon MX, 10K+ merchants, in-store QR, Kueski app',
+   ueQuality:'strong',ueConfidence:'medium',threatLevel:'medium',
+   threatWhy:'Best unit economics. Amazon partnership. 90% recurrence. BNPL checkout moment SCredito needs to compete in.',
+   implication:'Kueski is unbeatable in Amazon/top merchant BNPL. Find the untapped merchant verticals and offline channels they haven\'t prioritised.'},
+  {id:'b4',competitor:'Mercado Pago',users:'24M+ (MX est.)',loanOS:'~$600M+ est. (MX)',revenue:'~$650M est. (MX fintech)',
+   funding:'MercadoLibre (NASDAQ: MELI, ~$80B mktcap); no external funding needed',
+   fundingAdvantage:'Platform float from $9.2B SME payment volume (MX 2024); near-zero cost of funds',
+   estCAC:'~$0 (credit follows commerce — no separate acquisition)',estPromoBurn:'Merchant-side MSI subsidies; 15% savings yield',
+   npl:'n/d MX; NIMAL 31.4% globally (strong)',monetisation:'MDR on POS + marketplace + credit interest',
+   distribution:'1M+ POS terminals; 20K+ OXXO cash-in; Mercado Libre marketplace; banking licence pending',
+   ueQuality:'strong',ueConfidence:'medium',threatLevel:'high',
+   threatWhy:'Platform data moat for underwriting. NIMAL 31.4% — only player structurally profitable. Banking licence pending = payroll product incoming.',
+   implication:'Only compete with MP where they have no data: non-ML merchants, non-ML users, offline categories outside their POS network.'},
+  {id:'b5',competitor:'Klar',users:'3M+',loanOS:'~$550M (total assets, CNBV)',revenue:'n/d (CNBV discloses only aggregate)',
+   funding:'~$150M+ (General Atlantic, Prosus, Quona)',
+   fundingAdvantage:'Low deposit rate (3.5%) keeps cost of funds manageable; but balance sheet under stress',
+   estCAC:'~$20–35 (digital marketing)',estPromoBurn:'Low — constrained by losses',
+   npl:'11.2% IMOR; adj. NPL 30%+; write-offs > provisions',monetisation:'Credit card interest + personal loan interest',
+   distribution:'Digital; SME (Empresarial post-Tribal acquisition)',
+   ueQuality:'weak',ueConfidence:'high',threatLevel:'low',
+   threatWhy:'Distressed. Write-offs exceed provisions. Capital call risk. Not a growth threat — an acquisition opportunity for its user base.',
+   implication:'Klar users are underserved. Target 3M+ Klar users with better credit quality and transparent limit upgrade path.'},
+  {id:'b6',competitor:'Stori',users:'n/d (not disclosed)',loanOS:'n/d',revenue:'n/d',
+   funding:'~$100M+ est.',
+   fundingAdvantage:'Low deposit base = low cost of funds',
+   estCAC:'~$20–30 (performance marketing)',estPromoBurn:'Low',
+   npl:'13.13% IMOR (highest in neobank group)',monetisation:'Very high APR (60–100% CAT) on revolving card',
+   distribution:'Digital only',
+   ueQuality:'weak',ueConfidence:'medium',threatLevel:'low',
+   threatWhy:'Thin profitability at 13.13% NPL. Single product. No scale advantage. Not a growth threat.',
+   implication:'Stori users accept punitive APR because they have no alternatives. SCredito can offer a "graduation" product for Stori users with 6+ months clean history.'},
+  {id:'b7',competitor:'DiDi',users:'10M+ (financial services)',loanOS:'n/d (est. ~$150–250M)',revenue:'n/d (not disclosed)',
+   funding:'DiDi Global (Beijing-listed); ride-hailing profits cross-subsidise FS',
+   fundingAdvantage:'Group P&L from profitable ride-hailing; mobility data = proprietary underwriting signal',
+   estCAC:'~$0 (cross-sell from ride-hailing app)',estPromoBurn:'15% DiDi Cuenta savings yield',
+   npl:'n/d',monetisation:'Short-tenor cash loan interest (high CAT)',
+   distribution:'DiDi app (captive); ride-hailing = 20M+ registered users',
+   ueQuality:'unknown',ueConfidence:'low',threatLevel:'medium',
+   threatWhy:'Chinese parent = geopolitical risk + CNBV scrutiny. But 20M+ captive users and mobility data are structural advantages if regulatory environment stays stable.',
+   implication:'Watch DiDi for geopolitical disruption. If CNBV restricts DiDi\'s fintech licence, 2M+ card users become immediately churnable.'},
+],
+
+macroData: {
+  indicators: [
+    {label:'Banxico Rate',value:'6.50%',note:'Cut 25bps May 7, 2026. Down from 11.25% peak (2023). Next decision: Jun 26, 2026.',color:'navy'},
+    {label:'CPI Inflation',value:'4.45%',note:'Apr 2026. Easing from 4.59% (Mar). Target 3%. Core sticky at 4.26%.',color:'amber'},
+    {label:'Consumer Credit Growth',value:'+13.7%',note:'Real growth 2024. Personal loans growing fastest (+47% delinquency rise signals stress).',color:'green'},
+    {label:'BNPL GMV (2025)',value:'$3.98B',note:'29% CAGR 2022–25. Projected $5.08B in 2026. Fastest-growing consumer credit segment.',color:'green'},
+    {label:'Household Debt / GDP',value:'17.2%',note:'Q3 2025. Brazil ~35%, Chile ~48%. Mexico deeply underleveraged — structural opportunity.',color:'navy'},
+    {label:'Adults with Credit Card',value:'~30%',note:'37.1M cards / ~97M adults. 70% without card = BNPL\'s addressable market.',color:'amber'},
+  ],
+  ratesData: {
+    labels:['Jan 2022','Jun 2022','Jan 2023','Jun 2023','Jan 2024','Jun 2024','Jan 2025','Jun 2025','Jan 2026','May 2026'],
+    banxico:[6.0,7.75,10.5,11.25,11.25,11.0,10.0,8.5,7.5,6.5],
+    fintech:[6.5,8.5,12.0,14.0,14.5,14.5,14.0,13.5,12.5,12.25],
+  },
+  nplData: {
+    labels:['Q1 2023','Q2 2023','Q3 2023','Q4 2023','Q1 2024','Q2 2024','Q3 2024','Q4 2024','Q1 2025','Q3 2025'],
+    nu:[2.1,3.2,4.5,5.1,5.8,6.2,6.5,6.7,6.8,6.83],
+    klar:[3.5,5.0,6.8,8.2,9.0,9.8,10.5,11.0,11.2,11.23],
+    stori:[4.0,6.0,8.0,10.0,11.0,12.0,12.8,13.0,13.1,13.13],
+  },
+  regulatory: [
+    {date:'Q3 2026 TBD',event:'CNBV Interchange Cap Decision',impact:'HIGH',note:'0.6% cap would cut Nu/Klar/Stori interchange by ~55%. Pending final ruling.'},
+    {date:'Ongoing 2026',event:'MP Banking Licence (CNBV)',impact:'HIGH',note:'If approved: MP can offer payroll, higher deposit limits, SME lending.'},
+    {date:'Ongoing 2026',event:'DiDi SOFIPO Scrutiny',impact:'MEDIUM',note:'CNBV monitoring Chinese fintech foreign ownership per new regs.'},
+    {date:'Jun 26, 2026',event:'Banxico Rate Decision',impact:'MEDIUM',note:'Expected -25bps to 6.25%. Affects cost of debt funding for all players.'},
+  ],
+  seasonal: [
+    {period:'Jun 1–6, 2026',event:'Hot Sale 2026',note:'All BNPL players activate. Kueski main sponsor. Expect heavy meta/TikTok ad spend.'},
+    {period:'Sep 14–16, 2026',event:'Patrias weekend',note:'Consumer spending peak. Grocery and hospitality BNPL spike.'},
+    {period:'Nov 14–17, 2026',event:'Buen Fin 2026',note:'Mexico\'s Black Friday. Kueski, Plata, Nu, MP all deploy seasonal offers.'},
+    {period:'Bi-monthly',event:'Quincena cycles',note:'15th and 30th: peak repayment + new disbursement demand. Kueski Pay aligns cadence to this.'},
+    {period:'Dec 2026',event:'Holiday / Aguinaldo',note:'Aguinaldo (Dec bonus) = repayment spike + new credit demand for gifts.'},
+  ],
+},
+
+};// end DATA
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const state = {
+  tab: 'digest',
+  competitor: 'all',
+  channel: 'all',
+  search: '',
+  productTab: 'kueski',
+  chartsInit: {},
+};
+
+const COMPETITORS = ['Nu','Plata','Kueski','Mercado Pago','Klar','Stori','DiDi','Macro','Regulatory','Baubap'];
+const CHANNELS = ['Social/Meta','TikTok','Google / SEO','App / In-app','Marketplace / Amazon','Influencer / Offline','Marketplace / Landing'];
+
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+function escHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function compClass(c){return 'c-'+(c||'').toLowerCase().replace(/\s+/g,'')}
+function fmtDate(d){return d||''}
+
+function threatBadge(level){
+  const cls={high:'t-high',medium:'t-medium',low:'t-low',strong:'t-strong',mixed:'t-mixed',weak:'t-weak',unknown:'t-unknown'};
+  return `<span class="t-badge ${cls[level]||'t-unknown'}">${level||'—'}</span>`;
+}
+
+function implicationBox(text){
+  return `<div class="implication-box"><div class="imp-title">Implication for SCredito</div><div class="imp-body">${text}</div></div>`;
+}
+
+function matchesSearch(fields, q){
+  if(!q) return true;
+  const lq = q.toLowerCase();
+  return fields.some(f => f && String(f).toLowerCase().includes(lq));
+}
+
+function matchesComp(itemComp, filterComp){
+  if(filterComp === 'all') return true;
+  return (itemComp||'').toLowerCase() === filterComp.toLowerCase();
+}
+
+// ═══════════════════════════════════════════
+// RENDER: DIGEST
+// ═══════════════════════════════════════════
+function renderDigest(){
+  const q = state.search;
+  const comp = state.competitor;
+  const items = DATA.newsItems.filter(n =>
+    matchesComp(n.competitor, comp) &&
+    matchesSearch([n.title, n.summary, n.whyItMatters, n.screditoAction, n.competitor], q)
+  );
+
+  const cardsHtml = items.length ? items.map(n => `
+    <div class="digest-card urgency-${n.urgency}">
+      <div class="dc-left">
+        <div class="dc-meta">
+          <span class="urgency-badge ${n.urgency}">${n.urgency.toUpperCase()}</span>
+          <span class="comp-badge">${escHtml(n.competitor)}</span>
+          <span class="dc-date">${fmtDate(n.date)}</span>
+          ${n.sourceUrl ? `<a class="src" href="${n.sourceUrl}" target="_blank">Source ↗</a>` : ''}
+        </div>
+        <div class="dc-title">${escHtml(n.title)}</div>
+        <div class="dc-why"><strong>Why it matters:</strong> ${escHtml(n.whyItMatters)}</div>
+        <div class="dc-action">${escHtml(n.screditoAction)}</div>
+      </div>
+    </div>
+  `).join('') : `<div class="empty-state">🔍<p>No digest items match the current filter.</p></div>`;
+
+  const upcomingHtml = DATA.upcomingEvents.map(e => `
+    <div class="upcoming-item ${e.type||''}">
+      <div class="up-date">${escHtml(e.date)}</div>
+      <div class="up-title">${escHtml(e.title)}</div>
+      <div class="up-note">${escHtml(e.note)}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('panel-digest').innerHTML = `
+    <div class="panel-header">
+      <div class="panel-title">Daily Digest</div>
+      <div class="panel-sub">Curated market briefing — what changed, why it matters, what SCredito should do</div>
+    </div>
+    <div class="section-hed">Latest intel (${items.length} items)</div>
+    <div class="digest-grid">${cardsHtml}</div>
+    <div class="section-hed">Upcoming key events</div>
+    <div class="upcoming-section">
+      <div class="upcoming-grid">${upcomingHtml}</div>
+    </div>
+    ${implicationBox('Three decisions to make now: (1) Differentiate on checkout BNPL before Plata\'s deposit launch captures the same underbanked user. (2) Build a transparent limit-increase pathway to exploit Nu and Klar\'s #1 complaint. (3) Design revenue model on loan interest, not interchange — the cap is coming.')}
+  `;
+}
+
+// ═══════════════════════════════════════════
+// RENDER: MARKETING
+// ═══════════════════════════════════════════
+function renderMarketing(){
+  const q = state.search;
+  const comp = state.competitor;
+  const chan = state.channel;
+  const items = DATA.marketingItems.filter(m =>
+    matchesComp(m.competitor, comp) &&
+    (chan === 'all' || (m.channel||'').toLowerCase().includes(chan.toLowerCase())) &&
+    matchesSearch([m.hook, m.promoMechanics, m.competitor, m.channel, m.targetSegment, m.screditoCounterMove], q)
+  );
+
+  const aggrColors = {high:'var(--red)',medium:'var(--amber)',low:'var(--green)'};
+  const cards = items.length ? items.map(m => `
+    <div class="mkt-card">
+      <div class="mkt-header">
+        <div>
+          <div class="mkt-comp">${escHtml(m.competitor)}</div>
+          <span class="mkt-channel-badge">${escHtml(m.channel)}</span>
+        </div>
+        <div style="text-align:right">
+          <div class="mkt-date">${fmtDate(m.dateCaptured)}</div>
+          <span class="aggr-badge ${m.aggressiveness}">${(m.aggressiveness||'').toUpperCase()}</span>
+        </div>
+      </div>
+      <div class="mkt-screenshot">📸 <span>Screenshot placeholder</span></div>
+      <div class="mkt-body">
+        <div class="mkt-hook">${escHtml(m.hook)}</div>
+        <div class="mkt-mechanics">${escHtml(m.promoMechanics)}</div>
+        <div class="mkt-row">
+          <div class="mkt-field"><strong>${escHtml(m.targetSegment)}</strong>Target segment</div>
+          <div class="mkt-field"><strong>${escHtml(m.cta)}</strong>CTA</div>
+        </div>
+        <div class="mkt-counter">${escHtml(m.screditoCounterMove)}</div>
+      </div>
+    </div>
+  `).join('') : `<div class="empty-state">🔍<p>No marketing items match the current filter.</p></div>`;
+
+  document.getElementById('panel-marketing').innerHTML = `
+    <div class="panel-header">
+      <div class="panel-title">Competitor Marketing Feed</div>
+      <div class="panel-sub">How competitors are acquiring users — hooks, mechanics, and SCredito counter-moves</div>
+    </div>
+    <div class="marketing-grid">${cards}</div>
+    ${implicationBox('The dominant hooks are: (1) No annual fee (Nu, Plata, Klar, Stori) — table stakes now, not differentiators. (2) Cashback 15% (Plata) — copy this if interchange cap doesn\'t pass. (3) No buró required (Kueski, Baubap) — strongest hook for the underbanked segment SCredito targets. (4) In-person onboarding (Plata) — highest conversion for the non-digital user.')}
+  `;
+}
+
+// ═══════════════════════════════════════════
+// RENDER: PRODUCTS
+// ═══════════════════════════════════════════
+function renderProducts(){
+  const allCompetitors = Object.keys(DATA.productItems);
+  const labels = {kueski:'Kueski',nu:'Nu',plata:'Plata',mp:'Mercado Pago',stori:'Stori',klar:'Klar',didi:'DiDi',baubap:'Baubap / Tala'};
+
+  const subNav = allCompetitors.map(c => `
+    <button class="prod-tab-btn ${state.productTab===c?'active':''}" data-ptab="${c}">${labels[c]||c}</button>
+  `).join('');
+
+  const products = DATA.productItems[state.productTab] || [];
+  const typeLabel = {bnpl:'BNPL',loan:'Cash Loan',card:'Credit Card',savings:'Savings',wallet:'Wallet'};
+
+  const cards = products.map(p => `
+    <div class="prod-card">
+      <span class="prod-type-badge type-${p.productType}">${typeLabel[p.productType]||p.productType}</span>
+      <div class="prod-name">${escHtml(p.productName)}</div>
+      <div class="prod-specs">
+        <div class="spec-row"><span class="spec-label">APR / CAT</span><span class="spec-value">${escHtml(p.aprCat)}</span></div>
+        <div class="spec-row"><span class="spec-label">Credit limit</span><span class="spec-value">${escHtml(p.creditLimit)}</span></div>
+        <div class="spec-row"><span class="spec-label">Tenure</span><span class="spec-value">${escHtml(p.tenure)}</span></div>
+        <div class="spec-row"><span class="spec-label">Approval speed</span><span class="spec-value">${escHtml(p.approvalSpeed)}</span></div>
+        <div class="spec-row"><span class="spec-label">KYC</span><span class="spec-value">${escHtml(p.kycRequirements)}</span></div>
+        <div class="spec-row"><span class="spec-label">Repayment</span><span class="spec-value">${escHtml(p.repaymentOptions)}</span></div>
+        <div class="spec-row"><span class="spec-label">Fees</span><span class="spec-value">${escHtml(p.fees)}</span></div>
+        <div class="spec-row"><span class="spec-label">Rewards</span><span class="spec-value">${escHtml(p.rewards)}</span></div>
+        <div class="spec-row"><span class="spec-label">Distribution</span><span class="spec-value">${escHtml(p.distribution)}</span></div>
+      </div>
+      <div class="prod-promise">"${escHtml(p.promise)}"</div>
+      <div class="prod-weakness">${escHtml(p.weaknessToExploit)}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('panel-products').innerHTML = `
+    <div class="panel-header">
+      <div class="panel-title">Competitor Product Feed</div>
+      <div class="panel-sub">What competitors actually offer — specs, promises, and weaknesses SCredito can exploit</div>
+    </div>
+    <div class="prod-subnav" id="prodSubnav">${subNav}</div>
+    <div class="prod-grid">${cards}</div>
+    <div class="threat-section">
+      <div class="threat-title">Greatest product threat to SCredito: Kueski Pay</div>
+      <ul class="threat-bullets">
+        <li>Amazon MX checkout exclusivity means SCredito cannot enter the top e-commerce BNPL moment without a competing merchant network.</li>
+        <li>Sub-3% NPL with 30M+ loans — proven underwriting at scale. No incumbent can match this data advantage for the no-buró segment.</li>
+        <li>90% recurrence rate creates a retention moat: once a user's limit is established with Kueski, switching cost is high.</li>
+      </ul>
+    </div>
+    ${implicationBox('SCredito\'s product must differentiate on: (1) Transparent limit increase timeline — the #1 complaint across all competitors. (2) Bureau-reporting for first-time borrowers — creates long-term LTV. (3) Hardship policy — none of the major players offer this; it\'s unoccupied positioning. (4) Target the merchant verticals Kueski ignores: local services, B2B, and offline categories outside their top-150 merchant list.')}
+  `;
+
+  document.getElementById('prodSubnav').querySelectorAll('.prod-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.productTab = btn.dataset.ptab;
+      renderProducts();
+    });
+  });
+}
+
+// ═══════════════════════════════════════════
+// RENDER: SENTIMENT
+// ═══════════════════════════════════════════
+function renderSentiment(){
+  const q = state.search;
+  const comp = state.competitor;
+  const items = DATA.sentimentItems.filter(s =>
+    matchesComp(s.competitor, comp) &&
+    matchesSearch([s.competitor, ...s.complaints, ...s.praises, s.screditoOpportunity], q)
+  );
+
+  const scoreColor = {good:'good',ok:'ok',bad:'bad'};
+
+  const cards = items.length ? items.map(s => `
+    <div class="sent-card">
+      <div class="sent-header">
+        <div class="sent-comp">${escHtml(s.competitor)}</div>
+        <div class="sent-score ${scoreColor[s.scoreTier]||''}">${escHtml(s.score)}</div>
+      </div>
+      <div class="sent-body">
+        <div class="sent-sources">${(s.sources||[]).map(src=>`<span class="src-chip">${escHtml(src)}</span>`).join('')}</div>
+        <div style="height:8px"></div>
+        <div class="sent-section-label">Top complaints</div>
+        <div class="tag-list">${s.complaints.map(c=>`<span class="stag stag-red">${escHtml(c)}</span>`).join('')}</div>
+        <div class="sent-section-label">Top praises</div>
+        <div class="tag-list">${s.praises.map(p=>`<span class="stag stag-green">${escHtml(p)}</span>`).join('')}</div>
+        <div class="sent-section-label">User voice</div>
+        ${s.quotes.map(q=>`<div class="sent-quote">${escHtml(q)}</div>`).join('')}
+      </div>
+      <div class="sent-opp">${escHtml(s.screditoOpportunity)}</div>
+    </div>
+  `).join('') : `<div class="empty-state">🔍<p>No sentiment data matches the current filter.</p></div>`;
+
+  document.getElementById('panel-sentiment').innerHTML = `
+    <div class="panel-header">
+      <div class="panel-title">Competitor Sentiment</div>
+      <div class="panel-sub">What users love and hate — and what SCredito can exploit</div>
+    </div>
+    <div class="sentiment-grid">${cards}</div>
+    ${implicationBox('The universal complaint across all competitors is credit limit stagnation — "I pay on time but my limit never increases." This is SCredito\'s single best positioning opportunity: commit publicly to a transparent limit increase schedule (e.g., +20% every 3 months of clean payments). No major player does this explicitly.')}
+  `;
+}
+
+// ═══════════════════════════════════════════
+// RENDER: BUSINESS STATS
+// ═══════════════════════════════════════════
+function renderBusiness(){
+  const q = state.search;
+  const comp = state.competitor;
+  const items = DATA.businessStats.filter(b =>
+    matchesComp(b.competitor, comp) &&
+    matchesSearch([b.competitor, b.threatWhy, b.implication, b.npl, b.monetisation], q)
+  );
+
+  const tableRows = items.map(b => `
+    <tr class="threat-row-${b.threatLevel}">
+      <td><strong>${escHtml(b.competitor)}</strong></td>
+      <td>${escHtml(b.users)}</td>
+      <td>${escHtml(b.npl)}</td>
+      <td>${escHtml(b.estCAC)}</td>
+      <td>${threatBadge(b.ueQuality)}</td>
+      <td>${threatBadge(b.threatLevel)}</td>
+      <td style="font-size:.72rem;color:var(--muted);max-width:220px">${escHtml(b.threatWhy)}</td>
+    </tr>
+  `).join('');
+
+  const accordions = items.map(b => `
+    <div class="biz-row">
+      <div class="biz-header" onclick="toggleBiz('${b.id}')">
+        <div class="biz-comp-name">${escHtml(b.competitor)}</div>
+        <div class="biz-pills">
+          <div class="biz-pill">${escHtml(b.users)}<span>Users</span></div>
+          <div class="biz-pill">${escHtml(b.loanOS)}<span>Loan OS</span></div>
+          <div class="biz-pill">${escHtml(b.revenue)}<span>Revenue</span></div>
+          <div class="biz-pill">${escHtml(b.npl)}<span>NPL</span></div>
+        </div>
+        <div class="biz-badges">
+          ${threatBadge(b.ueQuality)} ${threatBadge(b.threatLevel)}
+          <span style="font-size:.7rem;color:var(--muted);padding:2px 6px">${b.ueConfidence} confidence</span>
+        </div>
+      </div>
+      <div class="biz-detail" id="biz-${b.id}">
+        <table class="biz-ue-table">
+          <tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
+          <tr><td>Funding raised</td><td>${escHtml(b.funding)}</td><td>${escHtml(b.fundingAdvantage)}</td></tr>
+          <tr><td>Est. CAC</td><td>${escHtml(b.estCAC)}</td><td>${escHtml(b.estPromoBurn)}</td></tr>
+          <tr><td>NPL / Delinquency</td><td>${escHtml(b.npl)}</td><td>—</td></tr>
+          <tr><td>Monetisation model</td><td colspan="2">${escHtml(b.monetisation)}</td></tr>
+          <tr><td>Distribution</td><td colspan="2">${escHtml(b.distribution)}</td></tr>
+        </table>
+        <div class="biz-implication">${escHtml(b.implication)}</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('panel-business').innerHTML = `
+    <div class="panel-header">
+      <div class="panel-title">Business Stats &amp; Unit Economics</div>
+      <div class="panel-sub">Separating real threats from subsidised noise — who is actually dangerous, and who is buying bad growth</div>
+    </div>
+    <div class="section-hed">Threat summary — all competitors</div>
+    <div class="threat-summary-table">
+      <table class="threat-table">
+        <thead><tr>
+          <th>Competitor</th><th>Users</th><th>NPL</th><th>Est. CAC</th>
+          <th>UE Quality</th><th>Threat</th><th>Why</th>
+        </tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+    </div>
+    <div class="section-hed">Detail by competitor (click to expand)</div>
+    <div class="biz-accordion">${accordions}</div>
+    ${implicationBox('Actual threats ranked: (1) Mercado Pago — platform data moat, near-zero CAC, profitable. (2) Plata — $2B+ capital, fastest growth, banking licence. (3) Nu — 14M users, $808M revenue, but structurally losing money. The rest are noise or opportunities. Klar is distressed. Stori is single-product and high-NPL. DiDi is a watch item pending regulatory outcome.')}
+  `;
+}
+
+function toggleBiz(id){
+  const el = document.getElementById('biz-'+id);
+  if(el) el.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════
+// RENDER: MACRO
+// ═══════════════════════════════════════════
+function renderMacro(){
+  const d = DATA.macroData;
+  const colorMap = {navy:'navy',amber:'amber',red:'red',green:'green'};
+
+  const kpis = d.indicators.map(k => `
+    <div class="macro-kpi ${colorMap[k.color]||''}">
+      <div class="mkpi-val">${escHtml(k.value)}</div>
+      <div class="mkpi-label">${escHtml(k.label)}</div>
+      <div class="mkpi-note">${escHtml(k.note)}</div>
+    </div>
+  `).join('');
+
+  const regRows = d.regulatory.map(r => `
+    <tr>
+      <td>${escHtml(r.date)}</td>
+      <td><strong>${escHtml(r.event)}</strong></td>
+      <td>${threatBadge(r.impact.toLowerCase())}</td>
+      <td style="font-size:.75rem;color:var(--muted)">${escHtml(r.note)}</td>
+    </tr>
+  `).join('');
+
+  const calRows = d.seasonal.map(r => `
+    <tr>
+      <td>${escHtml(r.period)}</td>
+      <td><strong>${escHtml(r.event)}</strong></td>
+      <td style="font-size:.75rem;color:var(--muted)">${escHtml(r.note)}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('panel-macro').innerHTML = `
+    <div class="panel-header">
+      <div class="panel-title">Macro &amp; Market Stats</div>
+      <div class="panel-sub">Whether Mexico lending conditions are getting easier or harder — and what drives the shift</div>
+    </div>
+    <div class="macro-kpi-grid">${kpis}</div>
+    <div class="macro-charts">
+      <div class="chart-box">
+        <div class="chart-title">Banxico rate vs fintech deposit rate (2022–2026)</div>
+        <canvas id="macroRatesChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">NPL trend by competitor (IMOR %, 2023–2025)</div>
+        <canvas id="macroNplChart"></canvas>
+      </div>
+    </div>
+    <div class="section-hed">Regulatory calendar</div>
+    <table class="cal-table">
+      <thead><tr><th>Date</th><th>Event</th><th>Impact</th><th>Note</th></tr></thead>
+      <tbody>${regRows}</tbody>
+    </table>
+    <div class="section-hed">Seasonal calendar</div>
+    <table class="cal-table">
+      <thead><tr><th>Period</th><th>Event</th><th>SCredito action</th></tr></thead>
+      <tbody>${calRows}</tbody>
+    </table>
+    <div class="verdict-box neutral">
+      <div class="verdict-label">Market condition for SCredito growth</div>
+      <div class="verdict-text">NEUTRAL — leaning favorable. Easing rate cycle (6.50% and falling) reduces cost of debt funding over 2026. BNPL growing 29% CAGR. 70% of adults still without a credit card. But: personal loan NPL +47% in 2025 signals credit stress in the underbanked segment. Disciplined underwriting is now the defining variable.</div>
+    </div>
+    ${implicationBox('Enter 2026 with: (1) Debt funding locked in at current rates before further cuts compress market pricing. (2) NPL guardrails set at product level before scaling — Klar shows what happens when you don\'t. (3) Hot Sale Jun 1–6 is the first major merchant activation window — have checkout BNPL ready or cede ground to Kueski.')}
+  `;
+
+  if(!state.chartsInit.macro){
+    state.chartsInit.macro = true;
+    const rd = d.ratesData;
+    new Chart(document.getElementById('macroRatesChart'),{
+      type:'line',
+      data:{
+        labels:rd.labels,
+        datasets:[
+          {label:'Banxico rate',data:rd.banxico,borderColor:'#0f2342',backgroundColor:'rgba(15,35,66,.08)',tension:.3,pointRadius:3},
+          {label:'Fintech deposit rate',data:rd.fintech,borderColor:'#00a878',backgroundColor:'rgba(0,168,120,.08)',tension:.3,pointRadius:3,borderDash:[4,3]},
+        ]
+      },
+      options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:9}}}},scales:{y:{ticks:{callback:v=>v+'%'},grid:{color:'#eef2f6'}},x:{ticks:{font:{size:9}}}}}
+    });
+    const nd = d.nplData;
+    new Chart(document.getElementById('macroNplChart'),{
+      type:'line',
+      data:{
+        labels:nd.labels,
+        datasets:[
+          {label:'Nu Mexico',data:nd.nu,borderColor:'#00a878',tension:.3,pointRadius:3,fill:false},
+          {label:'Klar',data:nd.klar,borderColor:'#e53e3e',tension:.3,pointRadius:3,fill:false},
+          {label:'Stori',data:nd.stori,borderColor:'#f59e0b',tension:.3,pointRadius:3,fill:false},
+        ]
+      },
+      options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:9}}}},scales:{y:{ticks:{callback:v=>v+'%'},grid:{color:'#eef2f6'}},x:{ticks:{font:{size:9}}}}}
+    });
+  }
+}
+
+// ═══════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════
+function switchTab(tab){
+  state.tab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id==='panel-'+tab));
+  // show channel filter only on marketing tab
+  const showChan = tab === 'marketing';
+  document.getElementById('channelFilterLabel').style.display = showChan ? '' : 'none';
+  document.getElementById('channelChips').style.display = showChan ? '' : 'none';
+  renderActiveTab();
+}
+
+function renderActiveTab(){
+  const t = state.tab;
+  if(t==='digest') renderDigest();
+  else if(t==='marketing') renderMarketing();
+  else if(t==='products') renderProducts();
+  else if(t==='sentiment') renderSentiment();
+  else if(t==='business') renderBusiness();
+  else if(t==='macro') renderMacro();
+}
+
+// ═══════════════════════════════════════════
+// FILTER CHIPS SETUP
+// ═══════════════════════════════════════════
+function setupChips(){
+  const compList = ['All','Nu','Plata','Kueski','Mercado Pago','Klar','Stori','DiDi','Regulatory','Macro'];
+  const cc = document.getElementById('competitorChips');
+  cc.innerHTML = compList.map(c => {
+    const val = c.toLowerCase() === 'all' ? 'all' : c;
+    const active = state.competitor === val || (val === 'all' && state.competitor === 'all');
+    return `<button class="chip ${compClass(c)} ${active?'active':''}" data-comp="${val}">${c}</button>`;
+  }).join('');
+  cc.querySelectorAll('.chip').forEach(ch => {
+    ch.addEventListener('click', () => {
+      state.competitor = ch.dataset.comp;
+      setupChips(); // re-render chips
+      renderActiveTab();
+    });
+  });
+
+  const chanList = ['All','Social/Meta','TikTok','Google / SEO','App / In-app','Marketplace','Influencer'];
+  const chc = document.getElementById('channelChips');
+  chc.innerHTML = chanList.map(c => {
+    const val = c.toLowerCase() === 'all' ? 'all' : c;
+    const active = state.channel === val || (val === 'all' && state.channel === 'all');
+    return `<button class="chip ${active?'active':''}" data-chan="${val}">${c}</button>`;
+  }).join('');
+  chc.querySelectorAll('.chip').forEach(ch => {
+    ch.addEventListener('click', () => {
+      state.channel = ch.dataset.chan;
+      setupChips();
+      renderActiveTab();
+    });
+  });
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+function init(){
+  // Tab buttons
+  document.getElementById('tabNav').querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+
+  // Search
+  document.getElementById('searchInput').addEventListener('input', e => {
+    state.search = e.target.value.trim();
+    renderActiveTab();
+  });
+
+  setupChips();
+  renderDigest();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
