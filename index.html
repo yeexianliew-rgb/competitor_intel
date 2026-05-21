@@ -94,28 +94,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
   transition:box-shadow .2s
 }
 .digest-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07)}
-.digest-card.urgency-high{border-left-color:var(--red)}
-.digest-card.urgency-watch{border-left-color:var(--amber)}
-.digest-card.urgency-info{border-left-color:var(--green)}
 .dc-left{min-width:0}
-.dc-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
-.urgency-badge{font-size:.6rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border-radius:3px}
-.urgency-badge.high{background:var(--red-light);color:var(--red)}
-.urgency-badge.watch{background:var(--amber-light);color:#92400e}
-.urgency-badge.info{background:var(--green-light);color:var(--green-dark)}
+.dc-meta{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.cat-badge{font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px;background:var(--surface);color:var(--muted);border:1px solid var(--border)}
 .comp-badge{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--surface);color:var(--navy);border:1px solid var(--border)}
 .dc-date{font-size:.67rem;color:var(--muted)}
-.dc-title{font-size:.92rem;font-weight:700;color:var(--navy);margin-bottom:6px}
+.dc-title{font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:4px;line-height:1.4}
 .dc-title a{color:inherit;text-decoration:none}
-.dc-title a:hover{color:var(--green-dark);text-decoration:underline}
-.dc-why{font-size:.8rem;color:#4a5568;line-height:1.55;margin-bottom:6px}
-.dc-why strong{color:var(--navy)}
-.dc-action{
-  font-size:.78rem;font-weight:600;color:var(--green-dark);
-  background:var(--green-light);border-radius:4px;padding:5px 10px;
-  border-left:3px solid var(--green)
-}
-.dc-action::before{content:"→ SCredito: "}
+.dc-title a:hover{color:var(--navy-light);text-decoration:underline}
+.dc-summary{font-size:.78rem;color:#4a5568;line-height:1.5}
 
 /* ── UPCOMING TABLE ── */
 .upcoming-section{background:#fff;border-radius:8px;border:1px solid var(--border);padding:16px 18px;margin-bottom:24px}
@@ -178,8 +165,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 .spec-label{color:var(--muted);font-weight:500}
 .spec-value{color:var(--text);font-weight:600;text-align:right;max-width:55%}
 .prod-promise{font-size:.75rem;font-style:italic;color:var(--navy-mid);margin-bottom:8px;padding:6px 8px;background:var(--surface);border-radius:4px}
-.prod-weakness{font-size:.73rem;color:#92400e;background:var(--amber-light);padding:6px 10px;border-radius:4px;border-left:3px solid var(--amber)}
-.prod-weakness::before{content:"⚡ Exploit: "}
+.prod-notes{font-size:.73rem;color:#4a5568;background:var(--surface);padding:6px 10px;border-radius:4px;border-left:3px solid var(--border)}
 .threat-section{background:#fff;border:1px solid var(--border);border-top:4px solid var(--red);border-radius:8px;padding:20px;margin-bottom:24px}
 .threat-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--red);margin-bottom:8px}
 .threat-bullets{list-style:none;display:flex;flex-direction:column;gap:6px}
@@ -202,8 +188,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 .stag-red{background:var(--red-light);color:var(--red);border:1px solid #fc8181}
 .stag-green{background:var(--green-light);color:var(--green-dark);border:1px solid #b2ddd3}
 .sent-quote{background:var(--surface);border-left:3px solid var(--border);border-radius:0 4px 4px 0;padding:7px 10px;font-size:.74rem;font-style:italic;color:#4a5568;margin-bottom:6px;line-height:1.5}
-.sent-opp{background:var(--navy);color:#fff;font-size:.74rem;font-weight:600;padding:8px 12px;border-radius:0 0 6px 6px;margin:10px -16px -14px;line-height:1.5}
-.sent-opp::before{content:"↗ SCredito: ";color:var(--green);font-weight:800}
+.sent-observed{background:var(--surface);border-top:1px solid var(--border);font-size:.74rem;color:#4a5568;padding:8px 12px;border-radius:0 0 6px 6px;margin:10px -16px -14px;line-height:1.5}
 .sent-sources{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
 .src-chip{font-size:.62rem;padding:1px 7px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--muted)}
 
@@ -246,8 +231,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 .biz-ue-table{width:100%;border-collapse:collapse;font-size:.77rem;margin-bottom:10px}
 .biz-ue-table th{text-align:left;padding:6px 10px;background:var(--surface);font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .biz-ue-table td{padding:7px 10px;border-bottom:1px solid var(--surface)}
-.biz-implication{font-size:.78rem;font-weight:600;color:var(--green-dark);background:var(--green-light);padding:8px 12px;border-radius:4px;border-left:3px solid var(--green)}
-.biz-implication::before{content:"SCredito: "}
+.biz-observed{font-size:.78rem;color:#4a5568;background:var(--surface);padding:8px 12px;border-radius:4px;border-left:3px solid var(--border)}
 
 /* ── MACRO ── */
 .macro-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:24px}
@@ -270,14 +254,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 .cal-table th{padding:8px 12px;font-size:.7rem;font-weight:600;text-align:left}
 .cal-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
 .cal-table tbody tr:hover{background:var(--surface)}
-
-/* ── IMPLICATION BOX ── */
-.implication-box{
-  background:var(--amber-light);border:1px solid var(--amber);
-  border-radius:8px;padding:16px 20px;margin-bottom:8px
-}
-.imp-title{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#92400e;margin-bottom:6px}
-.imp-body{font-size:.83rem;font-weight:600;color:var(--navy);line-height:1.6}
 
 /* ── VERDICT BOX ── */
 .verdict-box{border-radius:8px;padding:16px 20px;margin-bottom:8px;border:1px solid}
@@ -350,58 +326,40 @@ a.src:hover{text-decoration:underline}
 const DATA = {
 
 newsItems: [
-  {id:'n1',date:'2026-04-10',title:'Plata raises $1.5B at $5B valuation — Series C',
-   category:'funding',competitor:'Plata',
-   sourceUrl:'https://techfundingnews.com/2026/04/plata-series-c-5-billion/',
-   summary:'$5B valuation on $600M+ annualised revenue. 3.5M users, $800M loan portfolio. Banking licence fully operational Feb 2026.',
-   whyItMatters:'Plata now has $2B+ in capital to acquire at scale. Deposit product imminent — targets the same underbanked segment SCredito serves. Speed of growth (3.5M users in 3 years) is the benchmark to beat.',
-   screditoAction:'Accelerate product differentiation before Plata\'s deposit launch locks users in.',
-   urgency:'high'},
-  {id:'n2',date:'2026-05-07',title:'Banxico cuts policy rate 25bps to 6.50%',
-   category:'macro',competitor:'Macro',
-   sourceUrl:'https://banxico.org.mx/publicaciones-y-prensa/anuncios-de-las-decisiones-de-politica-monetaria.html',
-   summary:'8th consecutive cut. Down from 11.25% peak (2023). Fintech deposit costs (12–15%) still far above policy rate.',
-   whyItMatters:'NIM compression continues short-term, but easing is structural tailwind. Cost of debt funding will fall 6–9 months after each cut. Players with debt-funded books (Plata, Kueski) benefit faster than deposit-funded (Nu).',
-   screditoAction:'Lock in debt facility rates now. Model break-even assuming 300bps further cuts by end 2026.',
-   urgency:'watch'},
-  {id:'n3',date:'2025-11-15',title:'Klar write-offs (MXN 233M/mo) now exceed provisions (MXN 217M/mo)',
-   category:'competitor',competitor:'Klar',
-   sourceUrl:'https://legalparadox.com/klar-cnbv-noviembre-2025',
-   summary:'CNBV Nov 2025 data. Balance sheet eroding faster than provisioned. Adj. NPL 30%+. Operating loss MXN -686M/yr.',
-   whyItMatters:'Klar is the most distressed player in the peer group. Its 3M+ users are churnable — many already complaint-heavy. Capital call or distressed sale is possible in 2026.',
-   screditoAction:'Target Klar\'s churning users with transparent pricing and faster limit increases.',
-   urgency:'high'},
-  {id:'n4',date:'2026-02-01',title:'Nu Mexico receives full banking operations authorisation (CNBV)',
-   category:'competitor',competitor:'Nu',
-   sourceUrl:'https://nu.com.mx/blog/nu-banco/',
-   summary:'SOFIPO→bank conversion complete. Unlocks: payroll portability, 16× IPAB insurance, SME lending, higher product limits.',
-   whyItMatters:'Nu can now acquire users via employers at near-zero CAC. Payroll account position was the last product gap vs traditional banks. Competitive positioning shifts from card-first to full-bank.',
-   screditoAction:'Do not compete with Nu on payroll. Own checkout BNPL — Nu has no product there.',
-   urgency:'watch'},
-  {id:'n5',date:'2025-07-01',title:'CNBV proposes 0.6% interchange cap (down from 1.35%)',
-   category:'regulatory',competitor:'Regulatory',
-   sourceUrl:'https://cnbv.gob.mx/Prensa/Paginas/ComunicadosdePrensa.aspx',
-   summary:'Draft proposal to cap card interchange at 0.6%. Would reduce Nu MX interchange income by ~55% (MXN 1.9B → ~MXN 850M). Applies to all card issuers.',
-   whyItMatters:'Nu, Klar, and Stori fund cashback/rewards via interchange. A cap forces repricing or cuts rewards — eroding their key acquisition hook. Decision still pending.',
-   screditoAction:'Build revenue model on loan interest, not interchange. If cap passes, Nu\'s cashback advantage collapses — exploit that window.',
-   urgency:'high'},
-  {id:'n6',date:'2025-12-15',title:'Kueski BNPL contribution margin confirmed positive; 30M+ loans, 90% recurrence',
-   category:'competitor',competitor:'Kueski',
-   sourceUrl:'https://mexicobusiness.news/fintech/news/kueski-bnpl-profitability-2025',
-   summary:'Management confirmed BNPL is contribution-margin positive and covers opex. 30M+ cumulative loans. Amazon partnership active.',
-   whyItMatters:'Kueski is the only BNPL player with proven unit economics. They will raise or IPO from a position of strength. Amazon exclusivity means entering their merchant channel is blocked.',
-   screditoAction:'Do not enter Kueski\'s Amazon/top-150 merchant territory. Find the verticals and merchants they ignore.',
-   urgency:'info'},
+  {id:'n1',date:'2026-04-10',category:'Funding',competitor:'Plata',
+   headline:'Plata raises $1.5B at $5B valuation — Series C',
+   oneLineSummary:'$5B valuation on $600M+ annualised revenue. 3.5M users, $800M loan portfolio. Banking licence fully operational Feb 2026.',
+   sourceUrl:'https://techfundingnews.com/2026/04/plata-series-c-5-billion/'},
+  {id:'n2',date:'2026-05-07',category:'Macro',competitor:'Macro',
+   headline:'Banxico cuts policy rate 25bps to 6.50%',
+   oneLineSummary:'8th consecutive cut. Down from 11.25% peak (2023). Fintech deposit costs (12–15%) remain well above policy rate.',
+   sourceUrl:'https://banxico.org.mx/publicaciones-y-prensa/anuncios-de-las-decisiones-de-politica-monetaria.html'},
+  {id:'n3',date:'2025-11-15',category:'Competitor',competitor:'Klar',
+   headline:'Klar write-offs (MXN 233M/mo) exceed provisions (MXN 217M/mo)',
+   oneLineSummary:'CNBV Nov 2025 data. Adj. NPL 30%+. Operating loss MXN -686M/yr. Balance sheet eroding faster than provisioned.',
+   sourceUrl:'https://legalparadox.com/klar-cnbv-noviembre-2025'},
+  {id:'n4',date:'2026-02-01',category:'Competitor',competitor:'Nu',
+   headline:'Nu Mexico receives full banking operations authorisation (CNBV)',
+   oneLineSummary:'SOFIPO→bank conversion complete. Unlocks payroll portability, 16× IPAB deposit insurance, SME lending, and higher product limits.',
+   sourceUrl:'https://nu.com.mx/blog/nu-banco/'},
+  {id:'n5',date:'2025-07-01',category:'Regulatory',competitor:'Regulatory',
+   headline:'CNBV proposes 0.6% interchange cap (down from 1.35%)',
+   oneLineSummary:'Draft proposal would reduce Nu MX interchange income by ~55% (MXN 1.9B → ~MXN 850M). Applies to all card issuers. Final decision pending.',
+   sourceUrl:'https://cnbv.gob.mx/Prensa/Paginas/ComunicadosdePrensa.aspx'},
+  {id:'n6',date:'2025-12-15',category:'Competitor',competitor:'Kueski',
+   headline:'Kueski BNPL contribution margin confirmed positive; 30M+ loans, 90% recurrence',
+   oneLineSummary:'Management confirmed BNPL is contribution-margin positive and covers opex. Amazon partnership active. 30M+ cumulative loans issued.',
+   sourceUrl:'https://mexicobusiness.news/fintech/news/kueski-bnpl-profitability-2025'},
 ],
 
 upcomingEvents: [
-  {date:'Jun 1–6, 2026',title:'Hot Sale 2026',note:'Mexico\'s biggest e-commerce event. All BNPL players activate. Kueski main sponsor. Monitor promo spend.',type:'critical'},
+  {date:'Jun 1–6, 2026',title:'Hot Sale 2026',note:'Mexico\'s biggest e-commerce event. All BNPL players activate. Kueski main sponsor.',type:'critical'},
   {date:'Jun 26, 2026',title:'Banxico rate decision',note:'Consensus: -25bps to 6.25%. 9th consecutive cut.',type:'soon'},
-  {date:'~Aug 2026',title:'Nu Holdings Q2 2026 earnings',note:'Watch: Mexico NPL trend, deposit cost, banking product KPIs.',type:'normal'},
-  {date:'~Aug 2026',title:'Plata first CNBV bank reporting',note:'First public look at deposit volumes, NPL, and product mix post-banking-licence.',type:'soon'},
-  {date:'Q3 2026 TBD',title:'CNBV interchange cap final decision',note:'If passed at 0.6%: reshapes card-issuer economics entirely. Monitor closely.',type:'critical'},
-  {date:'~Q3 2026',title:'Plata deposit product launch',note:'Expected post-banking-licence. Will compete directly for Nu\'s deposit users.',type:'soon'},
-  {date:'Nov 14–17, 2026',title:'Buen Fin 2026',note:'Kueski heavy BNPL activation. Plata likely runs cashback boost. Nu MSI offers.',type:'critical'},
+  {date:'~Aug 2026',title:'Nu Holdings Q2 2026 earnings',note:'Mexico NPL trend, deposit cost, and banking product KPIs expected.',type:'normal'},
+  {date:'~Aug 2026',title:'Plata first CNBV bank reporting',note:'First public disclosures of deposit volumes, NPL, and product mix post-banking-licence.',type:'soon'},
+  {date:'Q3 2026 TBD',title:'CNBV interchange cap final decision',note:'Proposal at 0.6% (down from 1.35%). Applies to all card issuers.',type:'critical'},
+  {date:'~Q3 2026',title:'Plata deposit product launch',note:'Expected post-banking-licence.',type:'soon'},
+  {date:'Nov 14–17, 2026',title:'Buen Fin 2026',note:'Annual shopping event. BNPL and credit card seasonal activations.',type:'critical'},
 ],
 
 marketingItems: [
@@ -627,7 +585,7 @@ productItems: {
      repaymentOptions:'Fortnightly (quincena) or monthly',fees:'Late fee: MXN 100–300',
      rewards:'None',distribution:'Amazon MX, 10,000+ merchants, in-store QR',
      promise:'"Buy now, pay later — no credit card needed"',
-     weaknessToExploit:'CAT can reach 200%+ for cash component; users complain "pides 5K, pagas 10K." No direct limit increase pathway for good payers.'},
+     notes:'CAT can reach 200%+ for cash component. Users report total repayment roughly double principal. No stated limit increase pathway for on-time payers.'},
     {id:'p-k2',productName:'Kueski Cash',productType:'loan',
      aprCat:'100–200% CAT (short-tenor microloans)',
      creditLimit:'MXN 200–25,000',tenure:'7–90 days',
@@ -635,7 +593,7 @@ productItems: {
      repaymentOptions:'Single payment at end of term',fees:'High late fees; no grace period',
      rewards:'None',distribution:'Kueski app only',
      promise:'"Emergency cash in minutes — no rejection"',
-     weaknessToExploit:'Highest CAT in peer group; predatory perception. No hardship arrangement. Users trapped in high-cost rollover cycles.'},
+     notes:'Highest CAT in peer group. No hardship arrangement or grace period offered. Single-payment structure at term end.'},
   ],
   nu: [
     {id:'p-n1',productName:'Nu Credit Card',productType:'card',
@@ -644,21 +602,21 @@ productItems: {
      repaymentOptions:'Minimum, fixed, or full — flexible',fees:'No annual fee; late fee standard',
      rewards:'No cashback (weakness vs Plata)',distribution:'Digital-only; OXXO cash-in',
      promise:'"The card that says yes — with no annual fee"',
-     weaknessToExploit:'No cashback. Credit limits stay low for months. Premium card delayed. Deposit cost makes interest rates non-competitive.'},
+     notes:'No cashback offered. Credit limits reported to stay low for extended periods. Premium card launch delayed. Deposit cost (12.25%) above policy rate.'},
     {id:'p-n2',productName:'Nu Personal Loan',productType:'loan',
      aprCat:'30–60% APR',creditLimit:'Up to MXN 150,000',tenure:'3–36 months',
      approvalSpeed:'Minutes (existing users)',kycRequirements:'Existing Nu user required',
      repaymentOptions:'Fixed monthly installments',fees:'Origination fee; late fee',
      rewards:'None',distribution:'Nu app (existing customers only)',
      promise:'"Cash when you need it — no paperwork"',
-     weaknessToExploit:'Only available to existing Nu customers. Rate not competitive vs payroll alternatives. 6.83% NPL suggests poor credit selection.'},
+     notes:'Only available to existing Nu customers. 6.83% NPL (IMOR). Rate higher than payroll loan alternatives.'},
     {id:'p-n3',productName:'Cuenta Nu (Savings)',productType:'savings',
      aprCat:'12.25% yield (to customer)',creditLimit:'N/A',tenure:'Demand',
      approvalSpeed:'Instant',kycRequirements:'Same as card',
      repaymentOptions:'N/A',fees:'None',
      rewards:'12.25% yield + Cajitas Turbo 15%',distribution:'Nu app',
      promise:'"Your money earning every day"',
-     weaknessToExploit:'12.25% deposit cost is Nu\'s biggest P&L problem. Savings rate cut would trigger mass user defection — proven by Mercado Pago\'s backlash when they cut from 16.5%.'},
+     notes:'Deposit cost (12.25%) paid to customers is a significant P&L item. Mercado Pago saw backlash when they cut their savings rate without notice.'},
   ],
   plata: [
     {id:'p-pl1',productName:'Plata Card',productType:'card',
@@ -669,7 +627,7 @@ productItems: {
      fees:'No annual fee; high APR on revolving balance',
      rewards:'Up to 15% cashback (select categories)',distribution:'Digital + brand ambassador cities',
      promise:'"15% cashback + 60-day window — better than any bank"',
-     weaknessToExploit:'APR not immediately obvious to users. Initial limits low (MXN 3–5K). In-person verification adds friction vs Nu\'s fully digital flow. Breakeven Q2 2028.'},
+     notes:'APR not prominently displayed pre-application. Initial limits low (MXN 3–5K typical). In-person verification required in some cities. Breakeven target Q2 2028.'},
   ],
   mp: [
     {id:'p-mp1',productName:'Mercado Crédito (Consumer)',productType:'bnpl',
@@ -678,14 +636,14 @@ productItems: {
      repaymentOptions:'Monthly installments',fees:'Late fee standard',
      rewards:'Tied to ML purchase loyalty',distribution:'Mercado Libre checkout (native)',
      promise:'"Buy on installments — automatically"',
-     weaknessToExploit:'Only available within Mercado Libre ecosystem. Account freezes are #1 complaint. Non-ML users cannot access the product.'},
+     notes:'Only available within Mercado Libre ecosystem. Account freezes are the top user complaint. Non-ML users cannot access the product.'},
     {id:'p-mp2',productName:'MP Savings',productType:'savings',
      aprCat:'15% yield',creditLimit:'N/A',tenure:'Demand',
      approvalSpeed:'Instant',kycRequirements:'MP account',
      repaymentOptions:'N/A',fees:'None',
      rewards:'15% yield',distribution:'Mercado Pago app',
      promise:'"Earn more than a bank"',
-     weaknessToExploit:'Rate cut (16.5%→15%) without notice caused user backlash. Account freeze risk — users afraid to hold large balances. Trust gap for non-ML power users.'},
+     notes:'Savings rate cut from 16.5% to 15% without advance notice caused user backlash. Account freeze complaints reported for users with large balances.'},
   ],
   stori: [
     {id:'p-st1',productName:'Stori Card',productType:'card',
@@ -694,7 +652,7 @@ productItems: {
      repaymentOptions:'Minimum or full',fees:'No annual fee; high revolving APR',
      rewards:'None',distribution:'Digital-only',
      promise:'"The card for people banks rejected"',
-     weaknessToExploit:'Highest APR in peer group. 13.1% NPL. No rewards. No product beyond the card. Profitability achieved by pricing over deteriorating book — not by underwriting skill.'},
+     notes:'Highest APR in neobank peer group. 13.1% NPL (IMOR). No rewards or cashback. Single-product offering (credit card only).'},
   ],
   klar: [
     {id:'p-kl1',productName:'Klar Credit Card',productType:'card',
@@ -703,14 +661,14 @@ productItems: {
      repaymentOptions:'Flexible',fees:'No annual fee',
      rewards:'None',distribution:'Digital',
      promise:'"Banking that works for you"',
-     weaknessToExploit:'Adj. NPL 30%+. Write-offs exceed provisions. Growth stopped at 3M users. SME pivot burns capital. High risk of capital call — users may not be supported long-term.'},
+     notes:'Adj. NPL 30%+. Write-offs (MXN 233M/mo) exceed provisions (MXN 217M/mo). User growth stalled at ~3M. SME pivot via Tribal acquisition adds capital requirements.'},
     {id:'p-kl2',productName:'Klar Personal Loan',productType:'loan',
      aprCat:'60–120% CAT',creditLimit:'Up to MXN 100,000',tenure:'3–24 months',
      approvalSpeed:'Minutes (existing users)',kycRequirements:'Existing Klar customer',
      repaymentOptions:'Monthly installments',fees:'Origination fee',
      rewards:'None',distribution:'Klar app',
      promise:'"Cash when you need it"',
-     weaknessToExploit:'Only for existing users. NPL stress means underwriting is tightening. Users with good credit can be poached with better rates elsewhere.'},
+     notes:'Only available to existing Klar customers. NPL stress indicates underwriting is tightening. Eligibility criteria not publicly detailed.'},
   ],
   didi: [
     {id:'p-dd1',productName:'DiDi Préstamos',productType:'loan',
@@ -719,14 +677,14 @@ productItems: {
      repaymentOptions:'Single or installment',fees:'High APR; late fees',
      rewards:'None',distribution:'DiDi app only — captive to ride-hailing users',
      promise:'"Emergency cash for DiDi users"',
-     weaknessToExploit:'Only available to DiDi users. Chinese parent regulatory risk (CNBV scrutiny). Financial services arm still early-stage. No product for non-DiDi users.'},
+     notes:'Only available to active DiDi app users. Financial services arm still early-stage. CNBV monitoring foreign ownership per current regulations.'},
     {id:'p-dd2',productName:'DiDi Card',productType:'card',
      aprCat:'40–80% APR',creditLimit:'Up to MXN 46,800',tenure:'Revolving',
      approvalSpeed:'Minutes',kycRequirements:'Active DiDi account',
      repaymentOptions:'Minimum or full',fees:'No annual fee',
      rewards:'DiDi ride credits',distribution:'DiDi app',
      promise:'"Card + rides — everything in one app"',
-     weaknessToExploit:'Locked to DiDi ecosystem. Ride credits only valuable to active riders. China ownership creates trust gap with regulators and some users.'},
+     notes:'Rewards (ride credits) only applicable to active DiDi riders. Requires existing DiDi account. Chinese parent regulatory scrutiny ongoing.'},
   ],
   baubap: [
     {id:'p-bb1',productName:'Baubap Préstamo Personal',productType:'loan',
@@ -735,14 +693,14 @@ productItems: {
      repaymentOptions:'Single payment',fees:'Very high late fees; rollover traps',
      rewards:'None',distribution:'Baubap app; Google / App Store',
      promise:'"Dinero en 10 minutos, sin buró"',
-     weaknessToExploit:'Predatory APR (130–360% CAT). No bureau reporting. User complaints about collection harassment. Regulatory risk. Easy to position SCredito as ethical alternative.'},
+     notes:'CAT range 130–360%. No credit bureau reporting. User complaints include collection practices. SOFOM ENR supervised by CNBV.'},
     {id:'p-bb2',productName:'Tala Préstamo',productType:'loan',
      aprCat:'100–300% CAT',creditLimit:'MXN 500–10,000',tenure:'30 days',
      approvalSpeed:'Minutes',kycRequirements:'Smartphone data scoring',
      repaymentOptions:'Single payment',fees:'High; daily compounding',
      rewards:'Limit increases for repeat borrowers',distribution:'Tala app; Africa / Asia model transplanted to MX',
      promise:'"Tu teléfono es tu buró"',
-     weaknessToExploit:'Very high APR. Thin product (cash loan only). No bureau reporting. Good behavior unrewarded beyond limit increases. Strong opportunity for bureau-reporting alternative.'},
+     notes:'CAT range 100–300%. Cash loan only — no card or savings product. No credit bureau reporting. On-time payment reward limited to credit limit increases.'},
   ],
 },
 
@@ -751,38 +709,32 @@ sentimentItems: [
    score:'4.6 / 5',scoreTier:'good',
    complaints:['Credit limit stays low for months without explanation','Premium card delayed — no ETA communicated','Customer service escalation slow for disputes'],
    praises:['Zero annual fee — rare in Mexico','Instant digital onboarding','Cajitas 12.25% yield','No hidden fees'],
-   quotes:['"Llevo 8 meses y mi límite sigue en MXN 3,000, ya pagué todo a tiempo y nada cambia"','"La mejor tarjeta que he tenido — aprobaron en 5 minutos y nunca me han cobrado de más"'],
-   screditoOpportunity:'Exploit the limit stagnation complaint. SCredito should show a transparent limit increase timeline and communicate it upfront. Users switching from Nu want to know when they graduate.'},
+   quotes:['"Llevo 8 meses y mi límite sigue en MXN 3,000, ya pagué todo a tiempo y nada cambia"','"La mejor tarjeta que he tenido — aprobaron en 5 minutos y nunca me han cobrado de más"']},
   {id:'s2',competitor:'Plata',sources:['App Store MX','Google Play','Reddit'],
    score:'4.3 / 5',scoreTier:'good',
    complaints:['High APR not obvious until statement','Credit limit starts low (MXN 3–5K for most)','In-person verification seen as friction in non-ambassador cities'],
    praises:['15% cashback is real and credited fast','60-day payment window feels generous','Fast approval including for bank-rejected users'],
-   quotes:['"Me cobraron 38% de intereses que no esperaba — hubiera leído bien el contrato"','"El cashback llega en 24 hrs, es real, ningún banco me da esto"'],
-   screditoOpportunity:'Plata\'s APR opacity is the weakness. SCredito should show total cost of credit (CAT) front-and-center at application — turn transparency into a marketing message.'},
+   quotes:['"Me cobraron 38% de intereses que no esperaba — hubiera leído bien el contrato"','"El cashback llega en 24 hrs, es real, ningún banco me da esto"']},
   {id:'s3',competitor:'Kueski',sources:['CONDUSEF','Trustpilot','App Store MX','Reddit'],
    score:'9.86 / 10 (CONDUSEF)',scoreTier:'good',
    complaints:['"Si pides MXN 5,000 pagas MXN 10,000" — CAT is the top complaint','Late payment fees steep; no grace period','No hardship arrangement for users in difficulty'],
    praises:['Fastest approval in the market — minutes','No buró required; first credit for many users','Amazon checkout integration seamless','CONDUSEF #1 service rating'],
-   quotes:['"Tasa muy alta pero cuando necesitas dinero urgente no hay nada más rápido"','"Kueski es para emergencias, no para el día a día — caro pero confiable"'],
-   screditoOpportunity:'CAT transparency and hardship policy. Kueski users understand the high cost but feel trapped. SCredito can offer a "graduate out of Kueski Cash" product for repeat borrowers with good history.'},
+   quotes:['"Tasa muy alta pero cuando necesitas dinero urgente no hay nada más rápido"','"Kueski es para emergencias, no para el día a día — caro pero confiable"']},
   {id:'s4',competitor:'Mercado Pago',sources:['App Store MX','Google Play','Reddit','Facebook groups'],
    score:'4.1 / 5',scoreTier:'ok',
    complaints:['Account freezes with funds held, no explanation','Savings rate cut (16.5%→15%) without notice','Fraud detection flags legitimate transactions'],
    praises:['QR accepted everywhere (1M+ terminals)','15% savings yield','Instant SME credit in seller dashboard','OXXO cash-in network'],
-   quotes:['"Me congelaron la cuenta con MXN 8,000 adentro y tardé 3 semanas en recuperar mi dinero"','"Para pagos es lo mejor de México — uso todos los días sin problemas"'],
-   screditoOpportunity:'Account freeze is the single biggest trust gap. SCredito should explicitly promise "your money is never frozen without 24hr prior notice" — directly exploits the top Mercado Pago complaint.'},
+   quotes:['"Me congelaron la cuenta con MXN 8,000 adentro y tardé 3 semanas en recuperar mi dinero"','"Para pagos es lo mejor de México — uso todos los días sin problemas"']},
   {id:'s5',competitor:'Klar',sources:['App Store MX','Google Play','CONDUSEF'],
    score:'3.8 / 5',scoreTier:'ok',
    complaints:['App crashes during verification','Limit increase requests ignored for months','SME product (Empresarial) confusing UX','Collections aggressive relative to loan size'],
    praises:['No annual fee','Low deposit rate (3.5%) helps cost of funds','SME pivot acknowledged as needed'],
-   quotes:['"La app tarda una eternidad en cargar y siempre falla cuando más la necesito"','"Mi límite lleva 4 meses en MXN 5,000, pago puntual, y no me explican por qué no sube"'],
-   screditoOpportunity:'Klar\'s NPL stress means they are tightening credit while their user base expects growth. Users with good payment history are being underserved — SCredito can poach these with targeted limit increase offers.'},
+   quotes:['"La app tarda una eternidad en cargar y siempre falla cuando más la necesito"','"Mi límite lleva 4 meses en MXN 5,000, pago puntual, y no me explican por qué no sube"']},
   {id:'s6',competitor:'Stori',sources:['App Store MX','Google Play','CONDUSEF'],
    score:'3.6 / 5',scoreTier:'bad',
    complaints:['APR not clearly disclosed upfront','Minimum payment traps users in revolving debt','Customer service hard to reach'],
    praises:['Approves users banks reject','Low starting limit reduces risk of overspending','No annual fee'],
-   quotes:['"Me cobraron más de lo que esperaba — la letra chica es muy engañosa"','"Es la única que me aprobó, le doy 5 estrellas por eso aunque sea cara"'],
-   screditoOpportunity:'Stori users accept high APR because they have no alternatives. SCredito should offer a "move up" product: better rate + bureau reporting for Stori users who have 6+ months clean payment history.'},
+   quotes:['"Me cobraron más de lo que esperaba — la letra chica es muy engañosa"','"Es la única que me aprobó, le doy 5 estrellas por eso aunque sea cara"']},
 ],
 
 businessStats: [
@@ -917,9 +869,6 @@ function threatBadge(level){
   return `<span class="t-badge ${cls[level]||'t-unknown'}">${level||'—'}</span>`;
 }
 
-function implicationBox(text){
-  return `<div class="implication-box"><div class="imp-title">Implication for SCredito</div><div class="imp-body">${text}</div></div>`;
-}
 
 function matchesSearch(fields, q){
   if(!q) return true;
@@ -940,21 +889,20 @@ function renderDigest(){
   const comp = state.competitor;
   const items = DATA.newsItems.filter(n =>
     matchesComp(n.competitor, comp) &&
-    matchesSearch([n.title, n.summary, n.whyItMatters, n.screditoAction, n.competitor], q)
+    matchesSearch([n.headline, n.oneLineSummary, n.competitor, n.category], q)
   );
 
   const cardsHtml = items.length ? items.map(n => `
-    <div class="digest-card urgency-${n.urgency}">
+    <div class="digest-card">
       <div class="dc-left">
         <div class="dc-meta">
-          <span class="urgency-badge ${n.urgency}">${n.urgency.toUpperCase()}</span>
+          <span class="cat-badge">${escHtml(n.category)}</span>
           <span class="comp-badge">${escHtml(n.competitor)}</span>
           <span class="dc-date">${fmtDate(n.date)}</span>
           ${n.sourceUrl ? `<a class="src" href="${n.sourceUrl}" target="_blank">Source ↗</a>` : ''}
         </div>
-        <div class="dc-title">${escHtml(n.title)}</div>
-        <div class="dc-why"><strong>Why it matters:</strong> ${escHtml(n.whyItMatters)}</div>
-        <div class="dc-action">${escHtml(n.screditoAction)}</div>
+        <div class="dc-title">${escHtml(n.headline)}</div>
+        <div class="dc-summary">${escHtml(n.oneLineSummary)}</div>
       </div>
     </div>
   `).join('') : `<div class="empty-state">🔍<p>No digest items match the current filter.</p></div>`;
@@ -970,15 +918,14 @@ function renderDigest(){
   document.getElementById('panel-digest').innerHTML = `
     <div class="panel-header">
       <div class="panel-title">Daily Digest</div>
-      <div class="panel-sub">Curated market briefing — what changed, why it matters, what SCredito should do</div>
+      <div class="panel-sub">Latest market updates — Mexico credit, BNPL, and fintech</div>
     </div>
-    <div class="section-hed">Latest intel (${items.length} items)</div>
+    <div class="section-hed">Latest updates (${items.length} items)</div>
     <div class="digest-grid">${cardsHtml}</div>
     <div class="section-hed">Upcoming key events</div>
     <div class="upcoming-section">
       <div class="upcoming-grid">${upcomingHtml}</div>
     </div>
-    ${implicationBox('Three decisions to make now: (1) Differentiate on checkout BNPL before Plata\'s deposit launch captures the same underbanked user. (2) Build a transparent limit-increase pathway to exploit Nu and Klar\'s #1 complaint. (3) Design revenue model on loan interest, not interchange — the cap is coming.')}
   `;
 }
 
@@ -1106,26 +1053,17 @@ function renderProducts(){
         <div class="spec-row"><span class="spec-label">Distribution</span><span class="spec-value">${escHtml(p.distribution)}</span></div>
       </div>
       <div class="prod-promise">"${escHtml(p.promise)}"</div>
-      <div class="prod-weakness">${escHtml(p.weaknessToExploit)}</div>
+      <div class="prod-notes">${escHtml(p.notes)}</div>
     </div>
   `).join('');
 
   document.getElementById('panel-products').innerHTML = `
     <div class="panel-header">
       <div class="panel-title">Competitor Product Feed</div>
-      <div class="panel-sub">What competitors actually offer — specs, promises, and weaknesses SCredito can exploit</div>
+      <div class="panel-sub">Product specs for key Mexico credit and BNPL competitors</div>
     </div>
     <div class="prod-subnav" id="prodSubnav">${subNav}</div>
     <div class="prod-grid">${cards}</div>
-    <div class="threat-section">
-      <div class="threat-title">Greatest product threat to SCredito: Kueski Pay</div>
-      <ul class="threat-bullets">
-        <li>Amazon MX checkout exclusivity means SCredito cannot enter the top e-commerce BNPL moment without a competing merchant network.</li>
-        <li>Sub-3% NPL with 30M+ loans — proven underwriting at scale. No incumbent can match this data advantage for the no-buró segment.</li>
-        <li>90% recurrence rate creates a retention moat: once a user's limit is established with Kueski, switching cost is high.</li>
-      </ul>
-    </div>
-    ${implicationBox('SCredito\'s product must differentiate on: (1) Transparent limit increase timeline — the #1 complaint across all competitors. (2) Bureau-reporting for first-time borrowers — creates long-term LTV. (3) Hardship policy — none of the major players offer this; it\'s unoccupied positioning. (4) Target the merchant verticals Kueski ignores: local services, B2B, and offline categories outside their top-150 merchant list.')}
   `;
 
   document.getElementById('prodSubnav').querySelectorAll('.prod-tab-btn').forEach(btn => {
@@ -1144,7 +1082,7 @@ function renderSentiment(){
   const comp = state.competitor;
   const items = DATA.sentimentItems.filter(s =>
     matchesComp(s.competitor, comp) &&
-    matchesSearch([s.competitor, ...s.complaints, ...s.praises, s.screditoOpportunity], q)
+    matchesSearch([s.competitor, ...s.complaints, ...s.praises], q)
   );
 
   const scoreColor = {good:'good',ok:'ok',bad:'bad'};
@@ -1165,17 +1103,15 @@ function renderSentiment(){
         <div class="sent-section-label">User voice</div>
         ${s.quotes.map(q=>`<div class="sent-quote">${escHtml(q)}</div>`).join('')}
       </div>
-      <div class="sent-opp">${escHtml(s.screditoOpportunity)}</div>
     </div>
   `).join('') : `<div class="empty-state">🔍<p>No sentiment data matches the current filter.</p></div>`;
 
   document.getElementById('panel-sentiment').innerHTML = `
     <div class="panel-header">
       <div class="panel-title">Competitor Sentiment</div>
-      <div class="panel-sub">What users love and hate — and what SCredito can exploit</div>
+      <div class="panel-sub">User reviews and feedback across App Store, Google Play, Reddit, and CONDUSEF</div>
     </div>
     <div class="sentiment-grid">${cards}</div>
-    ${implicationBox('The universal complaint across all competitors is credit limit stagnation — "I pay on time but my limit never increases." This is SCredito\'s single best positioning opportunity: commit publicly to a transparent limit increase schedule (e.g., +20% every 3 months of clean payments). No major player does this explicitly.')}
   `;
 }
 
@@ -1187,7 +1123,7 @@ function renderBusiness(){
   const comp = state.competitor;
   const items = DATA.businessStats.filter(b =>
     matchesComp(b.competitor, comp) &&
-    matchesSearch([b.competitor, b.threatWhy, b.implication, b.npl, b.monetisation], q)
+    matchesSearch([b.competitor, b.threatWhy, b.npl, b.monetisation], q)
   );
 
   const tableRows = items.map(b => `
@@ -1226,7 +1162,7 @@ function renderBusiness(){
           <tr><td>Monetisation model</td><td colspan="2">${escHtml(b.monetisation)}</td></tr>
           <tr><td>Distribution</td><td colspan="2">${escHtml(b.distribution)}</td></tr>
         </table>
-        <div class="biz-implication">${escHtml(b.implication)}</div>
+        <div class="biz-observed">${escHtml(b.threatWhy)}</div>
       </div>
     </div>
   `).join('');
@@ -1234,21 +1170,20 @@ function renderBusiness(){
   document.getElementById('panel-business').innerHTML = `
     <div class="panel-header">
       <div class="panel-title">Business Stats &amp; Unit Economics</div>
-      <div class="panel-sub">Separating real threats from subsidised noise — who is actually dangerous, and who is buying bad growth</div>
+      <div class="panel-sub">Financials, unit economics, and competitive position for key Mexico credit players</div>
     </div>
-    <div class="section-hed">Threat summary — all competitors</div>
+    <div class="section-hed">Summary — all competitors</div>
     <div class="threat-summary-table">
       <table class="threat-table">
         <thead><tr>
           <th>Competitor</th><th>Users</th><th>NPL</th><th>Est. CAC</th>
-          <th>UE Quality</th><th>Threat</th><th>Why</th>
+          <th>UE Quality</th><th>Competitive position</th><th>Notes</th>
         </tr></thead>
         <tbody>${tableRows}</tbody>
       </table>
     </div>
     <div class="section-hed">Detail by competitor (click to expand)</div>
     <div class="biz-accordion">${accordions}</div>
-    ${implicationBox('Actual threats ranked: (1) Mercado Pago — platform data moat, near-zero CAC, profitable. (2) Plata — $2B+ capital, fastest growth, banking licence. (3) Nu — 14M users, $808M revenue, but structurally losing money. The rest are noise or opportunities. Klar is distressed. Stori is single-product and high-NPL. DiDi is a watch item pending regulatory outcome.')}
   `;
 }
 
@@ -1292,7 +1227,7 @@ function renderMacro(){
   document.getElementById('panel-macro').innerHTML = `
     <div class="panel-header">
       <div class="panel-title">Macro &amp; Market Stats</div>
-      <div class="panel-sub">Whether Mexico lending conditions are getting easier or harder — and what drives the shift</div>
+      <div class="panel-sub">Mexico lending market indicators — rates, credit growth, NPL trends, and regulatory calendar</div>
     </div>
     <div class="macro-kpi-grid">${kpis}</div>
     <div class="macro-charts">
@@ -1312,14 +1247,13 @@ function renderMacro(){
     </table>
     <div class="section-hed">Seasonal calendar</div>
     <table class="cal-table">
-      <thead><tr><th>Period</th><th>Event</th><th>SCredito action</th></tr></thead>
+      <thead><tr><th>Period</th><th>Event</th><th>Notes</th></tr></thead>
       <tbody>${calRows}</tbody>
     </table>
     <div class="verdict-box neutral">
-      <div class="verdict-label">Market condition for SCredito growth</div>
-      <div class="verdict-text">NEUTRAL — leaning favorable. Easing rate cycle (6.50% and falling) reduces cost of debt funding over 2026. BNPL growing 29% CAGR. 70% of adults still without a credit card. But: personal loan NPL +47% in 2025 signals credit stress in the underbanked segment. Disciplined underwriting is now the defining variable.</div>
+      <div class="verdict-label">Current market condition</div>
+      <div class="verdict-text">NEUTRAL. Easing rate cycle (6.50% and falling) is reducing cost of debt funding. BNPL growing 29% CAGR. 70% of adults without a credit card. Personal loan NPL rose +47% in 2025.</div>
     </div>
-    ${implicationBox('Enter 2026 with: (1) Debt funding locked in at current rates before further cuts compress market pricing. (2) NPL guardrails set at product level before scaling — Klar shows what happens when you don\'t. (3) Hot Sale Jun 1–6 is the first major merchant activation window — have checkout BNPL ready or cede ground to Kueski.')}
   `;
 
   if(!state.chartsInit.macro){
