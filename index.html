@@ -410,7 +410,6 @@ a.src:hover{text-decoration:underline}
   <nav class="tab-nav" id="tabNav">
     <button class="tab-btn active" data-tab="digest">Daily Digest</button>
     <button class="tab-btn" data-tab="products">Competitor Feed</button>
-    <button class="tab-btn" data-tab="business">Business &amp; UE</button>
     <button class="tab-btn" data-tab="marketing">Marketing Feed</button>
     <button class="tab-btn" data-tab="sentiment">Sentiment</button>
     <button class="tab-btn" data-tab="macro">Macro</button>
@@ -448,7 +447,6 @@ a.src:hover{text-decoration:underline}
 <div class="panel-container">
   <div id="panel-digest" class="tab-panel active"></div>
   <div id="panel-products" class="tab-panel"></div>
-  <div id="panel-business" class="tab-panel"></div>
   <div id="panel-marketing" class="tab-panel"></div>
   <div id="panel-sentiment" class="tab-panel"></div>
   <div id="panel-macro" class="tab-panel"></div>
@@ -1922,77 +1920,6 @@ function renderSentiment(){
   `;
 }
 
-// ═══════════════════════════════════════════
-// RENDER: BUSINESS STATS
-// ═══════════════════════════════════════════
-function renderBusiness(){
-  const q = state.search;
-  const comp = state.competitor;
-  const items = DATA.businessStats.filter(b =>
-    matchesComp(b.competitor, comp) &&
-    matchesSearch([b.competitor, b.threatWhy, b.npl, b.monetisation], q)
-  );
-
-  const tableRows = items.map(b => `
-    <tr class="threat-row-${b.threatLevel}">
-      <td><strong>${escHtml(b.competitor)}</strong></td>
-      <td>${escHtml(b.users)}</td>
-      <td>${escHtml(b.npl)}</td>
-      <td>${escHtml(b.estCAC)}</td>
-      <td>${threatBadge(b.ueQuality)}</td>
-      <td>${threatBadge(b.threatLevel)}</td>
-      <td style="font-size:.72rem;color:var(--muted);max-width:220px">${escHtml(b.threatWhy)}</td>
-    </tr>
-  `).join('');
-
-  const accordions = items.map(b => `
-    <div class="biz-row">
-      <div class="biz-header" onclick="toggleBiz('${b.id}')">
-        <div class="biz-comp-name">${escHtml(b.competitor)}</div>
-        <div class="biz-pills">
-          <div class="biz-pill">${escHtml(b.users)}<span>Users</span></div>
-          <div class="biz-pill">${escHtml(b.loanOS)}<span>Loan OS</span></div>
-          <div class="biz-pill">${escHtml(b.revenue)}<span>Revenue</span></div>
-          <div class="biz-pill">${escHtml(b.npl)}<span>NPL</span></div>
-        </div>
-        <div class="biz-badges">
-          ${threatBadge(b.ueQuality)} ${threatBadge(b.threatLevel)}
-          <span style="font-size:.7rem;color:var(--muted);padding:2px 6px">${b.ueConfidence} confidence</span>
-        </div>
-      </div>
-      <div class="biz-detail" id="biz-${b.id}">
-        <table class="biz-ue-table">
-          <tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
-          <tr><td>Funding raised</td><td>${escHtml(b.funding)}</td><td>${escHtml(b.fundingAdvantage)}</td></tr>
-          <tr><td>Est. CAC</td><td>${escHtml(b.estCAC)}</td><td>${escHtml(b.estPromoBurn)}</td></tr>
-          <tr><td>NPL / Delinquency</td><td>${escHtml(b.npl)}</td><td>—</td></tr>
-          <tr><td>Monetisation model</td><td colspan="2">${escHtml(b.monetisation)}</td></tr>
-          <tr><td>Distribution</td><td colspan="2">${escHtml(b.distribution)}</td></tr>
-        </table>
-        <div class="biz-observed">${escHtml(b.threatWhy)}</div>
-      </div>
-    </div>
-  `).join('');
-
-  document.getElementById('panel-business').innerHTML = `
-    <div class="panel-header">
-      <div class="panel-title">Business Stats &amp; Unit Economics</div>
-      <div class="panel-sub">Financials, unit economics, and competitive position for key Mexico credit players</div>
-    </div>
-    <div class="section-hed">Summary — all competitors</div>
-    <div class="threat-summary-table">
-      <table class="threat-table">
-        <thead><tr>
-          <th>Competitor</th><th>Users</th><th>NPL</th><th>Est. CAC</th>
-          <th>UE Quality</th><th>Competitive position</th><th>Notes</th>
-        </tr></thead>
-        <tbody>${tableRows}</tbody>
-      </table>
-    </div>
-    <div class="section-hed">Detail by competitor (click to expand)</div>
-    <div class="biz-accordion">${accordions}</div>
-  `;
-}
 
 function toggleBiz(id){
   const el = document.getElementById('biz-'+id);
@@ -2248,7 +2175,6 @@ function renderActiveTab(){
   else if(t==='marketing') renderMarketing();
   else if(t==='products') renderProducts();
   else if(t==='sentiment') renderSentiment();
-  else if(t==='business') renderBusiness();
   else if(t==='macro') renderMacro();
 }
 
