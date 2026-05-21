@@ -213,6 +213,33 @@ body.tab-marketing .panel-container{margin-top:var(--topbar-h)}
 .prm-status-historic{font-size:.62rem;font-weight:700;background:#f3f4f6;color:#6b7280;padding:2px 7px;border-radius:3px;text-transform:uppercase}
 .prm-period{font-size:.68rem;color:var(--muted)}
 
+/* ── MARKETING COMPARISON GRID ── */
+.mkt-comp-grid-wrap{overflow-x:auto;margin-bottom:24px}
+.mkt-comp-grid{display:grid;grid-template-columns:repeat(4,minmax(240px,1fr));gap:14px;min-width:960px}
+.mkt-comp-col{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.mkt-comp-col-header{padding:13px 16px 11px;border-top:4px solid var(--navy);font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);font-weight:400}
+.mkt-funnel-summary-sm{padding:0 16px 12px;font-size:.75rem;line-height:1.55;color:var(--muted);font-style:italic;border-bottom:1px solid var(--border)}
+.mkt-ch-list{flex:1}
+.mkt-ch-row{padding:10px 14px;border-bottom:1px solid var(--border)}
+.mkt-ch-row:last-child{border-bottom:none}
+.mkt-ch-row-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:4px}
+.mkt-ch-name{font-size:.78rem;font-weight:600;color:var(--navy);line-height:1.3}
+.mkt-ch-row-type{margin-bottom:5px}
+.mkt-ch-flow{font-size:.69rem;color:var(--muted);font-style:italic;line-height:1.4;margin-bottom:4px}
+.mkt-ch-metrics{font-size:.66rem;color:var(--muted);line-height:1.3}
+.mkt-implication-sm{padding:10px 14px;background:var(--amber-light);border-top:2px solid var(--amber);font-size:.74rem;line-height:1.45;color:#78350f;margin-top:auto}
+.mkt-counter-sm{padding:10px 14px;background:var(--green-light);border-top:2px solid #b2ddd3;font-size:.74rem;line-height:1.45;color:#065f46;font-weight:600;margin-top:auto}
+.mkt-campaign-list{flex:1}
+.mkt-campaign-row{padding:10px 14px;border-bottom:1px solid var(--border)}
+.mkt-campaign-row:last-child{border-bottom:none}
+.mkt-campaign-row-name{font-size:.78rem;font-weight:700;color:var(--navy);margin-bottom:5px;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.mkt-pillars-wrap{padding:10px 14px 8px;border-bottom:1px solid var(--border)}
+.mkt-prm-list{flex:1}
+.mkt-prm-row{padding:10px 14px;border-bottom:1px solid var(--border)}
+.mkt-prm-row:last-child{border-bottom:none}
+.mkt-prm-row-top{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.prm-mechanic-sm{font-size:.78rem;color:var(--text);line-height:1.4;margin-bottom:4px}
+
 /* ── PRODUCT FEED ── */
 .prod-subnav{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 .prod-tab-btn{font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
@@ -1200,7 +1227,7 @@ const state = {
   search: '',
   productTab: 'kueski',
   chartsInit: {},
-  mktComp: 'nu',
+  mktSection: 'awareness',
   productsInit: false,
 };
 
@@ -1370,92 +1397,111 @@ function renderDigest(){
 // RENDER: MARKETING
 // ═══════════════════════════════════════════
 function renderMarketing(){
-  const comp = state.mktComp;
-  const d = DATA.mktFunnels[comp];
+  const section = state.mktSection;
+  const comps = ['nu','mp','kueski','plata'];
   const labels = {nu:'Nu',mp:'Mercado Pago',kueski:'Kueski',plata:'Plata'};
-
-  const subnav = ['nu','mp','kueski','plata'].map(k =>
-    `<button class="mkt-subnav-btn${k===comp?' active':''}" onclick="switchMktComp('${k}')">${labels[k]}</button>`
-  ).join('');
-
+  const compColors = {nu:'#00a878',mp:'#f59e0b',kueski:'#007a58',plata:'#0f2342'};
   const spendMap = {High:'spend-high',Medium:'spend-medium',Low:'spend-low'};
-  const chRows = d.channels.map(ch => {
-    const spendCls = spendMap[ch.spendLevel] || 'spend-low';
-    const rawType = ch.type.split(' ')[0].replace(/-/g,'_');
-    return `<tr>
-      <td><strong>${escHtml(ch.name)}</strong></td>
-      <td><span class="ct-badge ct-${rawType}">${escHtml(ch.type.replace(/_/g,' '))}</span></td>
-      <td>${escHtml(ch.trafficEst)}</td>
-      <td>${escHtml(ch.engagement)}</td>
-      <td class="ux-flow">${escHtml(ch.uxFlow)}</td>
-      <td><span class="${spendCls}">${escHtml(ch.spendLevel)}</span></td>
-    </tr>`;
-  }).join('');
 
-  const pillars = d.messaging.evergreen.map(p =>
-    `<span class="pillar-tag" title="${escHtml(p.channels.join(', '))}: ${escHtml(p.copy)}">${escHtml(p.pillar)}</span>`
+  const sections = [
+    {key:'awareness',label:'Awareness'},
+    {key:'creatives',label:'Creatives & Messaging'},
+    {key:'promotions',label:'Promotions'},
+  ];
+  const subnav = sections.map(s =>
+    `<button class="mkt-subnav-btn${s.key===section?' active':''}" onclick="switchMktSection('${s.key}')">${s.label}</button>`
   ).join('');
 
-  const campaigns = d.messaging.campaigns.map(c => `
-    <div class="campaign-card">
-      <div class="campaign-name">${escHtml(c.name)}</div>
-      <div class="campaign-meta">
-        <span class="mkt-channel-badge">${escHtml(c.channel)}</span>
-        <span class="mkt-hook-badge">${escHtml(c.hook)}</span>
-        <span class="mkt-date">${escHtml(c.period)}</span>
-      </div>
-      <div class="campaign-copy">${escHtml(c.copy)}</div>
-      ${c.notes ? `<div class="campaign-notes">${escHtml(c.notes)}</div>` : ''}
-    </div>`
-  ).join('');
+  let cols = '';
 
-  const prms = d.prm.map(p => {
-    const typeSlug = p.type.toLowerCase().replace(/[^a-z]/g,'');
-    const statusCls = (p.status||'').toLowerCase()==='active' ? 'prm-status-active' : 'prm-status-historic';
-    return `<div class="prm-card">
-      <span class="prm-type-badge prm-t-${typeSlug}">${escHtml(p.type)}</span>
-      <div class="prm-mechanic">${escHtml(p.mechanic)}</div>
-      <div class="prm-segment">${escHtml(p.segment)}</div>
-      <div class="prm-footer">
-        <span class="${statusCls}">${escHtml(p.status)}</span>
-        <span class="prm-period">${escHtml(p.period)}</span>
-      </div>
-    </div>`;
-  }).join('');
+  if(section === 'awareness'){
+    cols = comps.map(k => {
+      const d = DATA.mktFunnels[k];
+      const chRows = d.channels.map(ch => {
+        const spendCls = spendMap[ch.spendLevel] || 'spend-low';
+        const rawType = ch.type.split(' ')[0].replace(/-/g,'_');
+        return `<div class="mkt-ch-row">
+          <div class="mkt-ch-row-top">
+            <span class="mkt-ch-name">${escHtml(ch.name)}</span>
+            <span class="${spendCls}">${escHtml(ch.spendLevel)}</span>
+          </div>
+          <div class="mkt-ch-row-type"><span class="ct-badge ct-${rawType}">${escHtml(ch.type.replace(/_/g,' '))}</span></div>
+          <div class="mkt-ch-flow">${escHtml(ch.uxFlow)}</div>
+          <div class="mkt-ch-metrics">${escHtml(ch.trafficEst)} · ${escHtml(ch.engagement)}</div>
+        </div>`;
+      }).join('');
+      return `<div class="mkt-comp-col">
+        <div class="mkt-comp-col-header" style="border-top-color:${compColors[k]}">${labels[k]}</div>
+        <div class="mkt-funnel-summary-sm">${escHtml(d.funnelSummary)}</div>
+        <div class="mkt-ch-list">${chRows}</div>
+        <div class="mkt-implication-sm">${escHtml(d.channelImplication)}</div>
+      </div>`;
+    }).join('');
+
+  } else if(section === 'creatives'){
+    cols = comps.map(k => {
+      const d = DATA.mktFunnels[k];
+      const pillars = d.messaging.evergreen.map(p =>
+        `<span class="pillar-tag" title="${escHtml(p.channels.join(', '))}: ${escHtml(p.copy)}">${escHtml(p.pillar)}</span>`
+      ).join('');
+      const campRows = d.messaging.campaigns.map(c => `
+        <div class="mkt-campaign-row">
+          <div class="mkt-campaign-row-name">${escHtml(c.name)}<span class="mkt-date">${escHtml(c.period)}</span></div>
+          <div class="campaign-meta">
+            <span class="mkt-channel-badge">${escHtml(c.channel)}</span>
+            <span class="mkt-hook-badge">${escHtml(c.hook)}</span>
+          </div>
+          <div class="campaign-copy">${escHtml(c.copy)}</div>
+          ${c.notes ? `<div class="campaign-notes">${escHtml(c.notes)}</div>` : ''}
+        </div>`
+      ).join('');
+      return `<div class="mkt-comp-col">
+        <div class="mkt-comp-col-header" style="border-top-color:${compColors[k]}">${labels[k]}</div>
+        <div class="mkt-pillars-wrap">
+          <div class="mkt-sub-header" style="margin-top:0">Evergreen Pillars</div>
+          <div class="pillar-cloud" style="margin-bottom:0">${pillars}</div>
+        </div>
+        <div class="mkt-sub-header" style="padding:8px 14px 0;margin:0">Campaigns</div>
+        <div class="mkt-campaign-list">${campRows}</div>
+      </div>`;
+    }).join('');
+
+  } else if(section === 'promotions'){
+    cols = comps.map(k => {
+      const d = DATA.mktFunnels[k];
+      const prmRows = d.prm.map(p => {
+        const typeSlug = p.type.toLowerCase().replace(/[^a-z]/g,'');
+        const statusCls = (p.status||'').toLowerCase()==='active' ? 'prm-status-active' : 'prm-status-historic';
+        return `<div class="mkt-prm-row">
+          <div class="mkt-prm-row-top">
+            <span class="prm-type-badge prm-t-${typeSlug}">${escHtml(p.type)}</span>
+            <span class="${statusCls}">${escHtml(p.status)}</span>
+          </div>
+          <div class="prm-mechanic-sm">${escHtml(p.mechanic)}</div>
+          <div class="prm-segment">${escHtml(p.segment)} · ${escHtml(p.period)}</div>
+        </div>`;
+      }).join('');
+      return `<div class="mkt-comp-col">
+        <div class="mkt-comp-col-header" style="border-top-color:${compColors[k]}">${labels[k]}</div>
+        <div class="mkt-prm-list">${prmRows}</div>
+        <div class="mkt-counter-sm">${escHtml(d.prmCounterMove)}</div>
+      </div>`;
+    }).join('');
+  }
 
   document.getElementById('panel-marketing').innerHTML = `
     <div class="panel-header">
-      <div class="panel-title">Marketing Feed — Funnel Intelligence</div>
-      <div class="panel-sub">Acquisition channels · messaging · promotions for Nu, Mercado Pago, Kueski &amp; Plata · Last updated: 2026-05-21</div>
+      <div class="panel-title">Marketing Feed — Competitive Intelligence</div>
+      <div class="panel-sub">Nu · Mercado Pago · Kueski · Plata — side-by-side comparison · Last updated: 2026-05-21</div>
     </div>
     <div class="mkt-subnav">${subnav}</div>
-    <div class="mkt-section">
-      <div class="mkt-section-title">1 — Out-of-App Acquisition Channels</div>
-      <div class="mkt-funnel-summary">${escHtml(d.funnelSummary)}</div>
-      <div class="tbl-wrap">
-        <table class="mkt-ch-table">
-          <thead><tr><th>Channel</th><th>Type</th><th>Est. Reach / Traffic</th><th>Est. Engagement</th><th>UX Flow → Install &amp; Activation</th><th>Spend</th></tr></thead>
-          <tbody>${chRows}</tbody>
-        </table>
-      </div>
-      <div class="mkt-implication">${escHtml(d.channelImplication)}</div>
-    </div>
-    <div class="mkt-section">
-      <div class="mkt-section-title">2 — Messaging &amp; Creatives</div>
-      <div class="mkt-sub-header">Evergreen Pillars</div>
-      <div class="pillar-cloud">${pillars}</div>
-      <div class="mkt-sub-header">Campaign Examples</div>
-      <div class="campaign-grid">${campaigns}</div>
-    </div>
-    <div class="mkt-section">
-      <div class="mkt-section-title">3 — Promotions, Retention &amp; Conversion</div>
-      <div class="prm-grid">${prms}</div>
-      <div class="mkt-counter">${escHtml(d.prmCounterMove)}</div>
+    <div class="mkt-comp-grid-wrap">
+      <div class="mkt-comp-grid">${cols}</div>
     </div>
   `;
 }
 
-window.switchMktComp = function(k){ state.mktComp = k; renderMarketing(); };
+window.switchMktSection = function(k){ state.mktSection = k; renderMarketing(); };
 
 // ═══════════════════════════════════════════
 // RENDER: PRODUCTS
