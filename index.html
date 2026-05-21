@@ -77,6 +77,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 
 /* ── PANELS ── */
 .panel-container{margin-top:calc(var(--topbar-h) + var(--filterbar-h));min-height:calc(100vh - var(--topbar-h) - var(--filterbar-h))}
+body.tab-digest #filterbar{display:none}
+body.tab-digest .panel-container{margin-top:var(--topbar-h)}
 .tab-panel{display:none;padding:28px 32px 60px}
 .tab-panel.active{display:block}
 
@@ -1425,15 +1427,9 @@ function renderMacro(){
 // ═══════════════════════════════════════════
 function switchTab(tab){
   state.tab = tab;
+  document.body.className = 'tab-' + tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===tab));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id==='panel-'+tab));
-  // Hide filter bar entirely on digest — it's an unfiltered feed
-  document.getElementById('filterbar').style.display = tab === 'digest' ? 'none' : '';
-  // Adjust panel top margin to compensate when filter bar is hidden
-  document.querySelector('.panel-container').style.marginTop =
-    tab === 'digest'
-      ? 'var(--topbar-h)'
-      : 'calc(var(--topbar-h) + var(--filterbar-h))';
   renderActiveTab();
 }
 
@@ -1483,6 +1479,7 @@ function init(){
   });
 
   setupChips();
+  document.body.className = 'tab-digest';
   renderDigest();
 }
 
