@@ -337,10 +337,20 @@ body.tab-digest .panel-container{margin-top:var(--topbar-h)}
 .tab-hr{border:none;border-top:1px solid var(--border);margin:28px 0}
 
 /* ── PLAYER CARDS (Archetype section) ── */
-.player-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0 20px}
-@media(max-width:720px){.player-grid{grid-template-columns:1fr}}
-.player-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 18px;border-top:4px solid var(--navy);box-shadow:0 2px 8px rgba(0,0,0,.04);transition:box-shadow .2s}
+.player-grid{display:flex;flex-wrap:wrap;gap:16px;margin:14px 0 20px}
+.player-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 20px;border-top:4px solid var(--navy);box-shadow:0 2px 8px rgba(0,0,0,.04);transition:box-shadow .2s;width:300px;flex-shrink:0}
 .player-card:hover{box-shadow:0 8px 22px rgba(15,35,66,.1)}
+
+/* ── DETAIL MODAL ── */
+#detail-modal-overlay{position:fixed;inset:0;background:rgba(10,22,45,.6);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:48px 24px 24px;overflow-y:auto}
+#detail-modal-overlay.open{display:flex}
+#detail-modal{background:#fff;border-radius:14px;width:100%;max-width:880px;box-shadow:0 28px 72px rgba(0,0,0,.28);flex-shrink:0;margin:auto}
+#detail-modal-header{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 22px 14px;border-bottom:1px solid var(--border);gap:12px}
+#detail-modal-title{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--navy);line-height:1.2}
+#detail-modal-type{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:3px}
+#detail-modal-close{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:.9rem;width:30px;height:30px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;transition:all .15s}
+#detail-modal-close:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+#detail-modal-body{padding:22px 24px 28px}
 .card-type{font-size:.62rem;color:var(--green-dark);font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
 .card-name{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--navy);margin-bottom:3px}
 .card-tagline{font-size:.76rem;color:var(--muted);margin-bottom:10px;font-weight:500}
@@ -417,6 +427,20 @@ a.src:hover{text-decoration:underline}
   <div class="chips" id="competitorChips"></div>
   <div class="filter-search">
     <input type="search" id="searchInput" placeholder="Search…" autocomplete="off">
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div id="detail-modal-overlay">
+  <div id="detail-modal">
+    <div id="detail-modal-header">
+      <div>
+        <div id="detail-modal-type"></div>
+        <div id="detail-modal-title"></div>
+      </div>
+      <button id="detail-modal-close" onclick="closeDetailModal()">✕</button>
+    </div>
+    <div id="detail-modal-body"></div>
   </div>
 </div>
 
@@ -1914,42 +1938,55 @@ function toggleBiz(id){
 window.toggleDetail = function(id){
   const detail = document.getElementById('detail-'+id);
   if(!detail) return;
-  const isOpen = detail.style.display !== 'none';
-  detail.style.display = isOpen ? 'none' : 'block';
-  const btn = document.querySelector('[onclick="toggleDetail(\''+id+'\')"]');
-  if(btn) btn.textContent = isOpen ? 'Details ▾' : 'Details ▴';
-  if(!isOpen && !detail.dataset.specsInjected){
+  // Inject product specs on first open
+  if(!detail.dataset.specsInjected){
     detail.dataset.specsInjected = 'true';
     const specs = document.getElementById('specs-'+id);
     if(specs){
       const items = DATA.productItems[id];
       if(items && items.length > 0){
         const typeLabel = {bnpl:'BNPL',loan:'Cash Loan',card:'Credit Card',savings:'Savings',wallet:'Wallet'};
-        specs.innerHTML = '<div class="prod-specs-header">Product Specs (Detailed Research)</div><div class="prod-grid">'+
+        specs.innerHTML = '<div class=”prod-specs-header”>Product Specs (Detailed Research)</div><div class=”prod-grid”>'+
           items.map(p =>
-            '<div class="prod-card">'+
-            '<span class="prod-type-badge type-'+p.productType+'">'+(typeLabel[p.productType]||p.productType)+'</span>'+
-            '<div class="prod-name">'+escHtml(p.productName)+'</div>'+
-            '<div class="prod-specs">'+
-            '<div class="spec-row"><span class="spec-label">APR / CAT</span><span class="spec-value">'+escHtml(p.aprCat)+'</span></div>'+
-            '<div class="spec-row"><span class="spec-label">Credit limit</span><span class="spec-value">'+escHtml(p.creditLimit)+'</span></div>'+
-            '<div class="spec-row"><span class="spec-label">Tenure</span><span class="spec-value">'+escHtml(p.tenure)+'</span></div>'+
-            '<div class="spec-row"><span class="spec-label">Approval speed</span><span class="spec-value">'+escHtml(p.approvalSpeed)+'</span></div>'+
-            '<div class="spec-row"><span class="spec-label">KYC</span><span class="spec-value">'+escHtml(p.kycRequirements)+'</span></div>'+
-            '<div class="spec-row"><span class="spec-label">Repayment</span><span class="spec-value">'+escHtml(p.repaymentOptions)+'</span></div>'+
-            '<div class="spec-row"><span class="spec-label">Fees</span><span class="spec-value">'+escHtml(p.fees)+'</span></div>'+
-            '<div class="spec-row"><span class="spec-label">Rewards</span><span class="spec-value">'+escHtml(p.rewards)+'</span></div>'+
-            '<div class="spec-row"><span class="spec-label">Distribution</span><span class="spec-value">'+escHtml(p.distribution)+'</span></div>'+
+            '<div class=”prod-card”>'+
+            '<span class=”prod-type-badge type-'+p.productType+'”>'+(typeLabel[p.productType]||p.productType)+'</span>'+
+            '<div class=”prod-name”>'+escHtml(p.productName)+'</div>'+
+            '<div class=”prod-specs”>'+
+            '<div class=”spec-row”><span class=”spec-label”>APR / CAT</span><span class=”spec-value”>'+escHtml(p.aprCat)+'</span></div>'+
+            '<div class=”spec-row”><span class=”spec-label”>Credit limit</span><span class=”spec-value”>'+escHtml(p.creditLimit)+'</span></div>'+
+            '<div class=”spec-row”><span class=”spec-label”>Tenure</span><span class=”spec-value”>'+escHtml(p.tenure)+'</span></div>'+
+            '<div class=”spec-row”><span class=”spec-label”>Approval speed</span><span class=”spec-value”>'+escHtml(p.approvalSpeed)+'</span></div>'+
+            '<div class=”spec-row”><span class=”spec-label”>KYC</span><span class=”spec-value”>'+escHtml(p.kycRequirements)+'</span></div>'+
+            '<div class=”spec-row”><span class=”spec-label”>Repayment</span><span class=”spec-value”>'+escHtml(p.repaymentOptions)+'</span></div>'+
+            '<div class=”spec-row”><span class=”spec-label”>Fees</span><span class=”spec-value”>'+escHtml(p.fees)+'</span></div>'+
+            '<div class=”spec-row”><span class=”spec-label”>Rewards</span><span class=”spec-value”>'+escHtml(p.rewards)+'</span></div>'+
+            '<div class=”spec-row”><span class=”spec-label”>Distribution</span><span class=”spec-value”>'+escHtml(p.distribution)+'</span></div>'+
             '</div>'+
-            '<div class="prod-promise">“'+escHtml(p.promise)+'”</div>'+
-            '<div class="prod-notes">'+escHtml(p.notes)+'</div>'+
+            '<div class=”prod-promise”>”'+escHtml(p.promise)+'”</div>'+
+            '<div class=”prod-notes”>'+escHtml(p.notes)+'</div>'+
             '</div>'
           ).join('')+
         '</div>';
       }
     }
   }
+  // Populate modal header from card metadata
+  const card = document.getElementById('card-'+id);
+  const nameEl = card && card.querySelector('.card-name');
+  const typeEl = card && card.querySelector('.card-type');
+  document.getElementById('detail-modal-title').textContent = nameEl ? nameEl.textContent : id;
+  document.getElementById('detail-modal-type').textContent = typeEl ? typeEl.textContent : '';
+  // Populate modal body with detail content
+  document.getElementById('detail-modal-body').innerHTML = detail.innerHTML;
+  // Open modal
+  document.getElementById('detail-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
 };
+
+function closeDetailModal(){
+  document.getElementById('detail-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
 
 // ═══════════════════════════════════════════
 // RENDER: MACRO (Sections 1 + 2 from original report)
@@ -2189,6 +2226,11 @@ function init(){
   setupChips();
   document.body.className = 'tab-digest';
   renderDigest();
+  // Modal dismiss: Escape key or click on backdrop
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDetailModal(); });
+  document.getElementById('detail-modal-overlay').addEventListener('click', e => {
+    if(e.target === document.getElementById('detail-modal-overlay')) closeDetailModal();
+  });
 }
 
 document.addEventListener('DOMContentLoaded', init);
