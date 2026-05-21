@@ -85,34 +85,29 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 .panel-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:3px}
 .panel-sub{font-size:.8rem;color:var(--muted)}
 
-/* ── DIGEST CARDS ── */
-.digest-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
-.digest-card{
-  background:#fff;border-radius:8px;border:1px solid var(--border);
-  border-left:4px solid var(--border);padding:14px 18px;
-  display:grid;grid-template-columns:1fr auto;gap:10px;
-  transition:box-shadow .2s
+/* ── DIGEST FEED ── */
+.feed{display:flex;flex-direction:column;gap:0;max-width:680px}
+.feed-card{
+  background:#fff;border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px;margin-bottom:10px;
+  transition:box-shadow .15s
 }
-.digest-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07)}
-.dc-left{min-width:0}
-.dc-meta{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.feed-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.07)}
+.feed-card.fc-upcoming{background:var(--surface);border-style:dashed}
+.fc-meta{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap}
 .cat-badge{font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px;background:var(--surface);color:var(--muted);border:1px solid var(--border)}
+.cat-badge.upcoming{background:var(--amber-light);color:#92400e;border-color:var(--amber)}
+.cat-badge.funding{background:#e8eeff;color:var(--navy-mid);border-color:#c7d4f5}
+.cat-badge.regulatory{background:var(--red-light);color:var(--red);border-color:#fc8181}
+.cat-badge.macro{background:var(--surface);color:var(--muted);border-color:var(--border)}
+.cat-badge.competitor{background:var(--green-light);color:var(--green-dark);border-color:#b2ddd3}
 .comp-badge{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--surface);color:var(--navy);border:1px solid var(--border)}
-.dc-date{font-size:.67rem;color:var(--muted)}
-.dc-title{font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:4px;line-height:1.4}
-.dc-title a{color:inherit;text-decoration:none}
-.dc-title a:hover{color:var(--navy-light);text-decoration:underline}
-.dc-summary{font-size:.78rem;color:#4a5568;line-height:1.5}
-
-/* ── UPCOMING TABLE ── */
-.upcoming-section{background:#fff;border-radius:8px;border:1px solid var(--border);padding:16px 18px;margin-bottom:24px}
-.section-eyebrow{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:10px}
-.upcoming-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
-.upcoming-item{background:var(--surface);border-radius:6px;padding:8px 12px;border-left:3px solid var(--border)}
-.upcoming-item.soon{border-left-color:var(--amber)}
-.upcoming-item.critical{border-left-color:var(--red)}
-.up-date{font-size:.67rem;font-weight:700;color:var(--green-dark);margin-bottom:2px}
-.up-title{font-size:.78rem;font-weight:600;color:var(--navy)}
+.fc-date{font-size:.67rem;color:var(--muted);margin-left:auto}
+.fc-headline{font-size:.92rem;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:5px}
+.fc-headline a{color:inherit;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s}
+.fc-headline a:hover{border-bottom-color:var(--navy-light);color:var(--navy-light)}
+.fc-summary{font-size:.79rem;color:#4a5568;line-height:1.55}
+.fc-note{font-size:.75rem;color:var(--muted);line-height:1.5;margin-top:4px}
 .up-note{font-size:.7rem;color:var(--muted);margin-top:2px}
 
 /* ── MARKETING CARDS ── */
@@ -887,45 +882,55 @@ function matchesComp(itemComp, filterComp){
 function renderDigest(){
   const q = state.search;
   const comp = state.competitor;
-  const items = DATA.newsItems.filter(n =>
+
+  // Filter news items
+  const news = DATA.newsItems.filter(n =>
     matchesComp(n.competitor, comp) &&
     matchesSearch([n.headline, n.oneLineSummary, n.competitor, n.category], q)
   );
 
-  const cardsHtml = items.length ? items.map(n => `
-    <div class="digest-card">
-      <div class="dc-left">
-        <div class="dc-meta">
-          <span class="cat-badge">${escHtml(n.category)}</span>
-          <span class="comp-badge">${escHtml(n.competitor)}</span>
-          <span class="dc-date">${fmtDate(n.date)}</span>
-          ${n.sourceUrl ? `<a class="src" href="${n.sourceUrl}" target="_blank">Source ↗</a>` : ''}
-        </div>
-        <div class="dc-title">${escHtml(n.headline)}</div>
-        <div class="dc-summary">${escHtml(n.oneLineSummary)}</div>
-      </div>
-    </div>
-  `).join('') : `<div class="empty-state">🔍<p>No digest items match the current filter.</p></div>`;
+  // Upcoming events are never filtered by competitor — always show all
+  const upcoming = q ? [] : DATA.upcomingEvents;
 
-  const upcomingHtml = DATA.upcomingEvents.map(e => `
-    <div class="upcoming-item ${e.type||''}">
-      <div class="up-date">${escHtml(e.date)}</div>
-      <div class="up-title">${escHtml(e.title)}</div>
-      <div class="up-note">${escHtml(e.note)}</div>
-    </div>
-  `).join('');
+  // Build combined feed: news cards first (newest first), then upcoming below
+  const newsCards = news.map(n => {
+    const catLc = (n.category||'').toLowerCase();
+    const headlineHtml = n.sourceUrl
+      ? `<a href="${n.sourceUrl}" target="_blank" rel="noopener">${escHtml(n.headline)}</a>`
+      : escHtml(n.headline);
+    return `
+    <div class="feed-card">
+      <div class="fc-meta">
+        <span class="cat-badge ${catLc}">${escHtml(n.category)}</span>
+        <span class="comp-badge">${escHtml(n.competitor)}</span>
+        <span class="fc-date">${fmtDate(n.date)}</span>
+      </div>
+      <div class="fc-headline">${headlineHtml}</div>
+      <div class="fc-summary">${escHtml(n.oneLineSummary)}</div>
+    </div>`;
+  });
+
+  const upcomingCards = upcoming.map(e => `
+    <div class="feed-card fc-upcoming">
+      <div class="fc-meta">
+        <span class="cat-badge upcoming">Upcoming</span>
+        <span class="fc-date">${escHtml(e.date)}</span>
+      </div>
+      <div class="fc-headline">${escHtml(e.title)}</div>
+      <div class="fc-note">${escHtml(e.note)}</div>
+    </div>`);
+
+  const allCards = [...newsCards, ...upcomingCards];
+  const feedHtml = allCards.length
+    ? allCards.join('')
+    : `<div class="empty-state">🔍<p>No items match the current filter.</p></div>`;
 
   document.getElementById('panel-digest').innerHTML = `
     <div class="panel-header">
       <div class="panel-title">Daily Digest</div>
-      <div class="panel-sub">Latest market updates — Mexico credit, BNPL, and fintech</div>
+      <div class="panel-sub">Latest updates — Mexico credit, BNPL, and fintech &nbsp;·&nbsp; ${news.length} updates, ${upcoming.length} upcoming</div>
     </div>
-    <div class="section-hed">Latest updates (${items.length} items)</div>
-    <div class="digest-grid">${cardsHtml}</div>
-    <div class="section-hed">Upcoming key events</div>
-    <div class="upcoming-section">
-      <div class="upcoming-grid">${upcomingHtml}</div>
-    </div>
+    <div class="feed">${feedHtml}</div>
   `;
 }
 
