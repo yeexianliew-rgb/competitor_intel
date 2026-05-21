@@ -86,28 +86,40 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 .panel-sub{font-size:.8rem;color:var(--muted)}
 
 /* ── DIGEST FEED ── */
-.feed{display:flex;flex-direction:column;gap:0;max-width:680px}
+.digest-columns{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media(max-width:720px){.digest-columns{grid-template-columns:1fr}}
+.digest-col-head{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--muted);margin-bottom:10px;padding-bottom:7px;
+  border-bottom:2px solid var(--border)
+}
+.digest-col-head .col-count{font-weight:400;font-size:.62rem;color:var(--muted)}
+.feed{display:flex;flex-direction:column;gap:0}
 .feed-card{
-  background:#fff;border:1px solid var(--border);border-radius:10px;
-  padding:16px 18px;margin-bottom:10px;
+  background:#fff;border:1px solid var(--border);border-radius:8px;
+  padding:13px 15px;margin-bottom:8px;
   transition:box-shadow .15s
 }
-.feed-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.07)}
-.feed-card.fc-upcoming{background:var(--surface);border-style:dashed}
-.fc-meta{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap}
-.cat-badge{font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px;background:var(--surface);color:var(--muted);border:1px solid var(--border)}
+.feed-card:hover{box-shadow:0 3px 14px rgba(0,0,0,.07)}
+.feed-card.fc-upcoming{background:var(--surface);border-color:var(--border)}
+.feed-card.fc-promoted{border-left:3px solid var(--amber)}
+.fc-meta{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
+.cat-badge{font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px;background:var(--surface);color:var(--muted);border:1px solid var(--border)}
 .cat-badge.upcoming{background:var(--amber-light);color:#92400e;border-color:var(--amber)}
 .cat-badge.funding{background:#e8eeff;color:var(--navy-mid);border-color:#c7d4f5}
 .cat-badge.regulatory{background:var(--red-light);color:var(--red);border-color:#fc8181}
 .cat-badge.macro{background:var(--surface);color:var(--muted);border-color:var(--border)}
 .cat-badge.competitor{background:var(--green-light);color:var(--green-dark);border-color:#b2ddd3}
-.comp-badge{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--surface);color:var(--navy);border:1px solid var(--border)}
-.fc-date{font-size:.67rem;color:var(--muted);margin-left:auto}
-.fc-headline{font-size:.92rem;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:5px}
+.cat-badge.mx-fintech,.cat-badge.mxfintech{background:#f3e8ff;color:#6b21a8;border-color:#d8b4fe}
+.cat-badge.event{background:var(--amber-light);color:#92400e;border-color:var(--amber)}
+.comp-badge{font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--surface);color:var(--navy);border:1px solid var(--border)}
+.fc-date{font-size:.65rem;color:var(--muted);margin-left:auto;white-space:nowrap}
+.fc-headline{font-size:.88rem;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:4px}
 .fc-headline a{color:inherit;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s}
-.fc-headline a:hover{border-bottom-color:var(--navy-light);color:var(--navy-light)}
-.fc-summary{font-size:.79rem;color:#4a5568;line-height:1.55}
-.fc-note{font-size:.75rem;color:var(--muted);line-height:1.5;margin-top:4px}
+.fc-headline a:hover{color:var(--navy-light);border-bottom-color:var(--navy-light)}
+.fc-summary{font-size:.77rem;color:#4a5568;line-height:1.5}
+.fc-note{font-size:.73rem;color:var(--muted);line-height:1.5;margin-top:3px}
 .up-note{font-size:.7rem;color:var(--muted);margin-top:2px}
 
 /* ── MARKETING CARDS ── */
@@ -321,6 +333,7 @@ a.src:hover{text-decoration:underline}
 const DATA = {
 
 newsItems: [
+  // ── Competitor ──
   {id:'n1',date:'2026-04-10',category:'Funding',competitor:'Plata',
    headline:'Plata raises $1.5B at $5B valuation — Series C',
    oneLineSummary:'$5B valuation on $600M+ annualised revenue. 3.5M users, $800M loan portfolio. Banking licence fully operational Feb 2026.',
@@ -345,16 +358,41 @@ newsItems: [
    headline:'Kueski BNPL contribution margin confirmed positive; 30M+ loans, 90% recurrence',
    oneLineSummary:'Management confirmed BNPL is contribution-margin positive and covers opex. Amazon partnership active. 30M+ cumulative loans issued.',
    sourceUrl:'https://mexicobusiness.news/fintech/news/kueski-bnpl-profitability-2025'},
+  // ── Others: general MX fintech news ──
+  {id:'o1',date:'2026-05-01',category:'MX Fintech',competitor:'Others',
+   headline:'Ualá México launches guaranteed credit card with 99% approval rate',
+   oneLineSummary:'Secured card for users without credit history. Backed by guarantee deposit generating up to 5% yield. Evaluated via IMSS/CURP, no traditional buró required.',
+   sourceUrl:'https://www.xataka.com.mx/empresas-y-economia/uala-tarjeta-credito-garantizada-mexico'},
+  {id:'o2',date:'2026-04-15',category:'MX Fintech',competitor:'Others',
+   headline:'Mexico overtakes Brazil as top VC destination in LatAm — Q1 2026',
+   oneLineSummary:'Q1 2026 venture data shows Mexico attracting more fintech VC than Brazil for the second consecutive quarter. Credit and payments lead deal count.',
+   sourceUrl:'https://latamlist.com/mexico-fintech-vc-q1-2026/'},
+  {id:'o3',date:'2026-03-01',category:'MX Fintech',competitor:'Others',
+   headline:'Kapital reaches $300M revenue run-rate; confirms IPO intention',
+   oneLineSummary:'SME credit platform Kapital — 110K+ businesses, CNBV banking licence — confirms public listing ambition. R2 (Ant Group-backed) also active in embedded B2B credit.',
+   sourceUrl:'https://expansion.mx/empresas/2026/03/kapital-ipo-credito-pyme'},
+  {id:'o4',date:'2026-02-15',category:'MX Fintech',competitor:'Others',
+   headline:'CONDUSEF: fintech consumer complaints rose 23% in 2025',
+   oneLineSummary:'Annual CONDUSEF report shows 23% YoY increase in fintech complaints. Top categories: account freezes, hidden charges, and collection practices. Digital lenders account for 41% of complaints.',
+   sourceUrl:'https://condusef.gob.mx/Articulo/index/1900'},
+  {id:'o5',date:'2025-09-01',category:'MX Fintech',competitor:'Others',
+   headline:'Spin by OXXO surpasses 13M wallet users; credit product still pending',
+   oneLineSummary:'FEMSA\'s Spin wallet reached 13M users via OXXO\'s 20,000+ stores. No credit product launched yet. Cash-in/cash-out and P2P transfers are primary use cases.',
+   sourceUrl:'https://mexicobusiness.news/fintech/news/spin-oxxo-wallet-users-2025'},
+  {id:'o6',date:'2025-10-01',category:'MX Fintech',competitor:'Others',
+   headline:'Mexico e-commerce reached $28B GMV in 2025, up 18% YoY',
+   oneLineSummary:'AMVO 2025 report. Mobile-first purchases account for 62% of transactions. BNPL used in 31% of e-commerce purchases, up from 21% in 2024.',
+   sourceUrl:'https://www.amvo.org.mx/estudios/estudio-de-venta-online-2025/'},
 ],
 
 upcomingEvents: [
-  {date:'Jun 1–6, 2026',title:'Hot Sale 2026',note:'Mexico\'s biggest e-commerce event. All BNPL players activate. Kueski main sponsor.',type:'critical'},
-  {date:'Jun 26, 2026',title:'Banxico rate decision',note:'Consensus: -25bps to 6.25%. 9th consecutive cut.',type:'soon'},
-  {date:'~Aug 2026',title:'Nu Holdings Q2 2026 earnings',note:'Mexico NPL trend, deposit cost, and banking product KPIs expected.',type:'normal'},
-  {date:'~Aug 2026',title:'Plata first CNBV bank reporting',note:'First public disclosures of deposit volumes, NPL, and product mix post-banking-licence.',type:'soon'},
-  {date:'Q3 2026 TBD',title:'CNBV interchange cap final decision',note:'Proposal at 0.6% (down from 1.35%). Applies to all card issuers.',type:'critical'},
-  {date:'~Q3 2026',title:'Plata deposit product launch',note:'Expected post-banking-licence.',type:'soon'},
-  {date:'Nov 14–17, 2026',title:'Buen Fin 2026',note:'Annual shopping event. BNPL and credit card seasonal activations.',type:'critical'},
+  {date:'Jun 1–6, 2026',sortDate:'2026-06-01',title:'Hot Sale 2026',note:'Mexico\'s biggest e-commerce event. All BNPL players activate. Kueski main sponsor.',type:'critical'},
+  {date:'Jun 26, 2026',sortDate:'2026-06-26',title:'Banxico rate decision',note:'Consensus: -25bps to 6.25%. 9th consecutive cut.',type:'soon'},
+  {date:'~Aug 2026',sortDate:'2026-08-01',title:'Nu Holdings Q2 2026 earnings',note:'Mexico NPL trend, deposit cost, and banking product KPIs expected.',type:'normal'},
+  {date:'~Aug 2026',sortDate:'2026-08-15',title:'Plata first CNBV bank reporting',note:'First public disclosures of deposit volumes, NPL, and product mix post-banking-licence.',type:'soon'},
+  {date:'Q3 2026 TBD',sortDate:'2026-09-01',title:'CNBV interchange cap final decision',note:'Proposal at 0.6% (down from 1.35%). Applies to all card issuers.',type:'critical'},
+  {date:'~Q3 2026',sortDate:'2026-09-15',title:'Plata deposit product launch',note:'Expected post-banking-licence.',type:'soon'},
+  {date:'Nov 14–17, 2026',sortDate:'2026-11-14',title:'Buen Fin 2026',note:'Annual shopping event. BNPL and credit card seasonal activations.',type:'critical'},
 ],
 
 marketingItems: [
@@ -882,35 +920,63 @@ function matchesComp(itemComp, filterComp){
 function renderDigest(){
   const q = state.search;
   const comp = state.competitor;
+  const today = new Date();
+  today.setHours(0,0,0,0);
 
-  // Filter news items
-  const news = DATA.newsItems.filter(n =>
+  // Split upcoming events: past/today → promoted to NEWS; future → UPCOMING column
+  const promoted = [];
+  const futureUpcoming = [];
+  DATA.upcomingEvents.forEach(e => {
+    const d = new Date(e.sortDate);
+    if(d <= today) promoted.push(e);
+    else futureUpcoming.push(e);
+  });
+
+  // NEWS column: newsItems + promoted upcoming, sorted newest first
+  const baseNews = DATA.newsItems.filter(n =>
     matchesComp(n.competitor, comp) &&
     matchesSearch([n.headline, n.oneLineSummary, n.competitor, n.category], q)
   );
+  const promotedAsNews = promoted.filter(e =>
+    matchesSearch([e.title, e.note], q)
+  );
 
-  // Upcoming events are never filtered by competitor — always show all
-  const upcoming = q ? [] : DATA.upcomingEvents;
+  // Combine and sort by date descending
+  const allNews = [
+    ...baseNews.map(n => ({...n, _type:'news', _sortDate: new Date(n.date)})),
+    ...promotedAsNews.map(e => ({
+      _type:'promoted', _sortDate: new Date(e.sortDate),
+      id: 'ev-'+e.sortDate, date: e.date,
+      category:'Event', competitor:'',
+      headline: e.title, oneLineSummary: e.note, sourceUrl:''
+    }))
+  ].sort((a,b) => b._sortDate - a._sortDate);
 
-  // Build combined feed: news cards first (newest first), then upcoming below
-  const newsCards = news.map(n => {
-    const catLc = (n.category||'').toLowerCase();
+  // UPCOMING column: future events sorted soonest first
+  const upcomingFiltered = futureUpcoming
+    .filter(e => !q || matchesSearch([e.title, e.note], q))
+    .sort((a,b) => new Date(a.sortDate) - new Date(b.sortDate));
+
+  function newsCard(n){
+    const catLc = (n.category||'').toLowerCase().replace(/\s+/g,'');
     const headlineHtml = n.sourceUrl
       ? `<a href="${n.sourceUrl}" target="_blank" rel="noopener">${escHtml(n.headline)}</a>`
       : escHtml(n.headline);
+    const extraClass = n._type === 'promoted' ? ' fc-promoted' : '';
     return `
-    <div class="feed-card">
+    <div class="feed-card${extraClass}">
       <div class="fc-meta">
         <span class="cat-badge ${catLc}">${escHtml(n.category)}</span>
-        <span class="comp-badge">${escHtml(n.competitor)}</span>
+        ${n.competitor ? `<span class="comp-badge">${escHtml(n.competitor)}</span>` : ''}
         <span class="fc-date">${fmtDate(n.date)}</span>
       </div>
       <div class="fc-headline">${headlineHtml}</div>
       <div class="fc-summary">${escHtml(n.oneLineSummary)}</div>
     </div>`;
-  });
+  }
 
-  const upcomingCards = upcoming.map(e => `
+  function upcomingCard(e){
+    return `
     <div class="feed-card fc-upcoming">
       <div class="fc-meta">
         <span class="cat-badge upcoming">Upcoming</span>
@@ -918,19 +984,32 @@ function renderDigest(){
       </div>
       <div class="fc-headline">${escHtml(e.title)}</div>
       <div class="fc-note">${escHtml(e.note)}</div>
-    </div>`);
+    </div>`;
+  }
 
-  const allCards = [...newsCards, ...upcomingCards];
-  const feedHtml = allCards.length
-    ? allCards.join('')
-    : `<div class="empty-state">🔍<p>No items match the current filter.</p></div>`;
+  const newsFeed = allNews.length
+    ? allNews.map(newsCard).join('')
+    : `<div class="empty-state" style="padding:24px 0"><p>No news matches the current filter.</p></div>`;
+
+  const upcomingFeed = upcomingFiltered.length
+    ? upcomingFiltered.map(upcomingCard).join('')
+    : `<div class="empty-state" style="padding:24px 0"><p>No upcoming events.</p></div>`;
 
   document.getElementById('panel-digest').innerHTML = `
     <div class="panel-header">
       <div class="panel-title">Daily Digest</div>
-      <div class="panel-sub">Latest updates — Mexico credit, BNPL, and fintech &nbsp;·&nbsp; ${news.length} updates, ${upcoming.length} upcoming</div>
+      <div class="panel-sub">Mexico credit &amp; fintech · ${allNews.length} news · ${upcomingFiltered.length} upcoming</div>
     </div>
-    <div class="feed">${feedHtml}</div>
+    <div class="digest-columns">
+      <div>
+        <div class="digest-col-head">News <span class="col-count">${allNews.length} items</span></div>
+        <div class="feed">${newsFeed}</div>
+      </div>
+      <div>
+        <div class="digest-col-head">Upcoming <span class="col-count">${upcomingFiltered.length} events</span></div>
+        <div class="feed">${upcomingFeed}</div>
+      </div>
+    </div>
   `;
 }
 
