@@ -270,22 +270,96 @@ body.tab-digest .panel-container{margin-top:var(--topbar-h)}
 .biz-ue-table td{padding:7px 10px;border-bottom:1px solid var(--surface)}
 .biz-observed{font-size:.78rem;color:#4a5568;background:var(--surface);padding:8px 12px;border-radius:4px;border-left:3px solid var(--border)}
 
-/* ── MACRO ── */
-.macro-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:24px}
-.macro-kpi{background:#fff;border-radius:8px;border:1px solid var(--border);border-top:3px solid var(--navy);padding:14px 16px}
-.macro-kpi.green{border-top-color:var(--green)}
-.macro-kpi.amber{border-top-color:var(--amber)}
-.macro-kpi.red{border-top-color:var(--red)}
-.mkpi-val{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--navy);line-height:1}
-.macro-kpi.green .mkpi-val{color:var(--green-dark)}
-.macro-kpi.amber .mkpi-val{color:#92400e}
-.macro-kpi.red .mkpi-val{color:var(--red)}
-.mkpi-label{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-top:4px}
-.mkpi-note{font-size:.7rem;color:#4a5568;margin-top:5px;line-height:1.4}
-.macro-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
-.chart-box{background:#fff;border-radius:8px;border:1px solid var(--border);padding:16px}
-.chart-box canvas{max-height:220px}
-.chart-title{font-size:.75rem;font-weight:700;color:var(--navy);margin-bottom:10px}
+/* ── KPI CARDS (used in Macro + Product tabs) ── */
+.kpi-grid{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0 24px}
+.kpi-card{background:var(--surface);border-radius:10px;padding:16px 18px;flex:1 1 155px;border-top:3px solid var(--navy);min-width:130px;transition:transform .2s,box-shadow .2s}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(15,35,66,.09)}
+.kpi-card.green{border-top-color:var(--green);background:var(--green-light)}
+.kpi-card.amber{border-top-color:var(--amber);background:var(--amber-light)}
+.kpi-card.red{border-top-color:var(--red);background:var(--red-light)}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:1.55rem;color:var(--navy);line-height:1.1}
+.kpi-card.green .kpi-val{color:var(--green-dark)}
+.kpi-card.amber .kpi-val{color:#92400e}
+.kpi-card.red .kpi-val{color:var(--red)}
+.kpi-lbl{font-size:.67rem;color:var(--muted);margin-top:5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.kpi-note{font-size:.72rem;color:#4a5568;line-height:1.45;margin-top:6px}
+
+/* ── INFO BOXES ── */
+.info-box{border-left:4px solid var(--navy);background:var(--surface);border-radius:0 8px 8px 0;padding:14px 18px;margin:12px 0;font-size:.85rem;line-height:1.65}
+.info-box.green{border-left-color:var(--green);background:var(--green-light)}
+.info-box.amber{border-left-color:var(--amber);background:var(--amber-light)}
+.info-box.red{border-left-color:var(--red);background:var(--red-light)}
+.info-title{font-weight:700;color:var(--navy);margin-bottom:5px;font-size:.9rem}
+.info-box.green .info-title{color:var(--green-dark)}
+.info-box.amber .info-title{color:#92400e}
+.info-box.red .info-title{color:var(--red)}
+
+/* ── SIGNAL TICKER ── */
+.signal-ticker{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 20px}
+.signal-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:.78rem;flex:1 1 160px}
+.sig-label{font-weight:700;color:var(--navy);font-size:.7rem;margin-bottom:3px;text-transform:uppercase;letter-spacing:.3px}
+.sig-val{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--green-dark);line-height:1.1}
+.sig-note{font-size:.68rem;color:var(--muted);margin-top:2px;line-height:1.4}
+
+/* ── CHART ROW / WRAP ── */
+.chart-row{display:flex;gap:16px;flex-wrap:wrap;margin:12px 0 20px}
+.chart-wrap{background:#fff;border-radius:10px;padding:18px 18px 14px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,.04);flex:1 1 280px}
+.chart-wrap canvas{max-height:260px}
+.chart-wrap:hover{box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.section-title-old{font-family:'DM Serif Display',serif;font-size:1.4rem;font-weight:400;color:var(--navy);margin:32px 0 6px;padding-left:18px;position:relative}
+.section-title-old::before{content:'';position:absolute;left:0;top:5px;width:4px;height:calc(100% - 8px);background:var(--green);border-radius:2px}
+.tab-panel p{font-size:.88rem;line-height:1.75;color:#2d3748;margin-bottom:10px}
+.tab-panel ul,.tab-panel ol{margin:6px 0 10px 20px}
+.tab-panel li{font-size:.87rem;line-height:1.7;color:#2d3748;margin-bottom:4px}
+.tab-panel strong{color:var(--navy)}
+
+/* ── MECE TREE ── */
+.tree-node{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 14px;text-align:center;box-shadow:0 2px 5px rgba(0,0,0,.03)}
+.tree-node.node-l1{background:var(--navy);color:#fff;border-color:var(--navy);padding:12px 26px;border-radius:10px;min-width:220px}
+.tree-node.node-l2{padding:11px 15px;border-radius:9px}
+.tree-node.node-l3{padding:9px 12px;border-radius:7px;text-align:left}
+.tree-node.node-l4{padding:9px 12px;border-radius:7px}
+.tree-node.node-green{background:var(--green-light);border-color:#b2ddd3}
+.tree-node.node-amber{background:var(--amber-light);border-color:#fcd34d}
+.tree-node.node-blue{background:var(--surface);border-color:var(--border)}
+.node-label{font-weight:700;font-size:.85rem;color:var(--navy);margin-bottom:2px}
+.node-l1 .node-label{color:#fff;font-size:.88rem}
+.node-val{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--navy);line-height:1.1}
+.node-l1 .node-val{color:var(--green);font-size:1.35rem}
+.node-sub{font-size:.65rem;color:var(--muted);margin-top:3px;line-height:1.4}
+.node-l1 .node-sub{color:rgba(255,255,255,.6)}
+.node-label-sm{font-weight:700;font-size:.77rem;color:var(--navy)}
+.node-val-sm{font-family:'DM Serif Display',serif;font-size:.94rem;color:var(--navy);white-space:nowrap}
+.node-sub-sm{font-size:.65rem;color:var(--muted);line-height:1.4;margin-top:2px}
+.node-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:2px}
+.tree-vline{width:2px;height:14px;background:var(--border);margin:0 auto}
+.tree-line-center{width:2px;height:12px;background:var(--border);margin:0 auto}
+.tab-hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+
+/* ── PLAYER CARDS (Archetype section) ── */
+.player-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0 20px}
+@media(max-width:720px){.player-grid{grid-template-columns:1fr}}
+.player-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 18px;border-top:4px solid var(--navy);box-shadow:0 2px 8px rgba(0,0,0,.04);transition:box-shadow .2s}
+.player-card:hover{box-shadow:0 8px 22px rgba(15,35,66,.1)}
+.card-type{font-size:.62rem;color:var(--green-dark);font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.card-name{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--navy);margin-bottom:3px}
+.card-tagline{font-size:.76rem;color:var(--muted);margin-bottom:10px;font-weight:500}
+.stat-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.stat-pill{background:var(--surface);border-radius:6px;padding:5px 9px;font-size:.71rem;color:var(--navy);font-weight:600}
+.stat-pill span{display:block;font-size:.59rem;color:var(--muted);font-weight:400;margin-top:1px;text-transform:uppercase;letter-spacing:.2px}
+.card-watch{font-size:.74rem;color:#92400e;font-weight:600;border-top:1px solid var(--border);padding-top:8px;margin-top:8px}
+.sub-sub-title{font-size:.88rem;font-weight:700;color:var(--green-dark);margin:16px 0 6px}
+.prod-specs-header{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:20px 0 10px;padding-top:16px;border-top:2px solid var(--border)}
+.tbl-wrap{overflow-x:auto;margin:10px 0 20px;border-radius:8px;border:1px solid var(--border)}
+.tbl-wrap table{width:100%;border-collapse:collapse;font-size:.8rem;background:#fff}
+.tbl-wrap thead tr{background:var(--navy);color:#fff}
+.tbl-wrap thead th{padding:9px 12px;text-align:left;font-weight:600;font-size:.72rem;white-space:nowrap}
+.tbl-wrap tbody tr:nth-child(even){background:var(--surface)}
+.tbl-wrap tbody tr:hover{background:#e8f4f0}
+.tbl-wrap td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.4;font-size:.79rem}
+.prod-specs-section{margin-top:16px;padding-top:14px;border-top:2px dashed var(--border)}
+
+/* ── CAL TABLE ── */
 .cal-table{width:100%;border-collapse:collapse;font-size:.78rem;background:#fff;border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-bottom:16px}
 .cal-table thead tr{background:var(--navy);color:#fff}
 .cal-table th{padding:8px 12px;font-size:.7rem;font-weight:600;text-align:left}
@@ -948,6 +1022,7 @@ const state = {
   mktChannel: 'all',
   mktHook: 'all',
   mktStatus: 'all',
+  productsInit: false,
 };
 
 const COMPETITORS = ['Nu','Plata','Kueski','Mercado Pago','Klar','Stori','DiDi','Revolut','Macro','Regulatory','Baubap'];
@@ -1210,51 +1285,512 @@ function clearMktFilters(){
 // RENDER: PRODUCTS
 // ═══════════════════════════════════════════
 function renderProducts(){
-  const allCompetitors = Object.keys(DATA.productItems);
-  const labels = {kueski:'Kueski',nu:'Nu',plata:'Plata',mp:'Mercado Pago',stori:'Stori',klar:'Klar',didi:'DiDi',baubap:'Baubap / Tala'};
+  if(state.productsInit) return;
+  state.productsInit = true;
 
-  const subNav = allCompetitors.map(c => `
-    <button class="prod-tab-btn ${state.productTab===c?'active':''}" data-ptab="${c}">${labels[c]||c}</button>
-  `).join('');
+  document.getElementById('panel-products').innerHTML = `<div class="panel-header">
+  <div class="panel-title">Competitor Product Feed</div>
+  <div class="panel-sub">Competitor archetypes, business models, and product specs — Mexico credit market 2025–2026</div>
+</div>
 
-  const products = DATA.productItems[state.productTab] || [];
-  const typeLabel = {bnpl:'BNPL',loan:'Cash Loan',card:'Credit Card',savings:'Savings',wallet:'Wallet'};
+<div class="info-box" style="margin-bottom:20px;">
+  <div class="info-title">Three Archetypes, Three Business Models</div>
+  Mexico's lending fintech field splits into three archetypes based on <strong>how they acquire and retain borrowers</strong>. <strong>Ecosystem Lenders</strong> own the upstream relationship (ride-hailing, marketplace, social graph) and bolt credit on; CAC is near-zero but they depend on the parent platform's health. <strong>Leech Lenders</strong> embed inside third-party platforms (Amazon, retail checkouts) and trade margin for distribution reach. <strong>Open Market Lenders</strong> compete for every borrower directly via paid acquisition, brand, or referral — highest CAC, most capital-intensive, but no platform dependency.
+</div>
 
-  const cards = products.map(p => `
-    <div class="prod-card">
-      <span class="prod-type-badge type-${p.productType}">${typeLabel[p.productType]||p.productType}</span>
-      <div class="prod-name">${escHtml(p.productName)}</div>
-      <div class="prod-specs">
-        <div class="spec-row"><span class="spec-label">APR / CAT</span><span class="spec-value">${escHtml(p.aprCat)}</span></div>
-        <div class="spec-row"><span class="spec-label">Credit limit</span><span class="spec-value">${escHtml(p.creditLimit)}</span></div>
-        <div class="spec-row"><span class="spec-label">Tenure</span><span class="spec-value">${escHtml(p.tenure)}</span></div>
-        <div class="spec-row"><span class="spec-label">Approval speed</span><span class="spec-value">${escHtml(p.approvalSpeed)}</span></div>
-        <div class="spec-row"><span class="spec-label">KYC</span><span class="spec-value">${escHtml(p.kycRequirements)}</span></div>
-        <div class="spec-row"><span class="spec-label">Repayment</span><span class="spec-value">${escHtml(p.repaymentOptions)}</span></div>
-        <div class="spec-row"><span class="spec-label">Fees</span><span class="spec-value">${escHtml(p.fees)}</span></div>
-        <div class="spec-row"><span class="spec-label">Rewards</span><span class="spec-value">${escHtml(p.rewards)}</span></div>
-        <div class="spec-row"><span class="spec-label">Distribution</span><span class="spec-value">${escHtml(p.distribution)}</span></div>
+<div id="s3-1" style="margin-top:36px;">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+    <div style="background:var(--navy);color:#fff;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:4px;">Archetype 1</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);">Ecosystem Lenders</div>
+  </div>
+  <div style="font-size:0.83rem;color:var(--muted);margin-bottom:20px;padding-left:2px;">Own the upstream platform. Credit is cross-sell. CAC ≈ $0. Risk: platform dependency, data regulation.</div>
+  <div class="player-grid">
+
+    <div class="player-card" id="card-nu" style="border-top-color:var(--green);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
+        <div>
+          <div class="card-type" style="color:var(--green-dark);">Ecosystem — Neobank</div>
+          <div class="card-name">Nu Mexico (Nubank)</div>
+          <div class="card-tagline">Brazil neobank → Mexico's #1 new credit card issuer</div>
+        </div>
+        <button onclick="toggleDetail('nu')" style="background:var(--green-light);border:1px solid var(--green);color:var(--green-dark);font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">Details ▾</button>
       </div>
-      <div class="prod-promise">"${escHtml(p.promise)}"</div>
-      <div class="prod-notes">${escHtml(p.notes)}</div>
+      <div id="detail-nu" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
+        <div class="sub-sub-title" style="margin-top:0;">Basic Info</div>
+        <p style="font-size:0.82rem;"><strong>Founded:</strong> 2019 (Mexico entry) · <strong>Parent:</strong> Nu Holdings Ltd (NYSE: NU) · <strong>Shareholders:</strong> Berkshire Hathaway, Softbank Vision Fund, Tencent, DST Global, Founders (David Vélez ~10%) · <strong>Status:</strong> Banking licence approved Apr 2025 (first SOFIPO→bank conversion in Mexico) · <strong>Employees:</strong> ~5,000+ (global 8,000+) · <strong>HQ:</strong> Mexico City</p>
+        <div class="sub-sub-title">Core Products</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Type</th><th>Interest Rate</th><th>Tenor</th><th>Limit</th></tr></thead>
+          <tbody>
+            <tr><td>Nu Credit Card</td><td>Revolving credit card</td><td>~40–80% APR (CAT)</td><td>Revolving</td><td>MXN 500–50,000+</td></tr>
+            <tr><td>Nu Personal Loan</td><td>Unsecured cash loan</td><td>~30–60% APR</td><td>3–36 months</td><td>Up to MXN 150,000</td></tr>
+            <tr><td>Cuenta Nu (debit)</td><td>Savings/debit account</td><td>12.25% yield (deposit)</td><td>Demand</td><td>N/A</td></tr>
+            <tr><td>Cajitas Turbo</td><td>High-yield savings goal</td><td>15% yield</td><td>Flexible</td><td>N/A</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Business Sizing</div>
+        <div class="kpi-grid" style="margin:8px 0 12px;">
+          <div class="kpi-card green" style="flex:1 1 140px;"><div class="kpi-val">14M+</div><div class="kpi-lbl">Total Users (Q4 2025)</div><div class="kpi-note">~15% of Mexican adults. 6.6M credit cardholders (#3 total, #1 new issuances)</div></div>
+          <div class="kpi-card" style="flex:1 1 140px;"><div class="kpi-val">~$1B USD</div><div class="kpi-lbl">Mexico Loan Portfolio (est.)</div><div class="kpi-note">MXN ~20B in credit (CNBV Q4 2024). Growing 5% MoM. $4.5B deposits (4× loan book)</div></div>
+        </div>
+        <div class="sub-sub-title">Business-Level Unit Economics (Mexico, est. 2024)</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Line Item</th><th>Amount (USD est.)</th><th>% of Revenue</th><th>Notes / Source</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Interest Income</strong></td><td>~$350M</td><td>~60%</td><td>Credit card receivables + personal loans; est. from MXN ~20B portfolio × ~35% avg yield</td></tr>
+            <tr><td><strong>Fee / Interchange Income</strong></td><td>~$96M</td><td>~16%</td><td>MXN 1,923M interchange (2024, Miranda Intelligence) — bulk of fee income</td></tr>
+            <tr><td><strong>Other Income</strong></td><td>~$40M</td><td>~7%</td><td>Float income on MXN 93B+ deposits; small insurance / other fees</td></tr>
+            <tr><td><strong>Total Revenue (est.)</strong></td><td><strong>~$580M</strong></td><td>100%</td><td>Nu Holdings disclosed $808M Mexico revenue FY2025 (20-F); ~$580M est. for 2024</td></tr>
+            <tr><td>Cost of Risk (Provisions)</td><td>~($145M)</td><td>~(25%)</td><td>IMOR 6.83%; est. provision at ~2× NPL rate on portfolio</td></tr>
+            <tr><td>Cost of Funds (Deposits)</td><td>~($540M)</td><td>~(93%)</td><td>MXN 93B deposits × 12.25% avg rate — main margin squeeze; well above policy rate</td></tr>
+            <tr><td><strong>Gross Profit (est.)</strong></td><td><strong>~($105M)</strong></td><td>~neg.</td><td>Operating at a loss; Banxico/CNBV data confirms operating losses; profitability target 2026</td></tr>
+            <tr><td>Net Profit</td><td>n/a (loss)</td><td>—</td><td>TTM operating loss MXN -1,690M (~-$85M) as of Nov 2025 (Legal Paradox / CNBV)</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Product-Level Unit Economics</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Interest Income</th><th>Fee Income</th><th>Cost of Risk</th><th>Cost of Funds</th><th>Gross Profit est.</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Credit Card</strong></td><td>~$220M (~38%)</td><td>~$96M (~16%)</td><td>~3.5% NPL; ~($110M)</td><td>Funded by deposits; ~$(400M) blended</td><td>Negative (scale phase)</td><td>6.6M cards; MXN ~9B OS est.; #1 new issuances</td></tr>
+            <tr><td><strong>Personal Loans</strong></td><td>~$130M (~22%)</td><td>Minimal</td><td>~6.83% NPL; ~($35M)</td><td>Deposit-funded</td><td>Slight positive pre-opex</td><td>Growing fastest; 5% MoM growth</td></tr>
+            <tr><td><strong>Deposit Float</strong></td><td>~$40M</td><td>—</td><td>None</td><td>~($540M) total deposits</td><td>Drag on margin</td><td>$4.5B deposits; 12.25% yield to customers</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-box amber" style="margin-top:10px;font-size:0.82rem;"><strong>Key Watch:</strong> Deposit cost is the primary margin destroyer — MXN 93B+ at 12.25% is ~MXN 11.4B annual interest cost vs ~MXN 20B loan portfolio. Interchange cap (proposed 0.6% vs 1.35%) would cut MXN 1.9B fee income by ~55%. Path to profitability requires: (a) growing loan book faster than deposits, (b) rate cuts narrowing deposit cost, (c) premium card launch to lift ARPU.</div>
+        <div id="specs-nu" class="prod-specs-section"></div>
+      </div>
+      <div id="summary-nu" style="margin-top:12px;">
+        <div class="stat-row">
+          <div class="stat-pill">14M+<span>Users</span></div>
+          <div class="stat-pill">~$1B<span>Loan OS</span></div>
+          <div class="stat-pill">$808M<span>Revenue (FY2025)</span></div>
+          <div class="stat-pill">6.83%<span>NPL (IMOR)</span></div>
+          <div class="stat-pill">Loss<span>Profitability</span></div>
+        </div>
+        <div class="card-watch">⚠ Deposit costs exceed loan yield at current scale. NPL 6.83%. Profitability target 2026.</div>
+      </div>
     </div>
-  `).join('');
 
-  document.getElementById('panel-products').innerHTML = `
-    <div class="panel-header">
-      <div class="panel-title">Competitor Product Feed</div>
-      <div class="panel-sub">Product specs for key Mexico credit and BNPL competitors</div>
+    <div class="player-card" id="card-mp" style="border-top-color:#f59e0b;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
+        <div>
+          <div class="card-type" style="color:#92400e;">Ecosystem — Commerce Super-App</div>
+          <div class="card-name">Mercado Pago (Mercado Libre)</div>
+          <div class="card-tagline">LatAm's largest marketplace embeds credit natively</div>
+        </div>
+        <button onclick="toggleDetail('mp')" style="background:var(--amber-light);border:1px solid var(--amber);color:#92400e;font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">Details ▾</button>
+      </div>
+      <div id="detail-mp" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
+        <div class="sub-sub-title" style="margin-top:0;">Basic Info</div>
+        <p style="font-size:0.82rem;"><strong>Founded:</strong> 2004 (Mercado Libre), FinTech arm 2017+ · <strong>Parent:</strong> MercadoLibre Inc (NASDAQ: MELI, ~$80B mktcap) · <strong>Status:</strong> Banking licence pending (CNBV); operates as licensed payment institution + SOFIPO-equivalent · <strong>Key fact:</strong> 1M+ active POS terminals in Mexico; 20,000+ cash-in/out points; credit card 111% YoY growth (Q1 2025 globally)</p>
+        <div class="sub-sub-title">Core Products</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Type</th><th>Interest Rate</th><th>Tenor</th><th>Limit</th></tr></thead>
+          <tbody>
+            <tr><td>Mercado Crédito (consumer)</td><td>Marketplace BNPL / installments</td><td>~25–60% APR</td><td>1–12 months</td><td>MXN 500–80,000</td></tr>
+            <tr><td>Mercado Crédito (seller)</td><td>SME working capital loan</td><td>~30–50% APR</td><td>1–24 months</td><td>Up to MXN 2M</td></tr>
+            <tr><td>Mercado Pago Card</td><td>Prepaid/debit + emerging credit</td><td>Varies</td><td>Revolving</td><td>Based on TPV history</td></tr>
+            <tr><td>MP Savings (cuenta remunerada)</td><td>Remunerated account</td><td>15% yield</td><td>Demand</td><td>N/A</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Business Sizing (Mexico estimates)</div>
+        <div class="kpi-grid" style="margin:8px 0 12px;">
+          <div class="kpi-card amber" style="flex:1 1 140px;"><div class="kpi-val">24M+</div><div class="kpi-lbl">Mexico Active Users (2025)</div><div class="kpi-note">Fintech MAU globally 64M (Q1 2025). Mexico ~24M est. from Legal Paradox. Growing 31%+ YoY.</div></div>
+          <div class="kpi-card" style="flex:1 1 140px;"><div class="kpi-val">~$600M+</div><div class="kpi-lbl">Mexico Loan OS (est.)</div><div class="kpi-note">$580M seller credit disbursed MX 2024. $7.8B global portfolio (Q1 2025, +75% YoY). Mexico est. ~8%.</div></div>
+        </div>
+        <div class="sub-sub-title">Business-Level Unit Economics (Mexico est., 2024)</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Line Item</th><th>Amount (USD est.)</th><th>% of Fintech Rev</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Interest Income (credit)</strong></td><td>~$300M</td><td>~46%</td><td>Global credit revenue $8.62B (2024, 8× from 2019). Mexico ~3.5% of global; est. from portfolio size</td></tr>
+            <tr><td><strong>Fee / TPV Income</strong></td><td>~$280M</td><td>~43%</td><td>$9.2B SME payment volume (MX 2024) at ~3% effective take rate; QR + POS fees</td></tr>
+            <tr><td><strong>Other (AUM float, insurance)</strong></td><td>~$70M</td><td>~11%</td><td>$11.2B AUM globally (Q1 2025, +103% YoY); Mexico portion est.</td></tr>
+            <tr><td><strong>Total Fintech Revenue (MX est.)</strong></td><td><strong>~$650M</strong></td><td>100%</td><td>Rough estimate; MELI does not break out Mexico Fintech separately</td></tr>
+            <tr><td>Cost of Risk</td><td>~($85M)</td><td>~(13%)</td><td>NIMAL (Net Interest Margin After Losses) 31.4% global H1 2024. Mexico mix better (SME collateral)</td></tr>
+            <tr><td>Cost of Funds</td><td>~($95M)</td><td>~(15%)</td><td>Lower than neobanks; largely funded by TPV float and platform ecosystem, not expensive deposits</td></tr>
+            <tr><td><strong>Gross Profit (est.)</strong></td><td><strong>~$470M</strong></td><td>~72%</td><td>Mercado Pago globally profitable; Q3 2025 $602M profit (Legal Paradox). Mexico positive contribution</td></tr>
+            <tr><td>Net Profit</td><td>Positive</td><td>—</td><td>MELI total net income $2.0B+ (2024); Fintech NIMAL 31.4%. Mexico highly profitable at scale</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Product-Level UE</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Interest Income</th><th>Fee Income</th><th>Cost of Risk</th><th>Cost of Funds</th><th>Gross Profit</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Marketplace BNPL / Consumer</strong></td><td>~$150M (~23%)</td><td>~$100M MDR</td><td>Low; buyer protection via transaction data</td><td>Float-funded</td><td>High margin</td><td>Native checkout → 0 CAC. $3.2B credit card OS globally Q1 2025 (+111% YoY)</td></tr>
+            <tr><td><strong>SME / Seller Credit</strong></td><td>~$150M (~23%)</td><td>—</td><td>Low; revenue history as collateral</td><td>Platform float</td><td>~60–65%</td><td>$580M disbursed MX 2024. 63% of borrowers = first-ever loan</td></tr>
+            <tr><td><strong>Payments (TPV)</strong></td><td>—</td><td>~$280M</td><td>None</td><td>Low</td><td>~70%+</td><td>1M+ POS terminals; 20K cash-in points. Structural moat</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-box green" style="margin-top:10px;font-size:0.82rem;"><strong>Structural Advantage:</strong> Commerce ecosystem funds credit at near-zero CAC and provides transaction data as underwriting collateral. NIMAL 31.4% vs Nu's ~10% illustrates the power of ecosystem vs neobank model. Banking licence (pending) would unlock payroll and deposit products — removing the last gap vs Nu.</div>
+        <div id="specs-mp" class="prod-specs-section"></div>
+      </div>
+      <div id="summary-mp" style="margin-top:12px;">
+        <div class="stat-row">
+          <div class="stat-pill">24M+<span>Users (MX)</span></div>
+          <div class="stat-pill">~$600M+<span>Loan OS est.</span></div>
+          <div class="stat-pill">~$650M<span>Revenue (MX est.)</span></div>
+          <div class="stat-pill">n/d<span>NPL (MX)</span></div>
+          <div class="stat-pill">Profit<span>Profitability</span></div>
+        </div>
+        <div class="card-watch">✅ Only player with positive gross margin at scale. Banking licence pending. Interchange cap risk moderate.</div>
+      </div>
     </div>
-    <div class="prod-subnav" id="prodSubnav">${subNav}</div>
-    <div class="prod-grid">${cards}</div>
-  `;
 
-  document.getElementById('prodSubnav').querySelectorAll('.prod-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.productTab = btn.dataset.ptab;
-      renderProducts();
-    });
-  });
+    <div class="player-card" id="card-didi" style="border-top-color:#e53e3e;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
+        <div>
+          <div class="card-type" style="color:var(--red);">Ecosystem — Ride-Hailing</div>
+          <div class="card-name">DiDi Finanzas</div>
+          <div class="card-tagline">Ride-hailing platform embeds consumer credit via SOFIPO</div>
+        </div>
+        <button onclick="toggleDetail('didi')" style="background:var(--red-light);border:1px solid var(--red);color:var(--red);font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">Details ▾</button>
+      </div>
+      <div id="detail-didi" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
+        <div class="sub-sub-title" style="margin-top:0;">Basic Info</div>
+        <p style="font-size:0.82rem;"><strong>Parent:</strong> DiDi Global Inc (Beijing-listed; Chinese ride-hail giant) · <strong>SOFIPO:</strong> Acquired JP Sofiexpress (CNBV-approved June 2024) · <strong>Products:</strong> DiDi Préstamos (loans), DiDi Card (credit card), DiDi Pay, DiDi Cuenta (savings, 15% yield) · <strong>Key fact:</strong> 20M+ loans issued (July 2025); 2M+ credit card users; 10M+ financial services users · <strong>Risk:</strong> China parent regulatory risk; CNBV foreign-ownership oversight</p>
+        <div class="sub-sub-title">Core Products</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Type</th><th>Interest Rate</th><th>Tenor</th><th>Limit</th></tr></thead>
+          <tbody>
+            <tr><td>DiDi Préstamos</td><td>Revolving cash loan</td><td>~60–120% CAT</td><td>Up to 180 days</td><td>MXN 200–46,800</td></tr>
+            <tr><td>DiDi Card</td><td>Credit card</td><td>~40–80% APR</td><td>Revolving</td><td>MXN up to 46,800</td></tr>
+            <tr><td>DiDi Cuenta</td><td>Savings (SOFIPO)</td><td>15% yield</td><td>Demand</td><td>N/A</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Business Sizing</div>
+        <div class="kpi-grid" style="margin:8px 0 12px;">
+          <div class="kpi-card" style="flex:1 1 140px;"><div class="kpi-val">10M+</div><div class="kpi-lbl">Financial Services Users</div><div class="kpi-note">20M+ loans issued by Jul 2025. 2M+ credit card users. 24% use loans for education.</div></div>
+          <div class="kpi-card amber" style="flex:1 1 140px;"><div class="kpi-val">n/d</div><div class="kpi-lbl">Loan Portfolio OS</div><div class="kpi-note">Not publicly disclosed. SOFIPO reporting via CNBV expected; portfolio est. ~MXN 3–5B given loan count.</div></div>
+        </div>
+        <div class="sub-sub-title">Unit Economics — Lending Arm (JP Sofiexpress)</div>
+        <div class="info-box amber" style="margin:6px 0 10px;font-size:0.81rem;"><strong>Disclosure gap:</strong> DiDi Global does not break out Mexico financial services in any public filing. JP Sofiexpress was acquired June 2024 with only MXN 238M in assets at acquisition — too small and too recent for CNBV SOFIPO disclosures to be meaningfully comparable to Nu, Klar or Stori. The figures below are structural estimates only.</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Line Item</th><th>Amount (est.)</th><th>Basis</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Interest Income</strong></td><td>n/d</td><td>Short-tenor revolving loans up to MXN 46,800. CAT likely 80–130%. Fast turnover = high annualised yield if NPL controlled. No portfolio size disclosed.</td></tr>
+            <tr><td><strong>Fee / Interchange</strong></td><td>n/d</td><td>DiDi Card interchange + DiDi Pay MDR. Not separately reported.</td></tr>
+            <tr><td><strong>Cost of Risk</strong></td><td>n/d</td><td>NPL not disclosed for JP Sofiexpress post-acquisition. Mobility transaction data should structurally lower NPL vs blind lenders — but unverified.</td></tr>
+            <tr><td><strong>Cost of Funds</strong></td><td>n/d</td><td>DiDi Cuenta offers 15% yield (highest in Mexico). Deposit base still being built. Until deposit scale is reached, FS arm likely funded by parent company capital.</td></tr>
+            <tr><td><strong>Lending Arm P&amp;L</strong></td><td>n/d — likely loss</td><td>JP Sofiexpress had MXN 238M assets at acquisition. Even at 100% CAT yield that's ~MXN 238M gross income — insufficient to cover platform build costs, staff, and provisioning. Scale is the prerequisite.</td></tr>
+            <tr><td><strong>Group P&amp;L (DiDi MX)</strong></td><td>Profitable</td><td>Ride-hailing core is the profit engine. Financial services is a deliberate investment absorbing group profits. DiDi can afford this; a standalone fintech cannot.</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-box amber" style="margin-top:10px;font-size:0.82rem;"><strong>Key Watch:</strong> DiDi Mexico's ride-hailing core is profitable and cross-subsidises the financial services buildout. Mobility data (driver income regularity, rider/passenger frequency) is a proprietary underwriting signal. Key risks: Chinese parent geopolitical overhang and CNBV foreign-ownership scrutiny.</div>
+        <div id="specs-didi" class="prod-specs-section"></div>
+      </div>
+      <div id="summary-didi" style="margin-top:12px;">
+        <div class="stat-row">
+          <div class="stat-pill">10M+<span>Users</span></div>
+          <div class="stat-pill">~$750M<span>Loan OS</span></div>
+          <div class="stat-pill">n/d<span>Revenue</span></div>
+          <div class="stat-pill">n/d<span>NPL</span></div>
+          <div class="stat-pill">Unknown<span>Profitability</span></div>
+        </div>
+        <div class="card-watch">⚠ Ride-hailing profitable; financial services arm (SOFIPO) still in investment phase.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="s3-2" style="margin-top:44px;">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+    <div style="background:var(--green-dark);color:#fff;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:4px;">Archetype 2</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);">Leech Lenders</div>
+  </div>
+  <div style="font-size:0.83rem;color:var(--muted);margin-bottom:20px;">Embed inside third-party platforms. Distribution is borrowed. CAC is low but margin shared with host. Must maintain tight NPL discipline — no proprietary data on the customer pre-lending.</div>
+  <div class="player-grid">
+
+    <div class="player-card" id="card-kueski" style="border-top-color:var(--green);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
+        <div>
+          <div class="card-type" style="color:var(--green-dark);">Leech — BNPL + Cash Loan</div>
+          <div class="card-name">Kueski</div>
+          <div class="card-tagline">Mexico's BNPL leader; rides Amazon, 10K+ merchants</div>
+        </div>
+        <button onclick="toggleDetail('kueski')" style="background:var(--green-light);border:1px solid var(--green);color:var(--green-dark);font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">Details ▾</button>
+      </div>
+      <div id="detail-kueski" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
+        <div class="sub-sub-title" style="margin-top:0;">Basic Info</div>
+        <p style="font-size:0.82rem;"><strong>Founded:</strong> 2012, Guadalajara · <strong>Status:</strong> Private; SOFOM ENR (no bank licence) · <strong>Raised:</strong> ~$480M (equity + debt over 10 rounds); latest Series D-II $35M (Mar 2025) · <strong>Shareholders:</strong> Cathay Innovation, Victory Park Capital, G Squared, KBW Ventures, Rise Capital, Angel Ventures MX · <strong>CEO:</strong> Adalberto Flores (co-founder) · <strong>Employees:</strong> ~720</p>
+        <div class="sub-sub-title">Core Products</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Type</th><th>Interest Rate</th><th>Tenor</th><th>Limit</th></tr></thead>
+          <tbody>
+            <tr><td>Kueski Pay (BNPL)</td><td>Installment BNPL; online + in-store QR</td><td>0–30% (merchant subsidized or customer-borne)</td><td>2–6 installments</td><td>MXN 200–25,000</td></tr>
+            <tr><td>Kueski Cash</td><td>Unsecured personal loan</td><td>~100–200% CAT (high but short tenor)</td><td>7–90 days</td><td>MXN 200–25,000</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Business Sizing</div>
+        <div class="kpi-grid" style="margin:8px 0 12px;">
+          <div class="kpi-card green" style="flex:1 1 140px;"><div class="kpi-val">30M+</div><div class="kpi-lbl">Cumulative Loans Issued</div><div class="kpi-note">Dec 2025. Issues ~1 loan/2 sec at peak. 90% recurrence. 50%+ = users' first-ever credit.</div></div>
+          <div class="kpi-card" style="flex:1 1 140px;"><div class="kpi-val">~$100M</div><div class="kpi-lbl">Loan Portfolio OS (est.)</div><div class="kpi-note">$2B+ total loan volume disbursed cumulatively. Portfolio OS ~$100–150M est. given short tenors.</div></div>
+        </div>
+        <div class="sub-sub-title">Business-Level Unit Economics (est. 2024–25)</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Line Item</th><th>Amount (USD est.)</th><th>% of Revenue</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Interest Income</strong></td><td>~$250M</td><td>~60%</td><td>ZoomInfo / public data: ~$418M total revenue est. High yield on short-tenor microloans</td></tr>
+            <tr><td><strong>Fee Income (MDR)</strong></td><td>~$140M</td><td>~34%</td><td>Merchant discount rate on BNPL; ~3–5% on Kueski Pay. 30% of top-150 e-comm merchants</td></tr>
+            <tr><td><strong>Other</strong></td><td>~$28M</td><td>~6%</td><td>Late fees, other charges</td></tr>
+            <tr><td><strong>Total Revenue (est.)</strong></td><td><strong>~$418M</strong></td><td>100%</td><td>ZoomInfo / public sources est. 2025 annual revenue</td></tr>
+            <tr><td>Cost of Risk</td><td>~($42M)</td><td>~(10%)</td><td>Low-single-digit NPL (est. ~2–3%). Best credit quality in peer group. Short tenors reduce exposure.</td></tr>
+            <tr><td>Cost of Funds</td><td>~($85M)</td><td>~(20%)</td><td>Debt-funded (Victory Park Capital credit facility); ~15–18% cost of debt est.</td></tr>
+            <tr><td><strong>Gross Profit (est.)</strong></td><td><strong>~$291M</strong></td><td>~70%</td><td>BNPL positive contribution margin confirmed 2025. Cash loan covers operating expenses. Strong.</td></tr>
+            <tr><td>Net Profit</td><td>Near breakeven / slight positive</td><td>—</td><td>Management confirmed BNPL contribution margin positive + covers opex. IPO mooted long-term.</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Product-Level UE</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Interest Income</th><th>Fee (MDR)</th><th>Cost of Risk</th><th>Cost of Funds</th><th>Gross Profit</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Kueski Pay (BNPL)</strong></td><td>Low/0% consumer-side</td><td>~$140M (3–5% MDR)</td><td>~2% NPL; low</td><td>~$(40M)</td><td>~60–65%</td><td>Amazon MX first BNPL partner. Contribution margin confirmed positive 2025.</td></tr>
+            <tr><td><strong>Kueski Cash</strong></td><td>~$250M high yield</td><td>Minimal</td><td>~3% NPL; ~$(12M)</td><td>~$(45M)</td><td>~70%+</td><td>Short-tenor microloans; very high APR but fast turnover. Growing to cover BNPL opex.</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-box green" style="margin-top:10px;font-size:0.82rem;"><strong>Structural Strength:</strong> Best NPL in peer group (~2–3%) due to short-tenor model and 13 years of proprietary behavioural data. 90% recurrence = retention moat. Key vulnerability: merchant platform dependency (if Amazon changes economics, BNPL model shifts). No bank licence = no deposit funding = cost of debt stays high.</div>
+        <div id="specs-kueski" class="prod-specs-section"></div>
+      </div>
+      <div id="summary-kueski" style="margin-top:12px;">
+        <div class="stat-row">
+          <div class="stat-pill">n/d active<span>Users</span></div>
+          <div class="stat-pill">~$100–150M<span>Loan OS</span></div>
+          <div class="stat-pill">~$418M<span>Revenue est.</span></div>
+          <div class="stat-pill">~2–3%<span>NPL</span></div>
+          <div class="stat-pill">Breakeven<span>Profitability</span></div>
+        </div>
+        <div class="card-watch">✅ Best unit economics in peer group. No bank licence = debt-funded = structurally higher cost of funds than deposit peers.</div>
+      </div>
+    </div>
+
+    <div class="player-card" id="card-aplazo" style="border-top-color:#7c3aed;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
+        <div>
+          <div class="card-type" style="color:#7c3aed;">Leech — BNPL (Fashion/Lifestyle)</div>
+          <div class="card-name">Aplazo</div>
+          <div class="card-tagline">Zero-interest BNPL; fashion-first; bureau-reporting</div>
+        </div>
+        <button onclick="toggleDetail('aplazo')" style="background:#f3f0ff;border:1px solid #c4b5fd;color:#7c3aed;font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">Details ▾</button>
+      </div>
+      <div id="detail-aplazo" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
+        <div class="sub-sub-title" style="margin-top:0;">Basic Info</div>
+        <p style="font-size:0.82rem;"><strong>Founded:</strong> ~2019 · <strong>Status:</strong> Private; operates under general corporate credit structure (SOFOM) · <strong>Focus:</strong> Fashion, apparel, lifestyle retailers; urban first-time BNPL users · <strong>Differentiator:</strong> 75–80% approval rate; explicit credit bureau reporting; positions as credit-builder tool</p>
+        <div class="sub-sub-title">Core Products</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Type</th><th>Interest Rate</th><th>Tenor</th><th>Limit</th></tr></thead>
+          <tbody>
+            <tr><td>Aplazo BNPL</td><td>0% installment BNPL at checkout</td><td>0% to consumer; MDR to merchant</td><td>3–6 installments</td><td>MXN 500–15,000</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Business Sizing</div>
+        <div class="kpi-grid" style="margin:8px 0 12px;">
+          <div class="kpi-card" style="flex:1 1 140px;"><div class="kpi-val">10M+</div><div class="kpi-lbl">Users (est., 2025)</div><div class="kpi-note">78% adoption increase in 2024 (ResearchAndMarkets). One of top-5 BNPL by market share.</div></div>
+          <div class="kpi-card" style="flex:1 1 140px;"><div class="kpi-val">n/d</div><div class="kpi-lbl">Loan Portfolio OS</div><div class="kpi-note">Not disclosed. Funded by equity/debt. 0% interest model = portfolio turnover driven revenue.</div></div>
+        </div>
+        <div class="sub-sub-title">Unit Economics</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Line Item</th><th>Amount</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Interest Income</td><td>~$0 (consumer)</td><td>Zero interest to consumer is the product promise</td></tr>
+            <tr><td>Fee Income (MDR)</td><td>n/d; est. ~3–6%</td><td>Merchant pays the discount rate; primary revenue source</td></tr>
+            <tr><td>Cost of Risk</td><td>n/d</td><td>75–80% approval rate implies intentional inclusion; default rate unknown. Bureau reporting helps collect.</td></tr>
+            <tr><td>Cost of Funds</td><td>n/d</td><td>VC-funded balance sheet; no deposit base</td></tr>
+            <tr><td>Net Profit</td><td>n/a</td><td>Pre-profitable; MDR model under pressure as Kueski and global BNPL players enter same merchant base</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-box amber" style="margin-top:10px;font-size:0.82rem;"><strong>Key Watch:</strong> Zero-interest MDR model works when merchants have high margins (fashion). As BNPL competition intensifies, MDR compression is real. Bureau-reporting differentiator may not be defensible long-term as Kueski also reports. Portfolio financials not disclosed.</div>
+        <div id="specs-aplazo" class="prod-specs-section"></div>
+      </div>
+      <div id="summary-aplazo" style="margin-top:12px;">
+        <div class="stat-row">
+          <div class="stat-pill">10M+<span>Users est.</span></div>
+          <div class="stat-pill">n/d<span>Loan OS</span></div>
+          <div class="stat-pill">n/d<span>Revenue</span></div>
+          <div class="stat-pill">n/d<span>NPL</span></div>
+          <div class="stat-pill">Loss<span>Profitability</span></div>
+        </div>
+        <div class="card-watch">⚠ MDR compression risk as BNPL competition intensifies. Financials not disclosed.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="s4" style="margin-top:44px;">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+    <div style="background:var(--red);color:#fff;font-size:0.65rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:4px;">Archetype 3</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--navy);">Open Market Lenders</div>
+  </div>
+  <div style="font-size:0.83rem;color:var(--muted);margin-bottom:20px;">Acquire borrowers directly via brand, digital marketing, and open distribution. Highest CAC. No platform dependency — but must earn every customer.</div>
+  <div class="player-grid">
+
+    <div class="player-card" id="card-plata" style="border-top-color:var(--navy);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
+        <div>
+          <div class="card-type">Open Market — Full-Stack Neobank</div>
+          <div class="card-name">Plata</div>
+          <div class="card-tagline">Fastest-growing digital bank in LatAm history; ex-Tinkoff DNA</div>
+        </div>
+        <button onclick="toggleDetail('plata')" style="background:var(--surface);border:1px solid var(--border);color:var(--navy);font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">Details ▾</button>
+      </div>
+      <div id="detail-plata" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
+        <div class="sub-sub-title" style="margin-top:0;">Basic Info</div>
+        <p style="font-size:0.82rem;"><strong>Founded:</strong> April 2023 · <strong>Status:</strong> Licensed bank (CNBV approval Dec 2024; operations auth Feb 2026) · <strong>Valuation:</strong> $5B (Series C, Apr 2026) · <strong>Total Raised:</strong> $2B+ (equity + debt) · <strong>Shareholders:</strong> Kora Management, Moore Capital, TelevisaUnivision, Hedosophia · <strong>CEO:</strong> Neri Tollardo (ex-Morgan Stanley, ex-Tinkoff) · <strong>CFO:</strong> Marcos Kantt · <strong>Employees:</strong> 3,000+ (800 STEM)</p>
+        <div class="sub-sub-title">Core Products</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Type</th><th>Interest Rate</th><th>Tenor</th><th>Limit</th></tr></thead>
+          <tbody>
+            <tr><td>Plata Card</td><td>Credit card; 60-day payment window</td><td>&gt;30% APR; ~70% gross yield on portfolio</td><td>60-day grace + installments</td><td>Avg MXN 10,000; avg loan $200</td></tr>
+            <tr><td>Cash-back (up to 15%)</td><td>Card rewards</td><td>—</td><td>—</td><td>Differentiator feature</td></tr>
+            <tr><td>Payroll / Debit (roadmap)</td><td>Post-banking-licence</td><td>TBD</td><td>TBD</td><td>2026+</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Business Sizing</div>
+        <div class="kpi-grid" style="margin:8px 0 12px;">
+          <div class="kpi-card green" style="flex:1 1 140px;"><div class="kpi-val">3.5M</div><div class="kpi-lbl">Active Customers (Apr 2026)</div><div class="kpi-note">750K+ received first-ever credit card. 10% of all new credit cards in Mexico.</div></div>
+          <div class="kpi-card" style="flex:1 1 140px;"><div class="kpi-val">$800M</div><div class="kpi-lbl">Loan Portfolio OS</div><div class="kpi-note">Disclosed at Series C (Apr 2026). ~$229/customer avg OS. Growing rapidly.</div></div>
+        </div>
+        <div class="sub-sub-title">Business-Level Unit Economics (disclosed, 2026)</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Line Item</th><th>Amount (USD)</th><th>% of Revenue</th><th>Notes / Source</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Interest Income</strong></td><td>~$420M (ann.)</td><td>~70%</td><td>$800M OS × 70% gross yield = ~$560M gross; net after refunds ~$420M est.</td></tr>
+            <tr><td><strong>Fee / Interchange Income</strong></td><td>~$150M (ann.)</td><td>~25%</td><td>Cash-back differentiator funded by interchange. Card transactions growing rapidly.</td></tr>
+            <tr><td><strong>Other</strong></td><td>~$30M</td><td>~5%</td><td>Bond/capital markets income, insurance (roadmap)</td></tr>
+            <tr><td><strong>Total Revenue (annualized)</strong></td><td><strong>$600M+</strong></td><td>100%</td><td>Explicitly disclosed at Series C (Marcos Kantt, CFO): "$600M+ annualized revenue run-rate"</td></tr>
+            <tr><td>Cost of Risk</td><td>~($120M)</td><td>~(20%)</td><td>NPL 15% (Jul 2025); improving from 33% (Jun 2023). Provisioning estimated at 15% × $800M</td></tr>
+            <tr><td>Cost of Funds</td><td>~($75M)</td><td>~(12.5%)</td><td>$500M Nomura facility + bonds; ~15% blended debt cost est. Deposits not yet accepted (2026+)</td></tr>
+            <tr><td><strong>Net Contribution Margin</strong></td><td>~2% of portfolio</td><td>~</td><td>Disclosed: "net contribution margin ~2%". Path to breakeven Q2 2028 per Jul 2025 bond prospectus</td></tr>
+            <tr><td>Net Profit</td><td>Loss (planned burn)</td><td>—</td><td>$260M burned of $450M equity over 3 years (Jul 2025). Breakeven Q2 2028 target.</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Product-Level UE</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Gross Yield</th><th>Fee</th><th>NPL (cost)</th><th>Cost of Funds</th><th>Net Contribution</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Plata Card</strong></td><td>~70% gross yield</td><td>Interchange subsidizes cashback</td><td>15%; ~$120M cost</td><td>~15% debt; ~$75M</td><td>~2% of portfolio</td><td>Only product today. $800M OS. Avg $200 loan. Very high yield needed to offset high NPL at early cohorts.</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-box" style="margin-top:10px;font-size:0.82rem;"><strong>The Thesis:</strong> If Plata can hold NPL below 15% while scaling and layer in deposits (2026+) to replace expensive debt funding, the model transitions from ~2% contribution margin to 10%+ NIM territory — the Tinkoff playbook. The risk is that NPL improvement stalls as the customer base scales beyond early adopters.</div>
+        <div id="specs-plata" class="prod-specs-section"></div>
+      </div>
+      <div id="summary-plata" style="margin-top:12px;">
+        <div class="stat-row">
+          <div class="stat-pill">3.5M<span>Users</span></div>
+          <div class="stat-pill">$800M<span>Loan OS</span></div>
+          <div class="stat-pill">$600M+<span>Revenue (ann.)</span></div>
+          <div class="stat-pill">15%<span>NPL</span></div>
+          <div class="stat-pill">Loss<span>Profitability</span></div>
+        </div>
+        <div class="card-watch">⚠ NPL 15% (improving from 33%). Breakeven Q2 2028. Deposit strategy (2026+) is the key margin lever.</div>
+      </div>
+    </div>
+
+    <div class="player-card" id="card-klar" style="border-top-color:var(--red);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
+        <div>
+          <div class="card-type" style="color:var(--red);">Open Market — Neobank (Stressed)</div>
+          <div class="card-name">Klar</div>
+          <div class="card-tagline">Consumer neobank + SME pivot; NPL under pressure</div>
+        </div>
+        <button onclick="toggleDetail('klar')" style="background:var(--red-light);border:1px solid var(--red);color:var(--red);font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">Details ▾</button>
+      </div>
+      <div id="detail-klar" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
+        <div class="sub-sub-title" style="margin-top:0;">Basic Info</div>
+        <p style="font-size:0.82rem;"><strong>Founded:</strong> 2019 · <strong>Status:</strong> NeoSOFIPO (CNBV licensed); acquired Tribal Mexico (B2B SME) Dec 2024 · <strong>Total raised:</strong> ~$150M+ (General Atlantic, Prosus Ventures, Quona) · <strong>Strategic move:</strong> Launched Klar Empresarial (SME credit + 360 account) Oct 2025 post-Tribal acquisition</p>
+        <div class="sub-sub-title">Core Products</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Type</th><th>Rate</th><th>Tenor</th><th>Limit</th></tr></thead>
+          <tbody>
+            <tr><td>Klar Credit Card</td><td>Consumer credit card</td><td>~40–90% APR</td><td>Revolving</td><td>MXN up to 50,000</td></tr>
+            <tr><td>Klar Personal Loan</td><td>Unsecured cash loan</td><td>~60–120% CAT</td><td>3–24 months</td><td>MXN up to 100,000</td></tr>
+            <tr><td>Klar Empresarial</td><td>SME credit (post-Tribal)</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Business Sizing</div>
+        <div class="kpi-grid" style="margin:8px 0 12px;">
+          <div class="kpi-card amber" style="flex:1 1 140px;"><div class="kpi-val">3M+</div><div class="kpi-lbl">Customers (Sep 2024)</div><div class="kpi-note">MXN 11B+ assets (Sep 2024). Growth slowed to ~2% MoM (2025 vs Nu 5% MoM).</div></div>
+          <div class="kpi-card red" style="flex:1 1 140px;"><div class="kpi-val">11.23%</div><div class="kpi-lbl">IMOR (Nov 2025)</div><div class="kpi-note">Adj. NPL surpassed 30% (incl. write-offs). Provisioning MXN 217M/mo vs write-offs MXN 233M/mo.</div></div>
+        </div>
+        <div class="sub-sub-title">Unit Economics (CNBV / Miranda Intelligence, 2024–25)</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Line Item</th><th>Amount (MXN)</th><th>USD est.</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Interchange Income</td><td>MXN 163M (2024)</td><td>~$8M</td><td>Miranda Intelligence 2024. Small vs Nu's MXN 1.9B.</td></tr>
+            <tr><td>Total Assets</td><td>MXN 11B+</td><td>~$550M</td><td>Sep 2024 CNBV. Funded by deposits at 3.5% yield (cut from 4.0% mid-2025).</td></tr>
+            <tr><td>Deposit Rate</td><td>3.5%</td><td>—</td><td>Cut mid-2025 to manage cost; well below Nu (12.25%) and MP (15%)</td></tr>
+            <tr><td>Operating Loss</td><td>MXN -686M</td><td>~-$34M</td><td>Legal Paradox Nov 2025 CNBV data</td></tr>
+            <tr><td>Cost of Risk</td><td>MXN 217M/mo provisioning</td><td>~$130M ann.</td><td>Provisioning BELOW write-off rate (MXN 233M) — material gap, balance sheet risk</td></tr>
+            <tr><td>Net Profit</td><td>Loss</td><td>~-$34M ann.</td><td>Operating losses continuing; SME pivot adds capex before revenue</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-box red" style="margin-top:10px;font-size:0.82rem;"><strong>Red Flag:</strong> Write-offs (MXN 233M/mo) exceeding provisions (MXN 217M/mo) means Klar's balance sheet is eroding faster than it is provisioning. Adjusted NPL 30%+ is unsustainable. SME pivot via Tribal is strategically logical but capital-intensive at the worst time. Risk: capital call or distressed sale scenario.</div>
+        <div id="specs-klar" class="prod-specs-section"></div>
+      </div>
+      <div id="summary-klar" style="margin-top:12px;">
+        <div class="stat-row">
+          <div class="stat-pill">3M+<span>Users</span></div>
+          <div class="stat-pill">~$550M<span>Loan OS (assets)</span></div>
+          <div class="stat-pill">n/d<span>Revenue</span></div>
+          <div class="stat-pill">11.2% / 30%+<span>NPL / Adj. NPL</span></div>
+          <div class="stat-pill">Loss<span>Profitability</span></div>
+        </div>
+        <div class="card-watch">🔴 Write-offs exceed provisions. Adj. NPL 30%+. SME pivot adds burn. Highest credit stress in peer group.</div>
+      </div>
+    </div>
+
+    <div class="player-card" id="card-stori" style="border-top-color:var(--amber);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
+        <div>
+          <div class="card-type" style="color:#92400e;">Open Market — Neobank (Underbanked)</div>
+          <div class="card-name">Stori</div>
+          <div class="card-tagline">Credit card for the underbanked; technically profitable, high NPL</div>
+        </div>
+        <button onclick="toggleDetail('stori')" style="background:var(--amber-light);border:1px solid var(--amber);color:#92400e;font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">Details ▾</button>
+      </div>
+      <div id="detail-stori" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
+        <div class="sub-sub-title" style="margin-top:0;">Basic Info</div>
+        <p style="font-size:0.82rem;"><strong>Founded:</strong> 2018 · <strong>Status:</strong> NeoSOFIPO (CNBV licensed) · <strong>Focus:</strong> Credit card for underbanked Mexicans; deliberately targets rejected bank applicants · <strong>Notable:</strong> Profitable at operating level per Nov 2025 CNBV data (unusual in peer group)</p>
+        <div class="sub-sub-title">Core Products</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Type</th><th>Rate</th><th>Tenor</th><th>Limit</th></tr></thead>
+          <tbody>
+            <tr><td>Stori Card</td><td>Credit card (underbanked)</td><td>~60–100% CAT</td><td>Revolving</td><td>MXN 500–30,000</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Business Sizing</div>
+        <div class="kpi-grid" style="margin:8px 0 12px;">
+          <div class="kpi-card" style="flex:1 1 140px;"><div class="kpi-val">n/d</div><div class="kpi-lbl">Total Users</div><div class="kpi-note">Not publicly disclosed. Growth much slower than Nu in 2025 per Miranda Intelligence / Condusef.</div></div>
+          <div class="kpi-card amber" style="flex:1 1 140px;"><div class="kpi-val">13.13%</div><div class="kpi-lbl">IMOR (Nov 2025)</div><div class="kpi-note">Highest IMOR in neobank peer group. Above-Nu NPL trajectory.</div></div>
+        </div>
+        <div class="sub-sub-title">Unit Economics (CNBV / Legal Paradox, Nov 2025)</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Line Item</th><th>Amount (MXN)</th><th>USD est.</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Interchange Income</td><td>MXN 217M (2024)</td><td>~$11M</td><td>Miranda Intelligence. Larger than Klar; smaller than Nu.</td></tr>
+            <tr><td>Operating Profit</td><td>MXN +199M</td><td>~+$10M</td><td>Legal Paradox Nov 2025 — only SOFIPO neobank showing positive operating result</td></tr>
+            <tr><td>IMOR</td><td>13.13%</td><td>—</td><td>Highest in peer group; suggests profitability achieved via high APR pricing, not low NPL</td></tr>
+            <tr><td>Cost of Funds</td><td>Low-ish</td><td>—</td><td>Deposit rates not at Nu levels; smaller deposit base. Lower cost of funds = path to thin profitability</td></tr>
+            <tr><td>Net Profit</td><td>MXN +199M est.</td><td>~+$10M</td><td>Operating profit positive, but 13.13% NPL on portfolio means portfolio quality risk is accumulating</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-box amber" style="margin-top:10px;font-size:0.82rem;"><strong>Paradox:</strong> Stori is the only neobank showing operating profit (MXN +199M) but it runs the highest NPL (13.13%). This means profitability is likely achieved by pricing at high APR rates over a deteriorating book — a model that works until NPL acceleration forces provision charges to overwhelm the margin.</div>
+        <div id="specs-stori" class="prod-specs-section"></div>
+      </div>
+      <div id="summary-stori" style="margin-top:12px;">
+        <div class="stat-row">
+          <div class="stat-pill">n/d<span>Users</span></div>
+          <div class="stat-pill">n/d<span>Loan OS</span></div>
+          <div class="stat-pill">n/d<span>Revenue</span></div>
+          <div class="stat-pill">13.1%<span>NPL (IMOR)</span></div>
+          <div class="stat-pill">Profit<span>Profitability</span></div>
+        </div>
+        <div class="card-watch">⚠ Only profitable neobank — but at 13.13% NPL. Profitability may be temporarily masking credit deterioration.</div>
+      </div>
+    </div>
+
+  </div>
+</div>`;
 }
 
 // ═══════════════════════════════════════════
@@ -1375,98 +1911,223 @@ function toggleBiz(id){
   if(el) el.classList.toggle('open');
 }
 
+window.toggleDetail = function(id){
+  const detail = document.getElementById('detail-'+id);
+  if(!detail) return;
+  const isOpen = detail.style.display !== 'none';
+  detail.style.display = isOpen ? 'none' : 'block';
+  const btn = document.querySelector('[onclick="toggleDetail(\''+id+'\')"]');
+  if(btn) btn.textContent = isOpen ? 'Details ▾' : 'Details ▴';
+  if(!isOpen && !detail.dataset.specsInjected){
+    detail.dataset.specsInjected = 'true';
+    const specs = document.getElementById('specs-'+id);
+    if(specs){
+      const items = DATA.productItems[id];
+      if(items && items.length > 0){
+        const typeLabel = {bnpl:'BNPL',loan:'Cash Loan',card:'Credit Card',savings:'Savings',wallet:'Wallet'};
+        specs.innerHTML = '<div class="prod-specs-header">Product Specs (Detailed Research)</div><div class="prod-grid">'+
+          items.map(p =>
+            '<div class="prod-card">'+
+            '<span class="prod-type-badge type-'+p.productType+'">'+(typeLabel[p.productType]||p.productType)+'</span>'+
+            '<div class="prod-name">'+escHtml(p.productName)+'</div>'+
+            '<div class="prod-specs">'+
+            '<div class="spec-row"><span class="spec-label">APR / CAT</span><span class="spec-value">'+escHtml(p.aprCat)+'</span></div>'+
+            '<div class="spec-row"><span class="spec-label">Credit limit</span><span class="spec-value">'+escHtml(p.creditLimit)+'</span></div>'+
+            '<div class="spec-row"><span class="spec-label">Tenure</span><span class="spec-value">'+escHtml(p.tenure)+'</span></div>'+
+            '<div class="spec-row"><span class="spec-label">Approval speed</span><span class="spec-value">'+escHtml(p.approvalSpeed)+'</span></div>'+
+            '<div class="spec-row"><span class="spec-label">KYC</span><span class="spec-value">'+escHtml(p.kycRequirements)+'</span></div>'+
+            '<div class="spec-row"><span class="spec-label">Repayment</span><span class="spec-value">'+escHtml(p.repaymentOptions)+'</span></div>'+
+            '<div class="spec-row"><span class="spec-label">Fees</span><span class="spec-value">'+escHtml(p.fees)+'</span></div>'+
+            '<div class="spec-row"><span class="spec-label">Rewards</span><span class="spec-value">'+escHtml(p.rewards)+'</span></div>'+
+            '<div class="spec-row"><span class="spec-label">Distribution</span><span class="spec-value">'+escHtml(p.distribution)+'</span></div>'+
+            '</div>'+
+            '<div class="prod-promise">“'+escHtml(p.promise)+'”</div>'+
+            '<div class="prod-notes">'+escHtml(p.notes)+'</div>'+
+            '</div>'
+          ).join('')+
+        '</div>';
+      }
+    }
+  }
+};
+
 // ═══════════════════════════════════════════
-// RENDER: MACRO
+// RENDER: MACRO (Sections 1 + 2 from original report)
 // ═══════════════════════════════════════════
 function renderMacro(){
-  const d = DATA.macroData;
-  const colorMap = {navy:'navy',amber:'amber',red:'red',green:'green'};
-
-  const kpis = d.indicators.map(k => `
-    <div class="macro-kpi ${colorMap[k.color]||''}">
-      <div class="mkpi-val">${escHtml(k.value)}</div>
-      <div class="mkpi-label">${escHtml(k.label)}</div>
-      <div class="mkpi-note">${escHtml(k.note)}</div>
-    </div>
-  `).join('');
-
-  const regRows = d.regulatory.map(r => `
-    <tr>
-      <td>${escHtml(r.date)}</td>
-      <td><strong>${escHtml(r.event)}</strong></td>
-      <td>${threatBadge(r.impact.toLowerCase())}</td>
-      <td style="font-size:.75rem;color:var(--muted)">${escHtml(r.note)}</td>
-    </tr>
-  `).join('');
-
-  const calRows = d.seasonal.map(r => `
-    <tr>
-      <td>${escHtml(r.period)}</td>
-      <td><strong>${escHtml(r.event)}</strong></td>
-      <td style="font-size:.75rem;color:var(--muted)">${escHtml(r.note)}</td>
-    </tr>
-  `).join('');
+  if(state.chartsInit.macro) return; // already rendered — preserve chart state
+  state.chartsInit.macro = true;
+  const NAVY='#0f2342',GREEN='#00a878',AMBER='#f59e0b',RED='#e53e3e',GRID='#eef2f6';
 
   document.getElementById('panel-macro').innerHTML = `
-    <div class="panel-header">
-      <div class="panel-title">Macro &amp; Market Stats</div>
-      <div class="panel-sub">Mexico lending market indicators — rates, credit growth, NPL trends, and regulatory calendar</div>
-    </div>
-    <div class="macro-kpi-grid">${kpis}</div>
-    <div class="macro-charts">
-      <div class="chart-box">
-        <div class="chart-title">Banxico rate vs fintech deposit rate (2022–2026)</div>
-        <canvas id="macroRatesChart"></canvas>
+<div class="panel-header">
+  <div class="panel-title">Macro &amp; Market Stats</div>
+  <div class="panel-sub">Mexico credit market structure, financial inclusion, rates, and NPL trends — Banxico / CNBV / BIS, 2024–2026</div>
+</div>
+
+<!-- ── SECTION 1: CREDIT MARKET STRUCTURE ── -->
+<div class="section-title-old">1. Mexico Credit Market — Full Structure</div>
+<div class="info-box green" style="margin-bottom:18px;">
+  <div class="info-title">The Big Picture</div>
+  Mexico's total private credit stands at <strong>~$675B USD</strong> — but household debt at just 17.2% of GDP is one of the lowest in LatAm (Brazil ~35%, Chile ~48%). The entire non-bank fintech/SOFIPO sector is <strong>less than 1% of total credit</strong> yet growing at 2–3× the banking system's pace. 70% of adults lack a credit card, and the fastest-growing products — BNPL and digital personal loans — are exactly those with the highest NPL risk. Fintech players are competing for Mexico's unsecured consumer credit market, currently a <strong>~$38B USD</strong> addressable pool (credit cards + personal loans, bank-side alone).
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi-card green"><div class="kpi-val">~$675B USD</div><div class="kpi-lbl">Total Private Credit</div><div class="kpi-note">BIS/Banxico Q3 2025. MXN 13.5T. Households + corporations.</div></div>
+  <div class="kpi-card"><div class="kpi-val">~$380B USD</div><div class="kpi-lbl">Commercial Bank Loans</div><div class="kpi-note">Banxico Feb 2026. MXN 7.6T. Domestic bank lending only.</div></div>
+  <div class="kpi-card amber"><div class="kpi-val">~$116B USD</div><div class="kpi-lbl">Consumer Credit (Bank)</div><div class="kpi-note">Banxico Q4 2025 all-time high. MXN 2.3T. Cards, payroll, personal, auto, durables.</div></div>
+  <div class="kpi-card"><div class="kpi-val">17.2%</div><div class="kpi-lbl">Household Debt / GDP</div><div class="kpi-note">Banxico Q3 2025. Brazil ~35%, Chile ~48%. Mexico deeply underleveraged.</div></div>
+  <div class="kpi-card green"><div class="kpi-val">+8.8%</div><div class="kpi-lbl">Private Credit Growth (Real)</div><div class="kpi-note">CNBV end-2024. Consumer loans +13.7% real. NPL (IMOR) at 2.02% — historically low.</div></div>
+</div>
+
+<!-- MECE TREE -->
+<div style="margin:8px 0 24px;">
+  <div style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;">Credit Market Structure — Top-Down (Banxico / CNBV, 2024–2025)</div>
+  <div style="display:flex;justify-content:center;margin-bottom:6px;">
+    <div class="tree-node node-l1"><div class="node-label">Total Private Credit</div><div class="node-val">~$675B USD</div><div class="node-sub">BIS/Banxico Q3 2025 · MXN ~13.5T</div></div>
+  </div>
+  <div class="tree-line-center"></div>
+  <div style="display:flex;gap:14px;justify-content:center;margin-bottom:6px;">
+    <div class="tree-node node-l2 node-green" style="flex:1;max-width:330px;"><div class="node-label">Bank Credit</div><div class="node-val">~$380B USD</div><div class="node-sub">Commercial banks · ~56% of total credit</div></div>
+    <div class="tree-node node-l2 node-amber" style="flex:1;max-width:330px;"><div class="node-label">Non-Bank Credit</div><div class="node-val">~$295B USD</div><div class="node-sub">Dev. banks, SOFIPOs, fintechs, bonds · ~44% of total credit</div></div>
+  </div>
+  <div style="display:flex;gap:14px;">
+    <div style="flex:1;max-width:330px;margin:0 auto;">
+      <div style="text-align:center;"><div class="tree-vline"></div></div>
+      <div style="font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;text-align:center;margin:4px 0 7px;">Bank credit by product</div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div class="tree-node node-l3 node-blue"><div class="node-row"><span class="node-label-sm">Commercial / Corporate</span><span class="node-val-sm">~$160B</span></div><div class="node-sub-sm">~51.6% of bank book · Working capital, business lending</div></div>
+        <div class="tree-node node-l3 node-blue"><div class="node-row"><span class="node-label-sm">Mortgage (Housing)</span><span class="node-val-sm">~$67B</span></div><div class="node-sub-sm">~21.7% of bank book · Commercial bank mortgages only</div></div>
+        <div class="tree-node node-l3 node-green" style="border-left:3px solid var(--green);"><div class="node-row"><span class="node-label-sm" style="color:var(--green-dark);">⬇ Consumer Credit</span><span class="node-val-sm" style="color:var(--green-dark);">~$77B</span></div><div class="node-sub-sm">~24.5% of bank book · Cards, payroll, personal, auto, durables</div></div>
+        <div class="tree-node node-l3 node-blue"><div class="node-row"><span class="node-label-sm">Government</span><span class="node-val-sm">~$10B</span></div><div class="node-sub-sm">Federal &amp; state government lending</div></div>
       </div>
-      <div class="chart-box">
-        <div class="chart-title">NPL trend by competitor (IMOR %, 2023–2025)</div>
-        <canvas id="macroNplChart"></canvas>
+    </div>
+    <div style="flex:1;max-width:330px;margin:0 auto;">
+      <div style="text-align:center;"><div class="tree-vline"></div></div>
+      <div style="font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;text-align:center;margin:4px 0 7px;">Non-bank credit by provider</div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div class="tree-node node-l3 node-blue"><div class="node-row"><span class="node-label-sm">Dev. Banks (NAFIN, Banobras)</span><span class="node-val-sm">~$125B</span></div><div class="node-sub-sm">State development banks; primarily corporate/infrastructure</div></div>
+        <div class="tree-node node-l3 node-blue"><div class="node-row"><span class="node-label-sm">Housing Funds (INFONAVIT)</span><span class="node-val-sm">~$90B</span></div><div class="node-sub-sm">Worker housing credit — largest single non-bank creditor</div></div>
+        <div class="tree-node node-l3 node-amber" style="border-left:3px solid var(--amber);"><div class="node-row"><span class="node-label-sm" style="color:#92400e;">⬇ SOFIPOs / SOFOMs / Fintechs</span><span class="node-val-sm" style="color:#92400e;">~$7B</span></div><div class="node-sub-sm">MXN ~140B · BNPL, digital cash loans, embedded credit. +6.8% YoY. Our competitive arena.</div></div>
+        <div class="tree-node node-l3 node-blue"><div class="node-row"><span class="node-label-sm">Foreign + Bonds</span><span class="node-val-sm">~$75B</span></div><div class="node-sub-sm">Cross-border lending, domestic bond issuance</div></div>
       </div>
     </div>
-    <div class="section-hed">Regulatory calendar</div>
-    <table class="cal-table">
-      <thead><tr><th>Date</th><th>Event</th><th>Impact</th><th>Note</th></tr></thead>
-      <tbody>${regRows}</tbody>
-    </table>
-    <div class="section-hed">Seasonal calendar</div>
-    <table class="cal-table">
-      <thead><tr><th>Period</th><th>Event</th><th>Notes</th></tr></thead>
-      <tbody>${calRows}</tbody>
-    </table>
-    <div class="verdict-box neutral">
-      <div class="verdict-label">Current market condition</div>
-      <div class="verdict-text">NEUTRAL. Easing rate cycle (6.50% and falling) is reducing cost of debt funding. BNPL growing 29% CAGR. 70% of adults without a credit card. Personal loan NPL rose +47% in 2025.</div>
+  </div>
+  <div style="margin-top:18px;padding-top:14px;border-top:1px dashed var(--border);">
+    <div style="font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Consumer Credit — Bank vs Non-Bank Product Breakdown (2025)</div>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:260px;">
+        <div style="font-size:.7rem;font-weight:700;color:var(--navy);margin-bottom:7px;padding-bottom:4px;border-bottom:2px solid var(--navy);">🏦 Bank Consumer Credit — ~$77B USD</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div class="tree-node node-l4 node-green" style="border-top:3px solid var(--green);"><div class="node-row"><span class="node-label-sm" style="color:var(--green-dark);">Credit Cards</span><span class="node-val-sm">~$24B</span></div><div class="node-sub-sm">~31.5% of consumer book · 37.1M cards · NPL 3.5%</div></div>
+          <div class="tree-node node-l4 node-blue"><div class="node-row"><span class="node-label-sm">Payroll Loans</span><span class="node-val-sm">~$21B</span></div><div class="node-sub-sm">~27.8% · Lowest NPL (2.8%) · Salary-deducted</div></div>
+          <div class="tree-node node-l4 node-amber" style="border-top:3px solid var(--amber);"><div class="node-row"><span class="node-label-sm" style="color:#92400e;">Personal / Cash Loans</span><span class="node-val-sm">~$14B</span></div><div class="node-sub-sm">~18.3% · Highest NPL at 6.1% · +47% delinquency rise 2025</div></div>
+          <div class="tree-node node-l4 node-blue"><div class="node-row"><span class="node-label-sm">Auto Loans</span><span class="node-val-sm">~$10B</span></div><div class="node-sub-sm">~13.1% · +43.7% YoY 2024 · Asset-secured, low NPL</div></div>
+          <div class="tree-node node-l4 node-blue"><div class="node-row"><span class="node-label-sm">Durables / Other</span><span class="node-val-sm">~$3B</span></div><div class="node-sub-sm">~3.6% · Fastest-growing sub-segment (+37% YoY 2024)</div></div>
+        </div>
+      </div>
+      <div style="flex:1;min-width:260px;">
+        <div style="font-size:.7rem;font-weight:700;color:#92400e;margin-bottom:7px;padding-bottom:4px;border-bottom:2px solid var(--amber);">🚀 Non-Bank / Fintech Consumer Credit — ~$7B USD</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div class="tree-node node-l4 node-amber" style="border-top:3px solid var(--green);"><div class="node-row"><span class="node-label-sm" style="color:var(--green-dark);">BNPL (Online + Offline)</span><span class="node-val-sm">~$4.0B</span></div><div class="node-sub-sm">Kueski, Aplazo, Atrato, Mercado Crédito · 29% CAGR 2022–25</div></div>
+          <div class="tree-node node-l4 node-amber" style="border-top:3px solid var(--amber);"><div class="node-row"><span class="node-label-sm" style="color:#92400e;">Digital Cash Loans</span><span class="node-val-sm">~$1.8B</span></div><div class="node-sub-sm">Nu, Klar, Stori, Kueski Cash, Ualá · NPL range 6–30%+</div></div>
+          <div class="tree-node node-l4 node-blue"><div class="node-row"><span class="node-label-sm">Credit Cards (Fintech)</span><span class="node-val-sm">~$0.8B</span></div><div class="node-sub-sm">Nu (6.6M cards), Plata (~$0.15B est.) · Fast-growing</div></div>
+          <div class="tree-node node-l4 node-blue"><div class="node-row"><span class="node-label-sm">SME Embedded Credit</span><span class="node-val-sm">~$0.6B</span></div><div class="node-sub-sm">Mercado Pago ($580M seller credit 2024 MX), R2/Ant, Kapital</div></div>
+          <div class="tree-node node-l4 node-blue"><div class="node-row"><span class="node-label-sm">Platform / Payroll Credit</span><span class="node-val-sm">~$0.2B</span></div><div class="node-sub-sm">DiDi Card, Spin/OXXO · Early stage; distribution advantage</div></div>
+        </div>
+      </div>
     </div>
+  </div>
+  <div style="margin-top:10px;font-size:.7rem;color:var(--muted);line-height:1.6;"><strong>Sources:</strong> BIS/FRED (total private credit, Q3 2025); Banxico (private sector loans Feb 2026; consumer credit Q4 2025); CNBV (bank NPL Dec 2024); MexicoBusinessNews/Banxico (product-level balances, 2025); ResearchAndMarkets (BNPL GMV, Q1 2026).</div>
+</div>
+
+<!-- PIE CHARTS -->
+<div style="margin:16px 0 20px;">
+  <div style="font-size:.73rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Consumer Credit — Composition at a Glance (USD, Banxico 2025)</div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;">
+    <div class="chart-wrap" style="flex:1;min-width:190px;"><canvas id="m_pieTotal"></canvas></div>
+    <div class="chart-wrap" style="flex:1;min-width:190px;"><canvas id="m_pieUnsecured"></canvas></div>
+    <div class="chart-wrap" style="flex:1;min-width:190px;"><canvas id="m_pieSecured"></canvas></div>
+  </div>
+</div>
+
+<div class="info-box green">
+  <div class="info-title">Where Fintechs Compete in This Stack</div>
+  Non-bank fintechs (BNPL + digital cash loans) operate in a ~$7B USD pool — less than 1% of Mexico's $675B total credit. Their direct competitive overlap is with the <strong>~$38B bank unsecured consumer market</strong> (credit cards + personal loans). Personal loan NPL is the highest in the banking system at 6.1% — and rising. This is simultaneously the largest structural opportunity and the highest-risk segment.
+</div>
+
+<hr class="tab-hr">
+
+<!-- ── SECTION 2: MACRO INDICATORS ── -->
+<div class="section-title-old">2. Macro Indicators — User &amp; Cost Profile</div>
+<div class="info-box" style="margin-bottom:18px;">
+  <div class="info-title">Reading These Charts</div>
+  Three themes drive everything: <strong>(1) Inclusion gap</strong> — 76.5% banked but only ~30% have a credit card, leaving 70% as BNPL's addressable market. <strong>(2) Rate environment</strong> — Banxico cut from 11.25% peak to 6.5% (May 2026), but fintech deposit costs (12–15%) remain sticky. <strong>(3) Credit stress</strong> — NPLs are rising. Personal loan delinquency surged +47% in 2025; fintechs like Klar (11.2%) and Stori (13.1%) are running at multiples of bank benchmarks.
+</div>
+
+<div class="chart-row">
+  <div class="chart-wrap"><canvas id="m_inclusionChart"></canvas></div>
+  <div class="chart-wrap"><canvas id="m_creditPenChart"></canvas></div>
+</div>
+
+<div class="signal-ticker">
+  <div class="signal-item"><div class="sig-label">Banked Adults (2024)</div><div class="sig-val" style="color:var(--green-dark);">76.5%</div><div class="sig-note">Up from ~68% (2021) and ~47% (2018). 18M+ still fully unbanked.</div></div>
+  <div class="signal-item"><div class="sig-label">Unbanked Adults</div><div class="sig-val" style="color:var(--red);">~18M+</div><div class="sig-note">Zero formal financial product. Primarily rural, women, low-income.</div></div>
+  <div class="signal-item"><div class="sig-label">Adults with Credit Card</div><div class="sig-val">~30%</div><div class="sig-note">37.1M cards / ~97M adults. 70% without card — BNPL's core addressable market.</div></div>
+  <div class="signal-item"><div class="sig-label">Adults with Any Credit</div><div class="sig-val">~46%</div><div class="sig-note">Banxico INEGI 2024. Individual access is lower.</div></div>
+  <div class="signal-item"><div class="sig-label">Household Debt / GDP</div><div class="sig-val">17.2%</div><div class="sig-note">Brazil ~35%, Chile ~48%, US ~75%. Mexico deeply underleveraged.</div></div>
+</div>
+
+<div class="chart-row">
+  <div class="chart-wrap"><canvas id="m_inflationChart"></canvas></div>
+  <div class="chart-wrap"><canvas id="m_ratesChart"></canvas></div>
+</div>
+
+<div style="margin:14px 0 8px;">
+  <div style="font-size:.73rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Unsecured Credit NPL — Trend Over Time (Banxico / CNBV)</div>
+  <div style="font-size:.7rem;color:var(--muted);margin-bottom:10px;line-height:1.6;"><strong style="color:var(--navy);">NPL (Non-Performing Loan)</strong> = loans 90+ days overdue, expressed as % of total portfolio (IMOR). Bank data: CNBV commercial bank reports. Fintech IMOR: CNBV SOFIPO/bank disclosures via Legal Paradox &amp; Miranda Intelligence.</div>
+  <div class="chart-wrap"><canvas id="m_nplChart"></canvas></div>
+</div>
+
+<div class="signal-ticker">
+  <div class="signal-item"><div class="sig-label">Banxico Rate (May 2026)</div><div class="sig-val" style="color:var(--navy);">6.50%</div><div class="sig-note">Cut 25bps May 7, 2026. Down from peak 11.25% (2023). 8th consecutive cut.</div></div>
+  <div class="signal-item"><div class="sig-label">CPI Inflation (Apr 2026)</div><div class="sig-val" style="color:var(--amber);">4.45%</div><div class="sig-note">Easing from 4.59% (Mar). Target 3%. Core at 4.26% — sticky services inflation.</div></div>
+  <div class="signal-item"><div class="sig-label">Fintech Deposit Rate</div><div class="sig-val" style="color:var(--green-dark);">12–15%</div><div class="sig-note">Nu Mexico 12.25%; Mercado Pago 15% (Dec 2024). Above Cetes (9.95%).</div></div>
+  <div class="signal-item"><div class="sig-label">Credit Card APR (Bank)</div><div class="sig-val" style="color:var(--red);">~40–70%</div><div class="sig-note">Average bank credit card rate. Personal loan rates 30–90%+.</div></div>
+  <div class="signal-item"><div class="sig-label">Real Rate Spread</div><div class="sig-val">~2.0%</div><div class="sig-note">Banxico rate minus CPI. Positive real rate — still restrictive for borrowers.</div></div>
+</div>
+
+<div class="info-box amber">
+  <div class="info-title">The Margin Squeeze</div>
+  Fintechs raising deposits at 12–15% face a <strong>cost of funds 5–9 percentage points above Banxico's policy rate</strong>. As Banxico cuts (11.25% → 6.5% May 2026), deposit rates will follow, widening net interest margins. But the rising NPL trend is the bigger risk: personal loan delinquency surged +47% in 2025, and fintechs running 11–13% IMOR are absorbing losses that compress or eliminate any margin gain from rate cuts.
+</div>
+
+<div class="verdict-box neutral" style="margin-top:20px;">
+  <div class="verdict-label">Current market condition — NEUTRAL</div>
+  <div class="verdict-text">Easing rate cycle is a tailwind for cost of debt funding. BNPL growing 29% CAGR. 70% of adults without a credit card. But personal loan NPL +47% in 2025 signals rising credit stress in the underbanked segment. Disciplined underwriting is now the defining competitive variable.</div>
+</div>
   `;
 
-  if(!state.chartsInit.macro){
-    state.chartsInit.macro = true;
-    const rd = d.ratesData;
-    new Chart(document.getElementById('macroRatesChart'),{
-      type:'line',
-      data:{
-        labels:rd.labels,
-        datasets:[
-          {label:'Banxico rate',data:rd.banxico,borderColor:'#0f2342',backgroundColor:'rgba(15,35,66,.08)',tension:.3,pointRadius:3},
-          {label:'Fintech deposit rate',data:rd.fintech,borderColor:'#00a878',backgroundColor:'rgba(0,168,120,.08)',tension:.3,pointRadius:3,borderDash:[4,3]},
-        ]
-      },
-      options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:9}}}},scales:{y:{ticks:{callback:v=>v+'%'},grid:{color:'#eef2f6'}},x:{ticks:{font:{size:9}}}}}
-    });
-    const nd = d.nplData;
-    new Chart(document.getElementById('macroNplChart'),{
-      type:'line',
-      data:{
-        labels:nd.labels,
-        datasets:[
-          {label:'Nu Mexico',data:nd.nu,borderColor:'#00a878',tension:.3,pointRadius:3,fill:false},
-          {label:'Klar',data:nd.klar,borderColor:'#e53e3e',tension:.3,pointRadius:3,fill:false},
-          {label:'Stori',data:nd.stori,borderColor:'#f59e0b',tension:.3,pointRadius:3,fill:false},
-        ]
-      },
-      options:{responsive:true,plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:9}}}},scales:{y:{ticks:{callback:v=>v+'%'},grid:{color:'#eef2f6'}},x:{ticks:{font:{size:9}}}}}
-    });
-  }
+  // Initialize all 8 charts
+  const C={responsive:true};
+  const leg={position:'bottom',labels:{boxWidth:10,font:{size:9},padding:6}};
+  const pct=v=>`${v}%`;
+
+  new Chart(document.getElementById('m_pieTotal'),{type:'doughnut',data:{labels:['Credit Cards (Bank)','Payroll Loans','Personal Loans','Auto Loans','Durables','BNPL (Non-Bank)','Digital Cash Loans','Fintech Cards & Other'],datasets:[{data:[24,21,14,10,3,4.0,1.8,1.4],backgroundColor:[GREEN,'#2a5caa',RED,AMBER,'#9ab5d4','#00c896',AMBER,'#7c3aed'],borderColor:'#fff',borderWidth:2,hoverOffset:7}]},options:{...C,cutout:'55%',plugins:{legend:{...leg},title:{display:true,text:'Total Consumer Credit Mix (USD B)',color:NAVY,font:{size:11,weight:'700'},padding:{bottom:7}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: $${ctx.parsed}B`}}}}});
+
+  new Chart(document.getElementById('m_pieUnsecured'),{type:'doughnut',data:{labels:['Bank Credit Cards','Bank Personal Loans','Fintech Credit Cards','BNPL (Non-Bank)','Digital Cash Loans'],datasets:[{data:[24,14,1.0,4.0,1.8],backgroundColor:[GREEN,RED,'#7c3aed','#00c896',AMBER],borderColor:'#fff',borderWidth:2,hoverOffset:7}]},options:{...C,cutout:'55%',plugins:{legend:{...leg},title:{display:true,text:'Unsecured Credit (USD B)',color:NAVY,font:{size:11,weight:'700'},padding:{bottom:7}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: $${ctx.parsed}B (~${((ctx.parsed/44.8)*100).toFixed(0)}%)`}}}}});
+
+  new Chart(document.getElementById('m_pieSecured'),{type:'doughnut',data:{labels:['Payroll Loans (Bank)','Auto Loans (Bank)','Durables / BNPL Durable','Platform / Payroll (Fintech)'],datasets:[{data:[21,10,3,0.2],backgroundColor:['#2a5caa',AMBER,'#9ab5d4','#4d7aaa'],borderColor:'#fff',borderWidth:2,hoverOffset:7}]},options:{...C,cutout:'55%',plugins:{legend:{...leg},title:{display:true,text:'Secured / Asset-Backed Credit (USD B)',color:NAVY,font:{size:11,weight:'700'},padding:{bottom:7}},tooltip:{callbacks:{label:ctx=>`${ctx.label}: $${ctx.parsed}B (~${((ctx.parsed/34.2)*100).toFixed(0)}%)`}}}}});
+
+  new Chart(document.getElementById('m_inclusionChart'),{type:'bar',data:{labels:['2014','2017','2018','2021','2024'],datasets:[{label:'Banked (%)',data:[39,54,47,56,76.5],backgroundColor:'rgba(0,168,120,.75)',borderColor:GREEN,borderWidth:1.5,borderRadius:5,stack:'pop'},{label:'Unbanked (%)',data:[61,46,53,44,23.5],backgroundColor:'rgba(229,62,62,.4)',borderColor:RED,borderWidth:1.5,borderRadius:5,stack:'pop'}]},options:{...C,plugins:{legend:{position:'bottom',labels:{boxWidth:11,font:{size:10}}},title:{display:true,text:'Banked vs Unbanked Adults, Mexico (%)',color:NAVY,font:{size:12,weight:'700'},padding:{bottom:10}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y}%`}}},scales:{y:{beginAtZero:true,max:100,stacked:true,grid:{color:GRID},ticks:{callback:pct}},x:{stacked:true,grid:{display:false}}}}});
+
+  new Chart(document.getElementById('m_creditPenChart'),{type:'bar',data:{labels:['With Credit Card','Any Credit Access','Formal Savings','BNPL Users (est.)','Payroll Credit'],datasets:[{label:'% of Adult Population (~97M)',data:[30,46,63,8,18],backgroundColor:[GREEN,'#2a5caa','#007a58',AMBER,'#9ab5d4'],borderRadius:6,borderSkipped:false}]},options:{indexAxis:'y',...C,plugins:{legend:{display:false},title:{display:true,text:'Credit & Financial Product Penetration (% Adults)',color:NAVY,font:{size:12,weight:'700'},padding:{bottom:10}},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x}% of adults (~${Math.round(ctx.parsed.x*.97)}M people)`}}},scales:{x:{beginAtZero:true,max:80,grid:{color:GRID},ticks:{callback:pct}},y:{grid:{display:false},ticks:{font:{size:9}}}}}});
+
+  new Chart(document.getElementById('m_inflationChart'),{type:'line',data:{labels:['Jan 22','Jul 22','Jan 23','Jul 23','Jan 24','Jul 24','Jan 25','Jul 25','Jan 26','Apr 26'],datasets:[{label:'Headline CPI (% YoY)',data:[7.07,8.15,7.91,4.79,4.88,5.57,3.77,4.65,3.77,4.45],borderColor:RED,backgroundColor:'rgba(229,62,62,.08)',pointBackgroundColor:RED,pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:4,fill:true,tension:.4},{label:'Core CPI (% YoY)',data:[6.21,7.65,8.45,6.68,4.59,4.03,3.65,3.87,3.71,4.26],borderColor:AMBER,backgroundColor:'rgba(245,158,11,.06)',pointBackgroundColor:AMBER,pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:4,fill:false,tension:.4,borderDash:[4,3]},{label:'Banxico Target (3%)',data:[3,3,3,3,3,3,3,3,3,3],borderColor:'rgba(0,168,120,.4)',borderDash:[6,4],pointRadius:0,borderWidth:1.5,fill:false}]},options:{...C,plugins:{legend:{position:'bottom',labels:{boxWidth:11,font:{size:10}}},title:{display:true,text:'Mexico CPI Inflation — Headline & Core (% YoY)',color:NAVY,font:{size:12,weight:'700'},padding:{bottom:10}},tooltip:{mode:'index',intersect:false,callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y}%`}}},scales:{y:{beginAtZero:true,max:10,grid:{color:GRID},ticks:{callback:pct}},x:{grid:{display:false},ticks:{font:{size:9}}}}}});
+
+  new Chart(document.getElementById('m_ratesChart'),{type:'line',data:{labels:['Jan 22','Jul 22','Jan 23','Jul 23','Jan 24','Jul 24','Jan 25','Jul 25','Jan 26','May 26'],datasets:[{label:'Banxico Policy Rate (%)',data:[6.0,8.5,11.0,11.25,11.0,10.75,10.0,8.5,7.0,6.5],borderColor:NAVY,backgroundColor:'rgba(15,35,66,.08)',pointBackgroundColor:NAVY,pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:4,fill:true,tension:.3},{label:'Nu MX Deposit Rate (%)',data:[null,null,null,null,null,14.5,13.5,12.8,12.25,11.5],borderColor:GREEN,backgroundColor:'transparent',pointBackgroundColor:GREEN,pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:4,tension:.3,borderDash:[5,3]},{label:'Mercado Pago Deposit Rate (%)',data:[null,null,null,null,null,16.5,16.0,15.5,15.0,14.0],borderColor:AMBER,backgroundColor:'transparent',pointBackgroundColor:AMBER,pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:4,tension:.3,borderDash:[5,3]},{label:'Cetes 28-day (%)',data:[5.8,8.3,10.7,11.2,11.1,10.7,9.95,8.5,7.0,6.5],borderColor:'#7c3aed',backgroundColor:'transparent',pointBackgroundColor:'#7c3aed',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:4,tension:.3,borderDash:[3,2]}]},options:{...C,plugins:{legend:{position:'bottom',labels:{boxWidth:11,font:{size:10}}},title:{display:true,text:'Banxico Rate vs Deposit Rates vs Cetes (%)',color:NAVY,font:{size:12,weight:'700'},padding:{bottom:10}},tooltip:{mode:'index',intersect:false,callbacks:{label:ctx=>ctx.parsed.y!==null?`${ctx.dataset.label}: ${ctx.parsed.y}%`:''}}},scales:{y:{beginAtZero:true,max:20,grid:{color:GRID},ticks:{callback:pct}},x:{grid:{display:false},ticks:{font:{size:9}}}}}});
+
+  new Chart(document.getElementById('m_nplChart'),{type:'line',data:{labels:['2021','2022','Dec 2023','Dec 2024','Q3/Q4 2025'],datasets:[{label:'Bank: Personal Loans',data:[3.8,4.30,4.78,4.66,6.10],borderColor:RED,pointBackgroundColor:RED,pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,fill:false,tension:.3,borderWidth:2.5},{label:'Bank: Credit Cards',data:[2.8,2.60,3.20,3.50,3.50],borderColor:GREEN,pointBackgroundColor:GREEN,pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,fill:false,tension:.3,borderWidth:2.5},{label:'Bank: Payroll Loans',data:[2.0,2.20,2.50,2.80,2.80],borderColor:'#2a5caa',pointBackgroundColor:'#2a5caa',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,fill:false,tension:.3,borderDash:[5,3],borderWidth:2},{label:'Fintech: Klar (IMOR)',data:[null,null,null,8.00,11.23],borderColor:'#e53e3e',pointBackgroundColor:'#e53e3e',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,fill:false,tension:.3,borderDash:[4,2],borderWidth:2},{label:'Fintech: Stori (IMOR)',data:[null,null,null,7.50,13.13],borderColor:AMBER,pointBackgroundColor:AMBER,pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,fill:false,tension:.3,borderDash:[4,2],borderWidth:2},{label:'Fintech: Nu Mexico (IMOR)',data:[null,null,null,5.20,6.83],borderColor:'#7c3aed',pointBackgroundColor:'#7c3aed',pointBorderColor:'#fff',pointBorderWidth:2,pointRadius:5,fill:false,tension:.3,borderDash:[4,2],borderWidth:2}]},options:{...C,plugins:{legend:{position:'bottom',labels:{boxWidth:11,font:{size:10}}},title:{display:true,text:'Unsecured Credit NPL / IMOR Trend (%)',color:NAVY,font:{size:12,weight:'700'},padding:{bottom:10}},tooltip:{mode:'index',intersect:false,callbacks:{label:ctx=>ctx.parsed.y!==null?`${ctx.dataset.label}: ${ctx.parsed.y}%`:''}}},scales:{y:{beginAtZero:true,max:16,grid:{color:GRID},ticks:{callback:pct}},x:{grid:{display:false},ticks:{font:{size:9}}}}}});
 }
 
 // ═══════════════════════════════════════════
