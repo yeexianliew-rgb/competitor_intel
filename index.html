@@ -274,6 +274,35 @@ body.tab-marketing .panel-container{margin-top:var(--topbar-h)}
 .mkt-ad-src-link{font-size:.65rem;font-weight:600;color:var(--navy-light);text-decoration:none;padding:2px 6px;border:1px solid var(--border);border-radius:3px;background:var(--surface)}
 .mkt-ad-src-link:hover{border-color:var(--navy);color:var(--navy)}
 
+/* ── SOFT ROW GRID (Awareness + Creatives) ── */
+.mkt-row-grid-wrap{overflow-x:auto;margin-bottom:24px}
+.mkt-row-grid{min-width:960px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
+.mkt-row-comp-header{display:grid;grid-template-columns:120px repeat(4,1fr);background:var(--navy)}
+.mkt-row-corner{padding:10px 12px;border-right:1px solid rgba(255,255,255,.1);min-height:44px}
+.mkt-row-comp-name{padding:11px 14px 10px;border-top:4px solid transparent;border-right:1px solid rgba(255,255,255,.1);font-family:'DM Serif Display',serif;font-size:.88rem;color:#fff;font-weight:400}
+.mkt-row-comp-name:last-child{border-right:none}
+.mkt-surface-row{display:grid;grid-template-columns:120px repeat(4,1fr);border-top:1px solid var(--border)}
+.mkt-surface-label{padding:12px 10px 10px;background:var(--surface);border-right:2px solid var(--border);display:flex;flex-direction:column;gap:3px}
+.mkt-surface-label-title{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--navy)}
+.mkt-surface-label-sub{font-size:.58rem;color:var(--muted);line-height:1.35}
+.mkt-surface-cell{padding:8px 10px;border-right:1px solid var(--border)}
+.mkt-surface-cell:last-child{border-right:none}
+.mkt-surface-cell.empty{background:#fafbfd;display:flex;align-items:center;justify-content:center;min-height:60px}
+.mkt-surface-empty-txt{font-size:.6rem;color:#c8d3e3;font-style:italic;text-align:center}
+.mkt-cell-card{border:1px solid var(--border);border-radius:7px;padding:8px 10px;background:#fff;margin-bottom:6px}
+.mkt-cell-card:last-child{margin-bottom:0}
+.mkt-cell-card.mkt-row-clickable{cursor:pointer;transition:all .12s}
+.mkt-cell-card.mkt-row-clickable:hover{background:var(--surface);border-color:#a8b8d0}
+.mkt-cell-card.mkt-row-active{background:#f0f6ff;border-color:var(--navy-light);border-left:3px solid var(--navy-light)}
+.mkt-cell-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:5px}
+.mkt-cell-card-name{font-size:.74rem;font-weight:600;color:var(--navy);line-height:1.3;flex:1}
+.mkt-cell-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px;align-items:center}
+.mkt-cell-flow{font-size:.65rem;color:var(--muted);font-style:italic;line-height:1.4}
+.mkt-cell-stats{font-size:.63rem;color:var(--muted);line-height:1.3;margin-top:2px}
+.mkt-cell-copy{font-size:.68rem;font-style:italic;color:var(--text);border-left:2px solid var(--border);padding-left:6px;margin-top:4px;line-height:1.4}
+.mkt-pillars-cell{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-start;padding:10px 12px}
+.mkt-pillars-cell .pillar-tag{font-size:.63rem;padding:3px 8px}
+
 /* ── PRODUCT FEED ── */
 .prod-subnav{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 .prod-tab-btn{font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
@@ -1895,12 +1924,31 @@ function renderMarketing(){
   const compColors = {nu:'#00a878',mp:'#f59e0b',kueski:'#007a58',plata:'#0f2342'};
   const spendMap = {High:'spend-high',Medium:'spend-medium',Low:'spend-low'};
 
-  const sections = [
-    {key:'awareness',label:'Awareness'},
-    {key:'creatives',label:'Creatives & Messaging'},
-    {key:'promotions',label:'Promotions'},
+  // ── Row definitions (shared by Awareness + Creatives) ──
+  const rowDefs = [
+    {key:'socials',    label:'Socials',              sub:'Paid & organic social'},
+    {key:'search',     label:'Search',               sub:'Google & branded search'},
+    {key:'affiliates', label:'KOLs & Affiliates',    sub:'Influencers, KOLs, partner embeds'},
+    {key:'comms',      label:'Comms & Owned',        sub:'Email, push, WhatsApp, ecosystem'},
+    {key:'appstore',   label:'App Store / Play Store',sub:'ASO & store listings'},
   ];
-  const subnav = sections.map(s =>
+  const chCatMap = {paid_social:'socials',organic_social:'socials',search:'search',affiliate:'affiliates',owned:'comms',comms:'comms',aso:'appstore'};
+  function campRow(ch,nm){
+    const lc=(ch||'').toLowerCase(), nl=(nm||'').toLowerCase();
+    if(lc.includes('celebrity')||lc.includes('influencer')||nl.includes('celebrity')||nl.includes('ambassador')||lc==='amazon embed + meta') return 'affiliates';
+    if(lc.includes('google')&&!lc.includes('meta')&&!lc.includes('tiktok')) return 'search';
+    if((lc.includes('email')||lc.includes('push')||lc.includes('seller'))&&!lc.includes('meta')&&!lc.includes('tiktok')) return 'comms';
+    return 'socials';
+  }
+
+  // ── Competitor header row ──
+  function compHeaderHtml(){
+    return `<div class="mkt-row-comp-header"><div class="mkt-row-corner"></div>${
+      comps.map(k=>`<div class="mkt-row-comp-name" style="border-top-color:${compColors[k]}">${labels[k]}</div>`).join('')
+    }</div>`;
+  }
+
+  const subnav = [{key:'awareness',label:'Awareness'},{key:'creatives',label:'Creatives & Messaging'},{key:'promotions',label:'Promotions'}].map(s =>
     `<button class="mkt-subnav-btn${s.key===section?' active':''}" onclick="switchMktSection('${s.key}')">${s.label}</button>`
   ).join('');
 
@@ -1908,87 +1956,114 @@ function renderMarketing(){
   function isActive(k,type,i){ const m=state.mktDetail; return !!(m && m.comp===k && m.section===type && m.idx===i); }
   function expandArrow(k,type,i){ return hasAds(k,type,i)?`<span class="mkt-row-expand">›</span>`:''; }
 
-  let cols = '';
+  // ── Render a channel card for the grid ──
+  function chCard(k, ch, i){
+    const spendCls = spendMap[ch.spendLevel]||'spend-low';
+    const rawType = ch.type.split(' ')[0].replace(/-/g,'_');
+    const active = isActive(k,'channels',i), clickable = hasAds(k,'channels',i);
+    return `<div class="mkt-cell-card${clickable?' mkt-row-clickable':''}${active?' mkt-row-active':''}"${clickable?` onclick="showMktDetail('${k}','channels',${i})"`:''}>
+      <div class="mkt-cell-card-top"><span class="mkt-cell-card-name">${escHtml(ch.name)}</span>${expandArrow(k,'channels',i)}</div>
+      <div class="mkt-cell-badges"><span class="ct-badge ct-${rawType}">${escHtml(ch.type.replace(/_/g,' '))}</span><span class="${spendCls}">${escHtml(ch.spendLevel)}</span></div>
+      <div class="mkt-cell-flow">${escHtml(ch.uxFlow)}</div>
+      <div class="mkt-cell-stats">${escHtml(ch.trafficEst)} · ${escHtml(ch.engagement)}</div>
+    </div>`;
+  }
+
+  // ── Render a campaign card for the grid ──
+  function campCard(k, c, i){
+    const active = isActive(k,'campaigns',i);
+    return `<div class="mkt-cell-card mkt-row-clickable${active?' mkt-row-active':''}" onclick="showMktDetail('${k}','campaigns',${i})">
+      <div class="mkt-cell-card-top"><span class="mkt-cell-card-name">${escHtml(c.name)}</span><span class="mkt-row-expand">›</span></div>
+      <div class="mkt-cell-badges"><span class="mkt-channel-badge">${escHtml(c.channel)}</span><span class="mkt-date">${escHtml(c.period)}</span></div>
+      <div class="mkt-cell-copy">${escHtml(c.copy)}</div>
+    </div>`;
+  }
+
+  // ── Build one surface row (returns HTML string) ──
+  function surfaceRow(row, cellsFn){
+    const cells = comps.map(k => cellsFn(k, row.key)).join('');
+    return `<div class="mkt-surface-row">
+      <div class="mkt-surface-label"><div class="mkt-surface-label-title">${escHtml(row.label)}</div><div class="mkt-surface-label-sub">${escHtml(row.sub)}</div></div>
+      ${cells}
+    </div>`;
+  }
+
+  let gridContent = '';
 
   if(section === 'awareness'){
-    cols = comps.map(k => {
+    // Overview row (funnel summary per competitor)
+    const overviewRow = `<div class="mkt-surface-row" style="border-top:none">
+      <div class="mkt-surface-label" style="background:var(--navy);justify-content:center">
+        <div class="mkt-surface-label-title" style="color:rgba(255,255,255,.6)">Overview</div>
+      </div>
+      ${comps.map(k=>{
+        const d=DATA.mktFunnels[k];
+        return `<div class="mkt-surface-cell" style="background:var(--surface)"><div style="font-size:.71rem;line-height:1.5;color:var(--muted);font-style:italic">${escHtml(d.funnelSummary)}</div></div>`;
+      }).join('')}
+    </div>`;
+
+    // 5 channel rows
+    const chRows = rowDefs.map(row => surfaceRow(row, (k, rowKey) => {
       const d = DATA.mktFunnels[k];
-      const chRows = d.channels.map((ch,i) => {
-        const spendCls = spendMap[ch.spendLevel] || 'spend-low';
-        const rawType = ch.type.split(' ')[0].replace(/-/g,'_');
-        const active = isActive(k,'channels',i);
-        const clickable = hasAds(k,'channels',i);
-        return `<div class="mkt-ch-row${clickable?' mkt-row-clickable':''}${active?' mkt-row-active':''}"${clickable?` onclick="showMktDetail('${k}','channels',${i})"`:''}>
-          <div class="mkt-ch-row-top">
-            <span class="mkt-ch-name">${escHtml(ch.name)}</span>
-            <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
-              <span class="${spendCls}">${escHtml(ch.spendLevel)}</span>
-              ${expandArrow(k,'channels',i)}
-            </div>
-          </div>
-          <div class="mkt-ch-row-type"><span class="ct-badge ct-${rawType}">${escHtml(ch.type.replace(/_/g,' '))}</span></div>
-          <div class="mkt-ch-flow">${escHtml(ch.uxFlow)}</div>
-          <div class="mkt-ch-metrics">${escHtml(ch.trafficEst)} · ${escHtml(ch.engagement)}</div>
-        </div>`;
-      }).join('');
-      return `<div class="mkt-comp-col">
-        <div class="mkt-comp-col-header" style="border-top-color:${compColors[k]}">${labels[k]}</div>
-        <div class="mkt-funnel-summary-sm">${escHtml(d.funnelSummary)}</div>
-        <div class="mkt-ch-list">${chRows}</div>
-        <div class="mkt-implication-sm">${escHtml(d.channelImplication)}</div>
-      </div>`;
-    }).join('');
+      const items = d.channels.map((ch,i)=>({ch,i})).filter(({ch})=>(chCatMap[ch.type]||'socials')===rowKey);
+      if(!items.length) return `<div class="mkt-surface-cell empty"><span class="mkt-surface-empty-txt">No presence</span></div>`;
+      return `<div class="mkt-surface-cell">${items.map(({ch,i})=>chCard(k,ch,i)).join('')}</div>`;
+    })).join('');
+
+    // SCredito implication row
+    const implRow = `<div class="mkt-surface-row">
+      <div class="mkt-surface-label" style="background:rgba(245,158,11,.12)">
+        <div class="mkt-surface-label-title" style="color:#92400e">SCredito</div>
+        <div class="mkt-surface-label-sub" style="color:#b45309">Implication</div>
+      </div>
+      ${comps.map(k=>{
+        const d=DATA.mktFunnels[k];
+        return `<div class="mkt-surface-cell" style="background:var(--amber-light);border-right-color:rgba(245,158,11,.25)"><div style="font-size:.7rem;line-height:1.5;color:#78350f">${escHtml(d.channelImplication)}</div></div>`;
+      }).join('')}
+    </div>`;
+
+    gridContent = `<div class="mkt-row-grid-wrap"><div class="mkt-row-grid">
+      ${compHeaderHtml()}${overviewRow}${chRows}${implRow}
+    </div></div>`;
 
   } else if(section === 'creatives'){
-    cols = comps.map(k => {
+    // Brand Voice row (evergreen pillars)
+    const pillarsRow = `<div class="mkt-surface-row" style="border-top:none">
+      <div class="mkt-surface-label" style="background:var(--navy);justify-content:center">
+        <div class="mkt-surface-label-title" style="color:rgba(255,255,255,.6)">Brand Voice</div>
+        <div class="mkt-surface-label-sub" style="color:rgba(255,255,255,.4)">Evergreen pillars</div>
+      </div>
+      ${comps.map(k=>{
+        const d=DATA.mktFunnels[k];
+        const pillars=d.messaging.evergreen.map(p=>`<span class="pillar-tag" style="font-size:.63rem;padding:3px 8px" title="${escHtml(p.channels.join(', '))}: ${escHtml(p.copy)}">${escHtml(p.pillar)}</span>`).join('');
+        return `<div class="mkt-surface-cell mkt-pillars-cell">${pillars}</div>`;
+      }).join('')}
+    </div>`;
+
+    // 5 campaign rows grouped by surface
+    const campRows = rowDefs.map(row => surfaceRow(row, (k, rowKey) => {
       const d = DATA.mktFunnels[k];
-      const pillars = d.messaging.evergreen.map(p =>
-        `<span class="pillar-tag" title="${escHtml(p.channels.join(', '))}: ${escHtml(p.copy)}">${escHtml(p.pillar)}</span>`
-      ).join('');
-      const campRows = d.messaging.campaigns.map((c,i) => {
-        const active = isActive(k,'campaigns',i);
-        return `<div class="mkt-campaign-row${active?' mkt-row-active':''}" onclick="showMktDetail('${k}','campaigns',${i})">
-          <div class="mkt-campaign-row-name">
-            ${escHtml(c.name)}
-            <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
-              <span class="mkt-date">${escHtml(c.period)}</span>
-              <span class="mkt-row-expand">›</span>
-            </div>
-          </div>
-          <div class="campaign-meta">
-            <span class="mkt-channel-badge">${escHtml(c.channel)}</span>
-            <span class="mkt-hook-badge">${escHtml(c.hook)}</span>
-          </div>
-          <div class="campaign-copy">${escHtml(c.copy)}</div>
-          ${c.notes ? `<div class="campaign-notes">${escHtml(c.notes)}</div>` : ''}
-        </div>`;
-      }).join('');
-      return `<div class="mkt-comp-col">
-        <div class="mkt-comp-col-header" style="border-top-color:${compColors[k]}">${labels[k]}</div>
-        <div class="mkt-pillars-wrap">
-          <div class="mkt-sub-header" style="margin-top:0">Evergreen Pillars</div>
-          <div class="pillar-cloud" style="margin-bottom:0">${pillars}</div>
-        </div>
-        <div class="mkt-sub-header" style="padding:8px 14px 0;margin:0">Campaigns</div>
-        <div class="mkt-campaign-list">${campRows}</div>
-      </div>`;
-    }).join('');
+      const items = d.messaging.campaigns.map((c,i)=>({c,i})).filter(({c})=>campRow(c.channel,c.name)===rowKey);
+      if(!items.length) return `<div class="mkt-surface-cell empty"><span class="mkt-surface-empty-txt">No campaigns</span></div>`;
+      return `<div class="mkt-surface-cell">${items.map(({c,i})=>campCard(k,c,i)).join('')}</div>`;
+    })).join('');
+
+    gridContent = `<div class="mkt-row-grid-wrap"><div class="mkt-row-grid">
+      ${compHeaderHtml()}${pillarsRow}${campRows}
+    </div></div>`;
 
   } else if(section === 'promotions'){
-    cols = comps.map(k => {
+    // Promotions: keep original 4-column card layout (unchanged)
+    const cols = comps.map(k => {
       const d = DATA.mktFunnels[k];
       const prmRows = d.prm.map((p,i) => {
         const typeSlug = p.type.toLowerCase().replace(/[^a-z]/g,'');
         const statusCls = (p.status||'').toLowerCase()==='active' ? 'prm-status-active' : 'prm-status-historic';
-        const active = isActive(k,'prm',i);
-        const clickable = hasAds(k,'prm',i);
+        const active = isActive(k,'prm',i), clickable = hasAds(k,'prm',i);
         return `<div class="mkt-prm-row${clickable?' mkt-row-clickable':''}${active?' mkt-row-active':''}"${clickable?` onclick="showMktDetail('${k}','prm',${i})"`:''}>
           <div class="mkt-prm-row-top">
             <span class="prm-type-badge prm-t-${typeSlug}">${escHtml(p.type)}</span>
-            <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
-              <span class="${statusCls}">${escHtml(p.status)}</span>
-              ${expandArrow(k,'prm',i)}
-            </div>
+            <div style="display:flex;align-items:center;gap:5px;flex-shrink:0"><span class="${statusCls}">${escHtml(p.status)}</span>${expandArrow(k,'prm',i)}</div>
           </div>
           <div class="prm-mechanic-sm">${escHtml(p.mechanic)}</div>
           <div class="prm-segment">${escHtml(p.segment)} · ${escHtml(p.period)}</div>
@@ -2000,9 +2075,10 @@ function renderMarketing(){
         <div class="mkt-counter-sm">${escHtml(d.prmCounterMove)}</div>
       </div>`;
     }).join('');
+    gridContent = `<div class="mkt-comp-grid-wrap"><div class="mkt-comp-grid">${cols}</div></div>`;
   }
 
-  // ── Detail panel ──
+  // ── Detail panel (unchanged) ──
   let detailHtml = '';
   if(state.mktDetail){
     const {comp:dc, section:ds, idx:di} = state.mktDetail;
@@ -2023,14 +2099,14 @@ function renderMarketing(){
         return `<div class="mkt-ad-card">
           <div class="mkt-ad-preview">${preview}</div>
           <div class="mkt-ad-body">
-            ${ad.headlineEs ? `<div class="mkt-ad-headline">${escHtml(ad.headlineEs)}</div>` : ''}
+            ${ad.headlineEs?`<div class="mkt-ad-headline">${escHtml(ad.headlineEs)}</div>`:''}
             <div class="mkt-ad-copy-es">${escHtml(ad.adCopyEs)}</div>
             <div class="mkt-ad-copy-en">${escHtml(ad.adCopyEn)}</div>
             <div class="mkt-ad-footer">
-              ${ad.ctaEs ? `<span class="mkt-ad-cta">${escHtml(ad.ctaEs)}</span>` : ''}
+              ${ad.ctaEs?`<span class="mkt-ad-cta">${escHtml(ad.ctaEs)}</span>`:''}
               <div class="mkt-ad-footer-right">
-                ${ad.dateSeen ? `<span class="mkt-date">${escHtml(ad.dateSeen)}</span>` : ''}
-                ${ad.sourceUrl ? `<a href="${escHtml(ad.sourceUrl)}" target="_blank" class="mkt-ad-src-link">Source ↗</a>` : ''}
+                ${ad.dateSeen?`<span class="mkt-date">${escHtml(ad.dateSeen)}</span>`:''}
+                ${ad.sourceUrl?`<a href="${escHtml(ad.sourceUrl)}" target="_blank" class="mkt-ad-src-link">Source ↗</a>`:''}
               </div>
             </div>
           </div>
@@ -2040,7 +2116,7 @@ function renderMarketing(){
         <div class="mkt-detail-header">
           <div>
             <div class="mkt-detail-label">${escHtml(dLabel)} — ${escHtml(itemName)}</div>
-            <div class="mkt-detail-sublabel">${ads.length} ad example${ads.length>1?'s':''} · Click "Source ↗" on each card to view the original · Research as of 2026-05-21</div>
+            <div class="mkt-detail-sublabel">${ads.length} ad example${ads.length>1?'s':''} · Click "Source ↗" on each card · Research as of 2026-05-21</div>
           </div>
           <button class="mkt-detail-close" onclick="closeMktDetail()">✕</button>
         </div>
@@ -2055,9 +2131,7 @@ function renderMarketing(){
       <div class="panel-sub">Nu · Mercado Pago · Kueski · Plata — side-by-side comparison · Last updated: 2026-05-21</div>
     </div>
     <div class="mkt-subnav">${subnav}</div>
-    <div class="mkt-comp-grid-wrap">
-      <div class="mkt-comp-grid">${cols}</div>
-    </div>
+    ${gridContent}
     ${detailHtml}
   `;
 }
