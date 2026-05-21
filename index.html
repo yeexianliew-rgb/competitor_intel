@@ -106,13 +106,24 @@ body.tab-digest .panel-container{margin-top:var(--topbar-h)}
 .digest-col-head .col-count{font-weight:400;font-size:.62rem;color:var(--muted)}
 .feed{display:flex;flex-direction:column;gap:0}
 .feed-card{
-  background:#fff;border:1px solid var(--border);border-radius:8px;
+  position:relative;background:#fff;border:1px solid var(--border);border-radius:8px;
   padding:13px 15px;margin-bottom:8px;
-  transition:box-shadow .15s
+  transition:box-shadow .15s,border-color .15s
 }
 .feed-card:hover{box-shadow:0 3px 14px rgba(0,0,0,.07)}
-.feed-card.fc-upcoming{background:var(--surface);border-color:var(--border)}
+.feed-card.fc-clickable{cursor:pointer}
+.feed-card.fc-clickable:hover{border-color:#b0c4de;box-shadow:0 4px 16px rgba(15,35,66,.09)}
+.feed-card.fc-upcoming{border-left:3px solid var(--amber)}
 .feed-card.fc-promoted{border-left:3px solid var(--amber)}
+/* NEW badge */
+.new-badge{
+  position:absolute;top:11px;right:12px;
+  background:var(--green);color:#fff;
+  font-size:.55rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase;
+  padding:2px 7px;border-radius:3px;pointer-events:none;
+  transition:opacity .3s
+}
+.new-badge.fade{opacity:0}
 .fc-meta{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
 /* Shared badge sizing — identical across NEWS and UPCOMING */
 .cat-badge,.comp-badge{
@@ -943,6 +954,17 @@ const COMPETITORS = ['Nu','Plata','Kueski','Mercado Pago','Klar','Stori','DiDi',
 const CHANNELS = ['Social/Meta','TikTok','Google / SEO','App / In-app','Marketplace / Amazon','Influencer / Offline','Marketplace / Landing'];
 
 // ═══════════════════════════════════════════
+// SEEN-ITEMS PERSISTENCE
+// ═══════════════════════════════════════════
+function getSeenIds(){
+  try{ return new Set(JSON.parse(localStorage.getItem('digestSeen')||'[]')); }catch{ return new Set(); }
+}
+function markSeen(id){
+  const s = getSeenIds(); s.add(id);
+  try{ localStorage.setItem('digestSeen', JSON.stringify([...s])); }catch{}
+}
+
+// ═══════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════
 function escHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
@@ -1008,20 +1030,22 @@ function renderDigest(){
     .filter(e => !q || matchesSearch([e.title, e.note], q))
     .sort((a,b) => new Date(a.sortDate) - new Date(b.sortDate));
 
+  const seenIds = getSeenIds();
+
   function newsCard(n){
     const catLc = (n.category||'').toLowerCase().replace(/\s+/g,'');
-    const headlineHtml = n.sourceUrl
-      ? `<a href="${n.sourceUrl}" target="_blank" rel="noopener">${escHtml(n.headline)}</a>`
-      : escHtml(n.headline);
-    const extraClass = n._type === 'promoted' ? ' fc-promoted' : '';
+    const hasLink = !!n.sourceUrl;
+    const isNew = !!n.id && !seenIds.has(n.id);
+    const extraClass = (n._type==='promoted' ? ' fc-promoted' : '') + (hasLink ? ' fc-clickable' : '');
     return `
-    <div class="feed-card${extraClass}">
+    <div class="feed-card${extraClass}" data-id="${escHtml(n.id||'')}" data-src="${escHtml(n.sourceUrl||'')}">
+      ${isNew ? '<span class="new-badge">New</span>' : ''}
       <div class="fc-meta">
         <span class="cat-badge ${catLc}">${escHtml(n.category)}</span>
         ${n.competitor ? `<span class="comp-badge">${escHtml(n.competitor)}</span>` : ''}
         <span class="fc-date">${fmtDate(n.date)}</span>
       </div>
-      <div class="fc-headline">${headlineHtml}</div>
+      <div class="fc-headline">${escHtml(n.headline)}</div>
       <div class="fc-summary">${escHtml(n.oneLineSummary)}</div>
     </div>`;
   }
@@ -1063,6 +1087,29 @@ function renderDigest(){
       </div>
     </div>
   `;
+
+  // Wire up card interactions: click to open source + mark seen; hover 1s to mark seen
+  document.querySelectorAll('#panel-digest .feed-card[data-id]').forEach(card => {
+    const id = card.dataset.id;
+    const src = card.dataset.src;
+    if(!id) return;
+
+    function dismiss(){
+      markSeen(id);
+      const badge = card.querySelector('.new-badge');
+      if(badge){ badge.classList.add('fade'); setTimeout(() => badge.remove(), 300); }
+    }
+
+    if(src){
+      card.addEventListener('click', () => { window.open(src,'_blank','noopener'); dismiss(); });
+    }
+
+    if(!seenIds.has(id)){
+      let t = null;
+      card.addEventListener('mouseenter', () => { t = setTimeout(dismiss, 1000); });
+      card.addEventListener('mouseleave', () => clearTimeout(t));
+    }
+  });
 }
 
 // ═══════════════════════════════════════════
