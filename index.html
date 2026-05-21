@@ -81,6 +81,8 @@ body.tab-digest #filterbar{display:none}
 body.tab-digest .panel-container{margin-top:var(--topbar-h)}
 body.tab-products #filterbar{display:none}
 body.tab-products .panel-container{margin-top:var(--topbar-h)}
+body.tab-marketing #filterbar{display:none}
+body.tab-marketing .panel-container{margin-top:var(--topbar-h)}
 .tab-panel{display:none;padding:28px 32px 60px}
 .tab-panel.active{display:block}
 
@@ -154,36 +156,62 @@ body.tab-products .panel-container{margin-top:var(--topbar-h)}
   margin-top:6px;padding-top:6px;border-top:1px solid var(--border)
 }
 
-/* ── MARKETING CARDS ── */
-.mkt-feed-header{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-.mkt-feed-title{font-size:.8rem;font-weight:600;color:var(--navy)}
-.mkt-feed-meta{font-size:.68rem;color:var(--muted)}
-.mkt-inline-filters{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;display:flex;flex-direction:column;gap:8px}
-.mkt-filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.mkt-filter-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);white-space:nowrap;min-width:52px}
-.marketing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px;margin-bottom:28px}
-.mkt-card{background:#fff;border-radius:8px;border:1px solid var(--border);border-top:3px solid var(--navy);overflow:hidden;display:flex;flex-direction:column}
-.mkt-header{padding:10px 14px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-.mkt-comp{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--navy)}
-.mkt-status-badge{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px}
-.mkt-status-active{background:var(--green-light);color:var(--green-dark)}
-.mkt-status-inactive{background:var(--surface);color:var(--muted)}
-.mkt-status-noads{background:var(--amber-light);color:#92400e}
-.mkt-meta-row{padding:4px 14px 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--surface)}
+/* ── MARKETING FEED ── */
+.mkt-subnav{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.mkt-subnav-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:.75rem;font-weight:700;padding:7px 18px;border-radius:20px;cursor:pointer;transition:all .15s;letter-spacing:.2px}
+.mkt-subnav-btn:hover{border-color:var(--navy);color:var(--navy)}
+.mkt-subnav-btn.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.mkt-section{margin-bottom:24px;padding:22px 24px;background:#fff;border:1px solid var(--border);border-radius:12px}
+.mkt-section-title{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px}
+.mkt-funnel-summary{font-size:.84rem;line-height:1.6;color:var(--text);margin-bottom:16px;padding:10px 14px;background:var(--surface);border-radius:8px;border-left:3px solid var(--navy-light)}
+.mkt-implication{margin-top:14px;padding:10px 14px;background:var(--amber-light);border-left:3px solid var(--amber);border-radius:6px;font-size:.8rem;line-height:1.5;color:#78350f}
+.mkt-counter{margin-top:14px;padding:10px 14px;background:var(--green-light);border-left:3px solid var(--green);border-radius:6px;font-size:.8rem;line-height:1.5;color:#065f46;font-weight:600}
+.mkt-sub-header{font-size:.72rem;font-weight:700;color:var(--navy);margin:14px 0 8px;text-transform:uppercase;letter-spacing:.5px}
+.mkt-ch-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.mkt-ch-table thead tr{background:var(--navy);color:#fff}
+.mkt-ch-table th{padding:8px 12px;text-align:left;font-weight:600;font-size:.7rem;letter-spacing:.4px}
+.mkt-ch-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.45}
+.mkt-ch-table tr:last-child td{border-bottom:none}
+.ux-flow{font-size:.72rem;color:var(--muted);font-style:italic;line-height:1.45}
+.ct-badge{font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:2px 6px;border-radius:3px;display:inline-block;white-space:nowrap}
+.ct-paid_social,.ct-paid{background:#dbeafe;color:#1e40af}
+.ct-organic_social,.ct-organic{background:#d1fae5;color:#065f46}
+.ct-search{background:#ede9fe;color:#5b21b6}
+.ct-aso{background:#dcfce7;color:#166534}
+.ct-affiliate{background:#fef3c7;color:#92400e}
+.ct-owned{background:#e0f2fe;color:#0369a1}
+.ct-comms{background:#f3f4f6;color:#374151}
+.spend-high{background:#fee2e2;color:#991b1b;font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:3px;text-transform:uppercase;white-space:nowrap}
+.spend-medium{background:#fef3c7;color:#92400e;font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:3px;text-transform:uppercase;white-space:nowrap}
+.spend-low{background:#d1fae5;color:#065f46;font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:3px;text-transform:uppercase;white-space:nowrap}
 .mkt-channel-badge{font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:3px;background:var(--surface);border:1px solid var(--border);color:var(--navy-mid)}
 .mkt-date{font-size:.65rem;color:var(--muted)}
 .mkt-hook-badge{font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:10px;background:#e8eeff;color:var(--navy-mid);border:1px solid #c7d4f5}
-.mkt-screenshot{height:72px;background:var(--surface);display:flex;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:.72rem;border-bottom:1px solid var(--surface)}
-.mkt-screenshot a{color:var(--navy-light);font-size:.7rem;font-weight:600;text-decoration:none}
-.mkt-screenshot a:hover{text-decoration:underline}
-.mkt-body{padding:10px 14px;flex:1;display:flex;flex-direction:column;gap:6px}
-.mkt-field-row{display:flex;gap:4px;align-items:baseline;font-size:.75rem}
-.mkt-field-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);white-space:nowrap;min-width:82px}
-.mkt-field-val{color:var(--text);line-height:1.45}
-.mkt-headline{font-size:.83rem;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:2px}
-.mkt-links{padding:8px 14px;background:var(--surface);border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:6px}
-.mkt-link{font-size:.65rem;font-weight:600;color:var(--navy-light);text-decoration:none;padding:2px 6px;border:1px solid var(--border);border-radius:3px;background:#fff}
-.mkt-link:hover{border-color:var(--navy);color:var(--navy)}
+.pillar-cloud{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.pillar-tag{background:var(--navy);color:#fff;font-size:.72rem;font-weight:600;padding:5px 12px;border-radius:16px;cursor:default;transition:background .15s}
+.pillar-tag:hover{background:var(--navy-mid)}
+.campaign-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.campaign-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.campaign-name{font-weight:700;font-size:.82rem;color:var(--navy);margin-bottom:6px}
+.campaign-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.campaign-copy{font-size:.78rem;font-style:italic;color:var(--text);border-left:2px solid var(--border);padding-left:10px;margin:8px 0;line-height:1.5}
+.campaign-notes{font-size:.72rem;color:var(--muted)}
+.prm-grid{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}
+.prm-card{width:280px;flex-shrink:0;background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.prm-type-badge{font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:2px 7px;border-radius:3px;display:inline-block;margin-bottom:8px}
+.prm-t-referral{background:#dbeafe;color:#1e40af}
+.prm-t-interest{background:#d1fae5;color:#065f46}
+.prm-t-voucher{background:#fef3c7;color:#92400e}
+.prm-t-cashback{background:#ede9fe;color:#5b21b6}
+.prm-t-loyalty{background:#e0f2fe;color:#0369a1}
+.prm-t-event{background:#fee2e2;color:#991b1b}
+.prm-t-savings,.prm-t-savingsyield{background:#d1fae5;color:#065f46}
+.prm-mechanic{font-size:.82rem;color:var(--text);font-weight:500;line-height:1.45;margin-bottom:8px}
+.prm-segment{font-size:.7rem;color:var(--muted);margin-bottom:6px}
+.prm-footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.prm-status-active{font-size:.62rem;font-weight:700;background:#d1fae5;color:#065f46;padding:2px 7px;border-radius:3px;text-transform:uppercase}
+.prm-status-historic{font-size:.62rem;font-weight:700;background:#f3f4f6;color:#6b7280;padding:2px 7px;border-radius:3px;text-transform:uppercase}
+.prm-period{font-size:.68rem;color:var(--muted)}
 
 /* ── PRODUCT FEED ── */
 .prod-subnav{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
@@ -557,7 +585,135 @@ upcomingEvents: [
    type:'critical'},
 ],
 
-marketingItems: [
+mktFunnels: {
+  nu: {
+    funnelSummary: 'Brand-first neobank acquisition — heavy paid social + TikTok UGC drives awareness, frictionless onboarding (3 min, no branch visit) converts, referral loop compounds growth.',
+    channelImplication: 'Nu owns the brand-awareness battle in MX fintech; SCredito must find white-space positioning (e.g. speed + higher limits) rather than matching Nu on breadth.',
+    prmCounterMove: 'Match Nu\'s referral mechanic but differentiate on reward size — offer higher cashback thresholds tied to first disbursement rather than just account open.',
+    channels: [
+      {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~2M imp/mo [est.]',engagement:'CTR ~1.2%, CPM $4–6 USD [est.]',uxFlow:'Ad → nu.com.mx/cuenta → App Store → biometric signup → instant virtual card',spendLevel:'High'},
+      {name:'TikTok',type:'organic_social',trafficEst:'50–100M views/mo cumulative [est.]',engagement:'Avg 3–5% engagement on brand posts [est.]',uxFlow:'TikTok video → profile link → nu.com.mx → App Store → onboarding',spendLevel:'High'},
+      {name:'Google branded search',type:'search',trafficEst:'~500K searches/mo [est.]',engagement:'CTR 40%+ on branded terms [est.]',uxFlow:'Search "Nu tarjeta" → nu.com.mx → onboarding funnel',spendLevel:'Medium'},
+      {name:'App Store / Play Store (ASO)',type:'aso',trafficEst:'Top 3 Finance MX ranking [est.]',engagement:'4.8★ App Store, 4.6★ Play Store',uxFlow:'Organic search in app store → install → biometric onboarding',spendLevel:'Medium'},
+      {name:'WhatsApp referral',type:'comms',trafficEst:'~300K referral sends/mo [est.]',engagement:'Conversion ~8% of opens [est.]',uxFlow:'WA message with invite link → App Store → onboarding → card active',spendLevel:'Low'},
+    ],
+    messaging: {
+      evergreen: [
+        {pillar:'Sin comisiones para siempre',channels:['Meta','TikTok','Landing Page','Google'],copy:'"Otros cobran, Nu no. Sin anualidad, sin comisiones, sin letra chica."'},
+        {pillar:'Abre tu cuenta en 5 minutos',channels:['Meta','TikTok'],copy:'"Tu tarjeta Nu en minutos. Todo desde tu celular, sin ir a una sucursal."'},
+        {pillar:'Tu tarjeta gratis llega en días',channels:['Landing Page','App Store'],copy:'"Pídela hoy, recíbela en 3–5 días. Sin costo de envío."'},
+        {pillar:'Controla todo desde la app',channels:['App Store','In-app push'],copy:'"Bloquea tu tarjeta, ajusta tu límite, ve cada movimiento — todo en la app."'},
+      ],
+      campaigns: [
+        {name:'10M Historias',period:'Q1 2026',channel:'TikTok',hook:'Social proof',copy:'"10 millones de mexicanos ya tienen su Nu — ¿y tú?"',notes:'UGC-style TikTok series featuring real customer stories. Boosted as paid ads.'},
+        {name:'Sin Comisiones para Siempre',period:'Ongoing',channel:'Meta + Google',hook:'No fees',copy:'"Otros cobran, Nu no. Sin anualidad, sin comisiones, sin letra chica."',notes:'Always-on performance creative. A/B tested across hundreds of variations.'},
+        {name:'Nu Rewards launch',period:'Apr 2026',channel:'Meta + Instagram',hook:'Cashback / rewards',copy:'"Ahora tus compras te dan puntos. Nu Rewards ya está aquí."',notes:'New rewards programme announced Apr 2026. Push + email to existing base plus paid acquisition.'},
+      ],
+    },
+    prm: [
+      {type:'Referral',mechanic:'MXN $50 cashback credited to both referrer and new user on account activation',segment:'Existing Nu users → friends & family',status:'Active',period:'Ongoing'},
+      {type:'Interest',mechanic:'0% interest on first billing cycle for new Nu Credit cardholders',segment:'New credit card applicants',status:'Active',period:'Ongoing'},
+      {type:'Savings yield',mechanic:'10.5% annual yield on Cuenta Nu balances — used as acquisition hook in ads',segment:'Banked savers looking to move deposits',status:'Active',period:'Ongoing'},
+      {type:'Loyalty',mechanic:'Nu+ premium tier at MXN $99/mo — priority support, higher limits, exclusive offers',segment:'Heavy users / power spenders',status:'Active',period:'Ongoing'},
+    ],
+  },
+  mp: {
+    funnelSummary: 'Ecosystem lock-in — ML buyers and sellers are a captive audience; awareness via in-app banners + email to 22M+ ML MX users, conversion via MSI (meses sin intereses) embedded at checkout.',
+    channelImplication: 'MP\'s zero-CAC captive funnel is unbeatable for SCredito to replicate; focus on segments MP underserves — users without ML purchase history or merchants outside the ML ecosystem.',
+    prmCounterMove: 'Counter MSI with a simpler, fully-transparent instalment offer — no hidden merchant surcharge, no minimum purchase, instant approval without requiring an existing account.',
+    channels: [
+      {name:'Mercado Libre in-app cross-sell',type:'owned',trafficEst:'22M+ active ML MX users [est.]',engagement:'CTR on in-app banner ~3–5% [est.]',uxFlow:'ML checkout → "Paga con MP Crédito" banner → MP app install → credit activation',spendLevel:'High'},
+      {name:'Email & push (ML base)',type:'comms',trafficEst:'~15M email sends/mo [est.]',engagement:'Open rate ~18%, CTR ~3% [est.]',uxFlow:'Email "Activa tu crédito MP" → landing page → MP app → onboarding',spendLevel:'Medium'},
+      {name:'QR merchant network',type:'owned',trafficEst:'1M+ QR acceptance points MX [est.]',engagement:'Merchant signage → QR scan → MP app download prompt',uxFlow:'See QR sticker at merchant → scan → MP app install → wallet activation',spendLevel:'Low'},
+      {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~1.5M imp/mo [est.]',engagement:'CTR ~0.9% [est.]',uxFlow:'Ad → mercadopago.com.mx → app install → onboarding',spendLevel:'Medium'},
+      {name:'Affiliate / co-brand',type:'affiliate',trafficEst:'Card issuers, e-commerce partners',engagement:'Variable by partner',uxFlow:'Partner site → MP landing page → app install',spendLevel:'Low'},
+    ],
+    messaging: {
+      evergreen: [
+        {pillar:'Gana intereses con tu saldo',channels:['Email','In-app push','Meta'],copy:'"Tu dinero parado en MP gana intereses cada día. Sin moverte."'},
+        {pillar:'Meses sin intereses en miles de tiendas',channels:['ML checkout','Meta','OOH'],copy:'"Hasta 24 MSI en Hot Sale y todos los días en miles de tiendas."'},
+        {pillar:'Tu historial es tu crédito',channels:['Meta','TikTok'],copy:'"No tienes historial en el buró? Tu historial de compras en Mercado Libre ya lo es."'},
+        {pillar:'Paga en todas partes con el QR',channels:['OOH','App','QR network'],copy:'"Un QR para pagar en millones de negocios en México."'},
+      ],
+      campaigns: [
+        {name:'Hot Sale MSI 2026',period:'Jun 2026',channel:'ML in-app + Meta',hook:'MSI savings',copy:'"Hasta 24 meses sin intereses en Hot Sale. Solo con Mercado Pago."',notes:'ML sends push + email blast to all MX buyers ~2 weeks before event.'},
+        {name:'Crédito para vendedores',period:'Q2 2026',channel:'ML seller email',hook:'Working capital',copy:'"¿Vendes en Mercado Libre? Tu historial de ventas ya califica para crédito hasta $500,000."',notes:'Targeted at ML power sellers; bypasses traditional credit bureau.'},
+        {name:'Buen Fin MSI 2025',period:'Nov 2025',channel:'ML in-app + Meta',hook:'MSI',copy:'"Buen Fin sin intereses. Solo con Mercado Pago."',notes:'Peak annual campaign. Historical 3–5× BNPL volume spike during Buen Fin week.'},
+      ],
+    },
+    prm: [
+      {type:'Interest',mechanic:'MSI 3/6/12/18/24 months — automatically offered at eligible merchant checkouts, no application needed',segment:'ML shoppers at participating merchants',status:'Active',period:'Ongoing'},
+      {type:'Cashback',mechanic:'ML Points 2× multiplier on purchases made with MP Credit Card',segment:'ML active buyers with MP credit',status:'Active',period:'Ongoing'},
+      {type:'Cashback',mechanic:'QR payment cashback weekends — 5% back on QR payments Sat–Sun at participating SME merchants',segment:'Urban daily spenders',status:'Active',period:'Rolling weekend events'},
+      {type:'Loyalty',mechanic:'Preferential merchant credit rate for ML power sellers (Top Seller tier) — below-market working capital',segment:'ML Top Seller merchants (>1,000 sales/mo)',status:'Active',period:'Ongoing'},
+    ],
+  },
+  kueski: {
+    funnelSummary: 'Checkout-embed acquisition — BNPL embedded at Amazon + 11K stores is the primary funnel; Meta paid drives the no-buró angle to underbanked; TikTok influencers demo the checkout flow live.',
+    channelImplication: 'Kueski\'s Amazon embed gives it near-zero-CAC BNPL installs SCredito cannot match; counter by targeting the post-BNPL upgrade path — offer a revolving line to Kueski users who have proven repayment.',
+    prmCounterMove: 'Offer a "graduation bonus" — existing Kueski borrowers who switch and complete their first on-time payment receive a credit limit bump, targeting proven payers Kueski trained.',
+    channels: [
+      {name:'Amazon MX checkout embed',type:'affiliate',trafficEst:'~40M Amazon MX sessions/mo [est.]',engagement:'BNPL prompt shown at cart — conversion ~5–8% of shown [est.]',uxFlow:'Amazon checkout → "Pagar con Kueski Pay" option → Kueski install/KYC → approval → purchase',spendLevel:'High'},
+      {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~1.5M imp/mo [est.]',engagement:'CTR ~1.1% [est.]',uxFlow:'Ad (no-buró angle) → kueskipay.com → App Store → KYC → first purchase',spendLevel:'High'},
+      {name:'TikTok influencer',type:'organic_social',trafficEst:'~20M views/mo cumulative [est.]',engagement:'Avg 4–6% engagement [est.]',uxFlow:'Influencer demo video → link in bio → kueskipay.com → app install',spendLevel:'Medium'},
+      {name:'App Store / Play Store (ASO)',type:'aso',trafficEst:'Top 10 Finance MX ranking [est.]',engagement:'4.5★ combined [est.]',uxFlow:'Organic store search → install → onboarding',spendLevel:'Medium'},
+      {name:'WhatsApp push (owned)',type:'comms',trafficEst:'~500K active users notified/mo [est.]',engagement:'Open rate ~40% [est.]',uxFlow:'"Tu pago de quincena vence en 3 días" push → app → payment / upsell',spendLevel:'Low'},
+    ],
+    messaging: {
+      evergreen: [
+        {pillar:'Sin buró de crédito',channels:['Meta','TikTok','Landing Page','Amazon'],copy:'"¿Te rechazaron en el banco? En Kueski te decimos sí — sin buró, sin aval."'},
+        {pillar:'Compra ahora, paga en quincenas',channels:['Amazon checkout','Meta'],copy:'"Lleva lo que necesitas hoy. Págalo en cómodas quincenas."'},
+        {pillar:'En Kueski te decimos sí',channels:['Meta','TikTok','OOH'],copy:'"Más de 10 millones de mexicanos ya confían en Kueski. ¿Y tú?"'},
+        {pillar:'Disponible en Amazon y 11,000+ tiendas',channels:['Landing Page','Meta'],copy:'"Kueski Pay disponible en Amazon MX, Mercado Libre, Temu y más de 11,000 tiendas."'},
+      ],
+      campaigns: [
+        {name:'Amazon Prime Day BNPL',period:'Jul 2026',channel:'Amazon embed + Meta',hook:'BNPL savings',copy:'"Paga tu Prime Day en quincenas. Sin buró. Sin estrés."',notes:'Exclusive checkout placement during Prime Day event window.'},
+        {name:'Buen Fin first-purchase 0%',period:'Nov 2025',channel:'Meta + TikTok',hook:'0% interest',copy:'"Tu primera compra de Buen Fin sin intereses con Kueski Pay."',notes:'Historically Kueski\'s largest marketing spend window of the year.'},
+        {name:'Tu primera compra sin intereses',period:'Ongoing',channel:'Meta',hook:'0% first loan',copy:'"Regístrate hoy y paga tu primera compra sin intereses. Solo en Kueski."',notes:'Permanent always-on top-of-funnel offer to drive first conversion.'},
+      ],
+    },
+    prm: [
+      {type:'Interest',mechanic:'0% interest on first BNPL purchase up to MXN $500 — no conditions, no time limit',segment:'First-time Kueski Pay users',status:'Active',period:'Ongoing'},
+      {type:'Referral',mechanic:'MXN $500 cashback to referrer when friend takes their first Kueski loan',segment:'Existing Kueski users',status:'Active',period:'Ongoing'},
+      {type:'Voucher',mechanic:'Seasonal 30% discount coupons at partner stores (e.g. Amazon, Temu) during Buen Fin / Hot Sale',segment:'Active BNPL users',status:'Active',period:'Seasonal'},
+      {type:'Loyalty',mechanic:'Bronze → Silver → Gold tier upgrades with higher credit limits and lower fees for on-time payers',segment:'Repeat borrowers (3+ loans)',status:'Active',period:'Ongoing'},
+    ],
+  },
+  plata: {
+    funnelSummary: 'Performance creative machine — multiple Meta + TikTok ad angles tested daily, celebrity ambassadors provide trust signals, aggressive cashback tiers are the primary conversion hook for the near-prime underserved segment.',
+    channelImplication: 'Plata\'s $5B Series C war chest means their paid creative budget will grow significantly; SCredito should monitor creative angles weekly and differentiate on speed-to-limit rather than matching cashback percentages.',
+    prmCounterMove: 'Offer a "cashback guarantee" — first 90 days SCredito matches Plata\'s cashback rate on top categories, after which users unlock a higher revolving limit, shifting the value prop from rewards to credit access.',
+    channels: [
+      {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~3M imp/mo [est.]',engagement:'CTR ~1.4%, CPM $5–8 USD [est.]',uxFlow:'Ad (cashback angle) → plata.com.mx → App Store → onboarding → card request → card delivery',spendLevel:'High'},
+      {name:'TikTok',type:'organic_social',trafficEst:'~30M views/mo cumulative [est.]',engagement:'5–8% engagement on top creative [est.]',uxFlow:'TikTok video/influencer → link in bio → plata.com.mx → app install',spendLevel:'High'},
+      {name:'Celebrity / influencer',type:'affiliate',trafficEst:'Varies — spike-driven (millions/campaign)',engagement:'Spike-driven CTR',uxFlow:'Celebrity post (IG/TikTok) → Plata landing page → App Store → onboarding',spendLevel:'High'},
+      {name:'Google branded + generic',type:'search',trafficEst:'~300K searches/mo [est.]',engagement:'CTR 35%+ branded [est.]',uxFlow:'Search "tarjeta cashback sin anualidad" → plata.com.mx → onboarding',spendLevel:'Medium'},
+      {name:'App Store / Play Store (ASO)',type:'aso',trafficEst:'Top 5 Finance MX ranking [est.]',engagement:'4.6★ combined [est.]',uxFlow:'Organic search → install → quick KYC → card order',spendLevel:'Medium'},
+    ],
+    messaging: {
+      evergreen: [
+        {pillar:'Cashback en todo lo que compras',channels:['Meta','TikTok','Landing Page'],copy:'"Cada compra te da de regreso. Hasta 24% cashback en tus categorías favoritas."'},
+        {pillar:'Sin anualidad',channels:['Meta','TikTok','Google'],copy:'"La Visa Infinite que sí es gratis. Sin anualidad. Para siempre."'},
+        {pillar:'Hasta 24% cashback en categorías favoritas',channels:['Landing Page','App Store','Meta'],copy:'"Elige tus 3 categorías favoritas y gana hasta 24% de regreso."'},
+        {pillar:'Visa Infinite benefits sin costo',channels:['Influencer','Landing Page'],copy:'"Acceso a lounges, seguro de viaje, concierge. La Visa Infinite que sí es para todos."'},
+      ],
+      campaigns: [
+        {name:'Visa Infinite launch',period:'Q4 2025',channel:'Meta + TikTok + celebrity',hook:'Premium positioning',copy:'"La Visa Infinite que sí es para todos. Sin anualidad. Con cashback real."',notes:'Positioned to contrast with traditional banks who charge $5,000+/yr for Infinite tier.'},
+        {name:'Celebrity ambassador series',period:'2026 ongoing',channel:'TikTok + Instagram',hook:'Social proof + aspiration',copy:'"[Celebrity] ya tiene su Plata. ¿Y tú?"',notes:'Multiple celebrity partners across music, sport, and entertainment. New ambassador announced ~Q2 2026.'},
+        {name:'"Plata te da más" cashback maximizer',period:'Ongoing',channel:'Meta always-on',hook:'Cashback maximization',copy:'"Elige tus 3 categorías favoritas y gana hasta 24% cashback. Solo en Plata."',notes:'Core performance creative. A/B tested with dozens of category-specific variants.'},
+      ],
+    },
+    prm: [
+      {type:'Cashback',mechanic:'Variable cashback tiers 2–24% based on 3 category selections; reviewed and adjustable monthly',segment:'All cardholders',status:'Active',period:'Ongoing'},
+      {type:'Interest',mechanic:'First-year annual fee waiver — MXN $0 fee permanently (product promise, not a trial)',segment:'All new applicants',status:'Active',period:'Permanent'},
+      {type:'Voucher',mechanic:'MXN $300 cashback welcome bonus credited after first MXN $1,500 spend within 60 days',segment:'New cardholders',status:'Active',period:'Ongoing'},
+      {type:'Referral',mechanic:'MXN $150 cashback for referrer + new user on card activation',segment:'Existing cardholders',status:'Active',period:'Ongoing'},
+      {type:'Event',mechanic:'Buen Fin double-cashback — all cashback rates doubled on Buen Fin weekend purchases',segment:'All active cardholders',status:'Active',period:'Annual — Nov 2026'},
+    ],
+  },
+},
+
+marketingItems_old: [
   // ── KUESKI ──
   {id:'KU-001',dateCaptured:'2026-05-21',competitor:'Kueski',channel:'Landing Page',adStatus:'active',
    sourceUrl:'https://www.kueskipay.com/registratehoy',creativeUrl:'',screenshotUrl:'',
@@ -1044,9 +1200,7 @@ const state = {
   search: '',
   productTab: 'kueski',
   chartsInit: {},
-  mktChannel: 'all',
-  mktHook: 'all',
-  mktStatus: 'all',
+  mktComp: 'nu',
   productsInit: false,
 };
 
@@ -1216,95 +1370,92 @@ function renderDigest(){
 // RENDER: MARKETING
 // ═══════════════════════════════════════════
 function renderMarketing(){
-  const q = state.search;
-  const comp = state.competitor;
+  const comp = state.mktComp;
+  const d = DATA.mktFunnels[comp];
+  const labels = {nu:'Nu',mp:'Mercado Pago',kueski:'Kueski',plata:'Plata'};
 
-  const ALL_CHANNELS = ['All','Meta','Landing Page','In-app / WhatsApp push'];
-  const ALL_HOOKS = ['All','No annual fee','Cashback','BNPL','No buró / No credit history','0% interest first loan','Instant approval','Savings yield','Emergency cash','Trust / security','App convenience'];
-  const ALL_STATUSES = ['All','Active','Inactive'];
+  const subnav = ['nu','mp','kueski','plata'].map(k =>
+    `<button class="mkt-subnav-btn${k===comp?' active':''}" onclick="switchMktComp('${k}')">${labels[k]}</button>`
+  ).join('');
 
-  const items = DATA.marketingItems.filter(m => {
-    if(!matchesComp(m.competitor, comp)) return false;
-    if(state.mktChannel !== 'all' && !(m.channel||'').toLowerCase().includes(state.mktChannel.toLowerCase())) return false;
-    if(state.mktHook !== 'all' && !(m.hook||'').toLowerCase().includes(state.mktHook.toLowerCase())) return false;
-    if(state.mktStatus !== 'all' && (m.adStatus||'').toLowerCase() !== state.mktStatus.toLowerCase()) return false;
-    if(!matchesSearch([m.headline,m.adCopySummary,m.hook,m.promoMechanics,m.competitor,m.channel,m.targetSegment,m.notes], q)) return false;
-    return true;
-  });
+  const spendMap = {High:'spend-high',Medium:'spend-medium',Low:'spend-low'};
+  const chRows = d.channels.map(ch => {
+    const spendCls = spendMap[ch.spendLevel] || 'spend-low';
+    const rawType = ch.type.split(' ')[0].replace(/-/g,'_');
+    return `<tr>
+      <td><strong>${escHtml(ch.name)}</strong></td>
+      <td><span class="ct-badge ct-${rawType}">${escHtml(ch.type.replace(/_/g,' '))}</span></td>
+      <td>${escHtml(ch.trafficEst)}</td>
+      <td>${escHtml(ch.engagement)}</td>
+      <td class="ux-flow">${escHtml(ch.uxFlow)}</td>
+      <td><span class="${spendCls}">${escHtml(ch.spendLevel)}</span></td>
+    </tr>`;
+  }).join('');
 
-  function statusBadge(s){
-    const lc=(s||'').toLowerCase();
-    if(lc==='active') return `<span class="mkt-status-badge mkt-status-active">Active</span>`;
-    if(lc==='inactive') return `<span class="mkt-status-badge mkt-status-inactive">Inactive</span>`;
-    return `<span class="mkt-status-badge mkt-status-noads">${escHtml(s)}</span>`;
-  }
+  const pillars = d.messaging.evergreen.map(p =>
+    `<span class="pillar-tag" title="${escHtml(p.channels.join(', '))}: ${escHtml(p.copy)}">${escHtml(p.pillar)}</span>`
+  ).join('');
 
-  function makeChips(list, stateKey, current){
-    return list.map(v => {
-      const val = v.toLowerCase()==='all' ? 'all' : v;
-      return `<button class="chip ${val===current?'active':''}" data-mkt="${stateKey}" data-val="${escHtml(val)}">${escHtml(v)}</button>`;
-    }).join('');
-  }
-
-  const cards = items.length ? items.map(m => {
-    const links = [];
-    if(m.sourceUrl) links.push(`<a class="mkt-link" href="${m.sourceUrl}" target="_blank">Source ↗</a>`);
-    if(m.creativeUrl) links.push(`<a class="mkt-link" href="${m.creativeUrl}" target="_blank">Creative ↗</a>`);
-    if(m.screenshotUrl) links.push(`<a class="mkt-link" href="${m.screenshotUrl}" target="_blank">Screenshot ↗</a>`);
-    if(m.landingPageUrl && m.landingPageUrl !== m.sourceUrl) links.push(`<a class="mkt-link" href="${m.landingPageUrl}" target="_blank">Landing page ↗</a>`);
-    const hasCreative = m.creativeUrl || m.screenshotUrl;
-    const previewHtml = hasCreative
-      ? `<div class="mkt-screenshot"><a href="${m.creativeUrl||m.screenshotUrl}" target="_blank">View creative ↗</a></div>`
-      : `<div class="mkt-screenshot" style="color:var(--muted);font-size:.68rem">Preview unavailable</div>`;
-    return `
-    <div class="mkt-card">
-      <div class="mkt-header">
-        <div class="mkt-comp">${escHtml(m.competitor)}</div>
-        ${statusBadge(m.adStatus)}
+  const campaigns = d.messaging.campaigns.map(c => `
+    <div class="campaign-card">
+      <div class="campaign-name">${escHtml(c.name)}</div>
+      <div class="campaign-meta">
+        <span class="mkt-channel-badge">${escHtml(c.channel)}</span>
+        <span class="mkt-hook-badge">${escHtml(c.hook)}</span>
+        <span class="mkt-date">${escHtml(c.period)}</span>
       </div>
-      <div class="mkt-meta-row">
-        <span class="mkt-channel-badge">${escHtml(m.channel)}</span>
-        <span class="mkt-hook-badge">${escHtml(m.hook)}</span>
-        <span class="mkt-date">${fmtDate(m.dateCaptured)}</span>
+      <div class="campaign-copy">${escHtml(c.copy)}</div>
+      ${c.notes ? `<div class="campaign-notes">${escHtml(c.notes)}</div>` : ''}
+    </div>`
+  ).join('');
+
+  const prms = d.prm.map(p => {
+    const typeSlug = p.type.toLowerCase().replace(/[^a-z]/g,'');
+    const statusCls = (p.status||'').toLowerCase()==='active' ? 'prm-status-active' : 'prm-status-historic';
+    return `<div class="prm-card">
+      <span class="prm-type-badge prm-t-${typeSlug}">${escHtml(p.type)}</span>
+      <div class="prm-mechanic">${escHtml(p.mechanic)}</div>
+      <div class="prm-segment">${escHtml(p.segment)}</div>
+      <div class="prm-footer">
+        <span class="${statusCls}">${escHtml(p.status)}</span>
+        <span class="prm-period">${escHtml(p.period)}</span>
       </div>
-      ${previewHtml}
-      <div class="mkt-body">
-        <div class="mkt-headline">${escHtml(m.headline)}</div>
-        <div class="mkt-field-row"><span class="mkt-field-label">Ad copy</span><span class="mkt-field-val">${escHtml(m.adCopySummary)}</span></div>
-        <div class="mkt-field-row"><span class="mkt-field-label">Promo</span><span class="mkt-field-val">${escHtml(m.promoMechanics)}</span></div>
-        <div class="mkt-field-row"><span class="mkt-field-label">Segment</span><span class="mkt-field-val">${escHtml(m.targetSegment)}</span></div>
-        <div class="mkt-field-row"><span class="mkt-field-label">CTA</span><span class="mkt-field-val">${escHtml(m.cta)}</span></div>
-        ${m.notes ? `<div class="mkt-field-row"><span class="mkt-field-label">Notes</span><span class="mkt-field-val" style="color:var(--muted)">${escHtml(m.notes)}</span></div>` : ''}
-      </div>
-      ${links.length ? `<div class="mkt-links">${links.join('')}</div>` : ''}
     </div>`;
-  }).join('') : `<div class="empty-state">🔍<p>No ads match the current filter. <button onclick="clearMktFilters()" style="background:none;border:none;color:var(--navy-light);cursor:pointer;font-size:.85rem;text-decoration:underline">Clear filters</button></p></div>`;
+  }).join('');
 
   document.getElementById('panel-marketing').innerHTML = `
     <div class="panel-header">
-      <div class="panel-title">Marketing Feed</div>
-      <div class="panel-sub">Latest active competitor ads — Meta Ads Library &amp; Google Ads Transparency Center · Last captured: 2026-05-21 · ${items.length} of ${DATA.marketingItems.length} shown</div>
+      <div class="panel-title">Marketing Feed — Funnel Intelligence</div>
+      <div class="panel-sub">Acquisition channels · messaging · promotions for Nu, Mercado Pago, Kueski &amp; Plata · Last updated: 2026-05-21</div>
     </div>
-    <div class="mkt-inline-filters" id="mktFilters">
-      <div class="mkt-filter-row"><span class="mkt-filter-label">Channel</span>${makeChips(ALL_CHANNELS,'mktChannel',state.mktChannel)}</div>
-      <div class="mkt-filter-row"><span class="mkt-filter-label">Hook</span>${makeChips(ALL_HOOKS,'mktHook',state.mktHook)}</div>
-      <div class="mkt-filter-row"><span class="mkt-filter-label">Status</span>${makeChips(ALL_STATUSES,'mktStatus',state.mktStatus)}</div>
+    <div class="mkt-subnav">${subnav}</div>
+    <div class="mkt-section">
+      <div class="mkt-section-title">1 — Out-of-App Acquisition Channels</div>
+      <div class="mkt-funnel-summary">${escHtml(d.funnelSummary)}</div>
+      <div class="tbl-wrap">
+        <table class="mkt-ch-table">
+          <thead><tr><th>Channel</th><th>Type</th><th>Est. Reach / Traffic</th><th>Est. Engagement</th><th>UX Flow → Install &amp; Activation</th><th>Spend</th></tr></thead>
+          <tbody>${chRows}</tbody>
+        </table>
+      </div>
+      <div class="mkt-implication">${escHtml(d.channelImplication)}</div>
     </div>
-    <div class="marketing-grid">${cards}</div>
+    <div class="mkt-section">
+      <div class="mkt-section-title">2 — Messaging &amp; Creatives</div>
+      <div class="mkt-sub-header">Evergreen Pillars</div>
+      <div class="pillar-cloud">${pillars}</div>
+      <div class="mkt-sub-header">Campaign Examples</div>
+      <div class="campaign-grid">${campaigns}</div>
+    </div>
+    <div class="mkt-section">
+      <div class="mkt-section-title">3 — Promotions, Retention &amp; Conversion</div>
+      <div class="prm-grid">${prms}</div>
+      <div class="mkt-counter">${escHtml(d.prmCounterMove)}</div>
+    </div>
   `;
-
-  document.getElementById('mktFilters').querySelectorAll('.chip[data-mkt]').forEach(ch => {
-    ch.addEventListener('click', () => {
-      state[ch.dataset.mkt] = ch.dataset.val;
-      renderMarketing();
-    });
-  });
 }
 
-function clearMktFilters(){
-  state.mktChannel = 'all'; state.mktHook = 'all'; state.mktStatus = 'all';
-  renderMarketing();
-}
+window.switchMktComp = function(k){ state.mktComp = k; renderMarketing(); };
 
 // ═══════════════════════════════════════════
 // RENDER: PRODUCTS
