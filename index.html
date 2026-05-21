@@ -79,6 +79,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 .panel-container{margin-top:calc(var(--topbar-h) + var(--filterbar-h));min-height:calc(100vh - var(--topbar-h) - var(--filterbar-h))}
 body.tab-digest #filterbar{display:none}
 body.tab-digest .panel-container{margin-top:var(--topbar-h)}
+body.tab-products #filterbar{display:none}
+body.tab-products .panel-container{margin-top:var(--topbar-h)}
 .tab-panel{display:none;padding:28px 32px 60px}
 .tab-panel.active{display:block}
 
@@ -358,6 +360,7 @@ body.tab-digest .panel-container{margin-top:var(--topbar-h)}
 .stat-pill{background:var(--surface);border-radius:6px;padding:5px 9px;font-size:.71rem;color:var(--navy);font-weight:600}
 .stat-pill span{display:block;font-size:.59rem;color:var(--muted);font-weight:400;margin-top:1px;text-transform:uppercase;letter-spacing:.2px}
 .card-watch{font-size:.74rem;color:#92400e;font-weight:600;border-top:1px solid var(--border);padding-top:8px;margin-top:8px}
+.card-limited{display:inline-block;font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;background:#fef3c7;color:#92400e;border:1px solid var(--amber);padding:2px 7px;border-radius:3px;margin-bottom:6px}
 .sub-sub-title{font-size:.88rem;font-weight:700;color:var(--green-dark);margin:16px 0 6px}
 .prod-specs-header{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:20px 0 10px;padding-top:16px;border-top:2px solid var(--border)}
 .tbl-wrap{overflow-x:auto;margin:10px 0 20px;border-radius:8px;border:1px solid var(--border)}
@@ -1477,7 +1480,8 @@ function renderProducts(){
     <div class="player-card" id="card-didi" style="border-top-color:#e53e3e;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
         <div>
-          <div class="card-type" style="color:var(--red);">Ecosystem — Ride-Hailing</div>
+          <span class="card-limited">Limited info</span>
+          <div class="card-type" style="color:var(--red);margin-top:4px;">Ecosystem — Ride-Hailing</div>
           <div class="card-name">DiDi Finanzas</div>
           <div class="card-tagline">Ride-hailing platform embeds consumer credit via SOFIPO</div>
         </div>
@@ -1620,7 +1624,8 @@ function renderProducts(){
     <div class="player-card" id="card-aplazo" style="border-top-color:#7c3aed;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
         <div>
-          <div class="card-type" style="color:#7c3aed;">Leech — BNPL (Fashion/Lifestyle)</div>
+          <span class="card-limited">Limited info</span>
+          <div class="card-type" style="color:#7c3aed;margin-top:4px;">Leech — BNPL (Fashion/Lifestyle)</div>
           <div class="card-name">Aplazo</div>
           <div class="card-tagline">Zero-interest BNPL; fashion-first; bureau-reporting</div>
         </div>
@@ -1872,6 +1877,153 @@ function renderProducts(){
           <div class="stat-pill" title="Performance marketing (Meta/Google); underbanked segment has lower CPM but higher churn rate. S&M constrained by profitability target. Est. ~$20–35M/yr ÷ est. 1–1.5M users/yr.">$22<span>CAC est.</span></div>
         </div>
         <div class="card-watch">⚠ Only profitable neobank — but at 13.13% NPL. Profitability may be temporarily masking credit deterioration.</div>
+      </div>
+    </div>
+
+    <div class="player-card" id="card-revolut" style="border-top-color:#0075eb;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
+        <div>
+          <span class="card-limited">Limited info</span>
+          <div class="card-type" style="color:#0055cc;margin-top:4px;">Open Market — Global Neobank</div>
+          <div class="card-name">Revolut</div>
+          <div class="card-tagline">UK super-app; first new IBM licence in Mexico; remittance + multi-currency play</div>
+        </div>
+        <button onclick="toggleDetail('revolut')" style="background:#ebf4ff;border:1px solid #93c5fd;color:#0055cc;font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">Details ▾</button>
+      </div>
+      <div id="detail-revolut" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
+        <div class="sub-sub-title" style="margin-top:0;">Basic Info</div>
+        <p style="font-size:0.82rem;"><strong>Founded:</strong> 2015 (London, UK); Mexico beta Dec 2025, public launch Jan 2026 · <strong>Status:</strong> Institución de Banca Múltiple (CNBV, Oct 2025) — first new IBM licence issued in Mexico · <strong>Global:</strong> $45B valuation (Jul 2024); 45M+ users globally; profitable globally (2024: £1.1B revenue, £438M pre-tax profit) · <strong>CEO:</strong> Nik Storonsky · <strong>Model:</strong> Multi-currency super-app; remittance as acquisition hook for the Mexico market</p>
+        <div class="sub-sub-title">Core Products (Mexico)</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Type</th><th>Rate</th><th>Tenor</th><th>Limit</th></tr></thead>
+          <tbody>
+            <tr><td>Revolut Account</td><td>Multi-currency account + debit card</td><td>N/A</td><td>Demand</td><td>N/A</td></tr>
+            <tr><td>US Remittances</td><td>Zero-fee US-Mexico transfer</td><td>$0 fee; competitive FX rate</td><td>Instant</td><td>Regulated limits</td></tr>
+            <tr><td>Revolut Card</td><td>Debit (credit card roadmap for 2026+)</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
+            <tr><td>Savings Vault</td><td>Interest-bearing savings (global product)</td><td>TBD for Mexico</td><td>Demand</td><td>N/A</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Business Sizing</div>
+        <div class="kpi-grid" style="margin:8px 0 12px;">
+          <div class="kpi-card" style="flex:1 1 140px;"><div class="kpi-val">290K+</div><div class="kpi-lbl">Mexico Beta Users (Dec 2025)</div><div class="kpi-note">$218M deposits in beta. Public launch Jan 2026. Too early for mature user count.</div></div>
+          <div class="kpi-card amber" style="flex:1 1 140px;"><div class="kpi-val">n/d</div><div class="kpi-lbl">Mexico Loan Portfolio</div><div class="kpi-note">Credit card not yet fully launched in Mexico as of early 2026. Lending revenue negligible.</div></div>
+        </div>
+        <div class="info-box amber" style="margin-top:10px;font-size:0.82rem;"><strong>Limited Info:</strong> Mexico operations too early-stage for meaningful financial benchmarking. Global metrics strong — £438M pre-tax profit (2024), $45B valuation — but Mexico P&amp;L not broken out and credit products still launching. Key bet: zero-fee US remittances to capture the ~$63B Mexico-US corridor and use it as an onboarding hook for credit.</div>
+        <div class="sub-sub-title">Customer Acquisition Cost</div>
+        <div class="kpi-grid" style="margin:8px 0 10px;">
+          <div class="kpi-card" style="flex:1 1 120px;"><div class="kpi-val">$30</div><div class="kpi-lbl">CAC (top est.)</div><div class="kpi-note">Est. from global Revolut avg ~£8–12; Mexico open market adds paid digital premium</div></div>
+          <div class="kpi-card" style="flex:1 1 120px;"><div class="kpi-val">Remittance hook</div><div class="kpi-lbl">Acquisition angle</div><div class="kpi-note">Zero-fee US-Mexico remittance as loss-leader; unique in peer group</div></div>
+          <div class="kpi-card" style="flex:1 1 120px;"><div class="kpi-val">Referral + digital</div><div class="kpi-lbl">Channel mix</div><div class="kpi-note">Heavy referral program globally; Meta/Google performance in Mexico</div></div>
+        </div>
+        <p style="font-size:0.81rem;color:var(--muted);line-height:1.5;margin-bottom:10px;"><strong>Channel mix:</strong> Referral program (~40%), paid digital Meta/Google (~35%), remittance partnership marketing (~15%), influencer (~10%). Revolut's global playbook is referral-heavy. Mexico strategy uses zero-fee remittances as the acquisition hook — a unique angle no other player has. Banking licence (IBM, not SOFIPO) gives it more product flexibility than any competitor except Plata and Nu.</p>
+        <div id="specs-revolut" class="prod-specs-section"></div>
+      </div>
+      <div id="summary-revolut" style="margin-top:12px;">
+        <div class="stat-row">
+          <div class="stat-pill">290K+<span>Users (beta)</span></div>
+          <div class="stat-pill">$218M<span>Deposits (beta)</span></div>
+          <div class="stat-pill">n/d<span>Revenue (MX)</span></div>
+          <div class="stat-pill">n/d<span>NPL</span></div>
+          <div class="stat-pill">n/d<span>Profitability</span></div>
+          <div class="stat-pill" title="Est. from global Revolut avg ~£8-12 CAC; Mexico open market premium. Remittance hook may pull effective CAC lower.">$30<span>CAC est.</span></div>
+        </div>
+        <div class="card-watch">⚠ Very early in Mexico. Remittance hook + IBM licence = potential to scale fast in 2026. Watch credit product launch timing.</div>
+      </div>
+    </div>
+
+    <div class="player-card" id="card-baubap" style="border-top-color:#7c3aed;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
+        <div>
+          <span class="card-limited">Limited info</span>
+          <div class="card-type" style="color:#5b21b6;margin-top:4px;">Open Market — Microloan / Subprime</div>
+          <div class="card-name">Baubap</div>
+          <div class="card-tagline">High-CAT microloan app; no bureau; app store distribution; CONDUSEF complaint history</div>
+        </div>
+        <button onclick="toggleDetail('baubap')" style="background:#f5f3ff;border:1px solid #c4b5fd;color:#5b21b6;font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">Details ▾</button>
+      </div>
+      <div id="detail-baubap" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
+        <div class="sub-sub-title" style="margin-top:0;">Basic Info</div>
+        <p style="font-size:0.82rem;"><strong>Founded:</strong> ~2017, Mexico City · <strong>Status:</strong> SOFOM ENR (CNBV supervised) · <strong>Model:</strong> Unsecured microloans via app; no credit bureau required; smartphone + behavioural scoring · <strong>Known issues:</strong> CONDUSEF complaints re: collection practices and undisclosed fees; high effective APR; rollover trap structure for borrowers who miss payment</p>
+        <div class="sub-sub-title">Core Products</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Type</th><th>Rate</th><th>Tenor</th><th>Limit</th></tr></thead>
+          <tbody>
+            <tr><td>Baubap Préstamo Personal</td><td>Unsecured microloan</td><td>130–360% CAT</td><td>7–90 days</td><td>MXN 500–20,000</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Business Sizing</div>
+        <div class="kpi-grid" style="margin:8px 0 12px;">
+          <div class="kpi-card" style="flex:1 1 140px;"><div class="kpi-val">n/d</div><div class="kpi-lbl">Active Users</div><div class="kpi-note">App store reviews suggest active base; no public disclosure. SOFOM ENR has no CNBV quarterly reporting requirement.</div></div>
+          <div class="kpi-card amber" style="flex:1 1 140px;"><div class="kpi-val">n/d</div><div class="kpi-lbl">Loan Portfolio OS</div><div class="kpi-note">Short-tenor model keeps OS low relative to volume. No public data available.</div></div>
+        </div>
+        <div class="info-box amber" style="margin-top:10px;font-size:0.82rem;"><strong>Limited Info:</strong> Private SOFOM ENR with no CNBV quarterly reporting requirement and no public financials. All estimates are structural only. High CAT (130–360%) provides revenue headroom but CONDUSEF complaint volume suggests NPL/collection stress.</div>
+        <div class="sub-sub-title">Customer Acquisition Cost</div>
+        <div class="kpi-grid" style="margin:8px 0 10px;">
+          <div class="kpi-card" style="flex:1 1 120px;"><div class="kpi-val">$20</div><div class="kpi-lbl">CAC (top est.)</div><div class="kpi-note">Performance marketing; high churn inflates effective CAC vs headline</div></div>
+          <div class="kpi-card" style="flex:1 1 120px;"><div class="kpi-val">App stores</div><div class="kpi-lbl">Primary channel</div><div class="kpi-note">Google Play + App Store paid install campaigns; search intent "préstamos sin buró"</div></div>
+          <div class="kpi-card amber" style="flex:1 1 120px;"><div class="kpi-val">Low recurrence</div><div class="kpi-lbl">LTV impact</div><div class="kpi-note">Single-use emergency borrowers; low repeat rate vs Kueski's 90% — poor LTV/CAC ratio</div></div>
+        </div>
+        <p style="font-size:0.81rem;color:var(--muted);line-height:1.5;margin-bottom:10px;"><strong>Channel mix:</strong> App store paid install (~60%), Meta performance (~30%), organic/WOM (~10%). High CAT (130–360%) provides margin to absorb CAC, but CONDUSEF complaints hurt organic word-of-mouth. No bureau reporting removes the credit-building incentive that drives Kueski's 90% recurrence — most users are emergency one-time borrowers.</p>
+        <div id="specs-baubap" class="prod-specs-section"></div>
+      </div>
+      <div id="summary-baubap" style="margin-top:12px;">
+        <div class="stat-row">
+          <div class="stat-pill">n/d<span>Users</span></div>
+          <div class="stat-pill">n/d<span>Loan OS</span></div>
+          <div class="stat-pill">n/d<span>Revenue</span></div>
+          <div class="stat-pill">130–360%<span>CAT range</span></div>
+          <div class="stat-pill">n/d<span>Profitability</span></div>
+          <div class="stat-pill" title="App store + Meta performance. High churn raises effective CAC. No public financial data.">$20<span>CAC est.</span></div>
+        </div>
+        <div class="card-watch">⚠ CONDUSEF complaints re: collection practices. Highest CAT in peer group. No bureau reporting = no long-term customer relationship.</div>
+      </div>
+    </div>
+
+    <div class="player-card" id="card-tala" style="border-top-color:#059669;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;">
+        <div>
+          <span class="card-limited">Limited info</span>
+          <div class="card-type" style="color:#047857;margin-top:4px;">Open Market — Microloan (Global Fintech)</div>
+          <div class="card-name">Tala</div>
+          <div class="card-tagline">"Tu teléfono es tu buró" — smartphone data scoring transplanted from Africa / SE Asia</div>
+        </div>
+        <button onclick="toggleDetail('tala')" style="background:#ecfdf5;border:1px solid #6ee7b7;color:#047857;font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;">Details ▾</button>
+      </div>
+      <div id="detail-tala" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
+        <div class="sub-sub-title" style="margin-top:0;">Basic Info</div>
+        <p style="font-size:0.82rem;"><strong>Founded:</strong> 2011, Santa Monica CA · <strong>CEO:</strong> Shivani Siroya · <strong>Backed by:</strong> GV (Google Ventures), IFC, Revolution Growth, Lowercase Capital · <strong>Total raised:</strong> ~$350M+ globally · <strong>Global users:</strong> ~9M across Kenya, Philippines, India, Mexico, South Africa · <strong>Mexico entry:</strong> ~2017 · <strong>Model:</strong> Smartphone metadata scoring ("Tu teléfono es tu buró") — app analyzes phone data to build alternative credit profile · <strong>Privacy note:</strong> LFPDPPP (Mexico data protection law) constrains depth of smartphone analysis vs Africa/Asia markets</p>
+        <div class="sub-sub-title">Core Products</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Product</th><th>Type</th><th>Rate</th><th>Tenor</th><th>Limit</th></tr></thead>
+          <tbody>
+            <tr><td>Tala Préstamo</td><td>Unsecured microloan</td><td>100–300% CAT</td><td>30 days</td><td>MXN 500–10,000</td></tr>
+          </tbody>
+        </table></div>
+        <div class="sub-sub-title">Business Sizing (Mexico)</div>
+        <div class="kpi-grid" style="margin:8px 0 12px;">
+          <div class="kpi-card" style="flex:1 1 140px;"><div class="kpi-val">~1–2M</div><div class="kpi-lbl">Est. Mexico Users</div><div class="kpi-note">No public Mexico-specific disclosure. Global 9M users; Mexico est. ~10–20% of base from app store ranking.</div></div>
+          <div class="kpi-card amber" style="flex:1 1 140px;"><div class="kpi-val">n/d</div><div class="kpi-lbl">Mexico Portfolio OS</div><div class="kpi-note">30-day tenor keeps OS low relative to volume disbursed. No Mexico financial disclosure.</div></div>
+        </div>
+        <div class="info-box amber" style="margin-top:10px;font-size:0.82rem;"><strong>Limited Info:</strong> No Mexico-specific financials published. Global metrics: ~$350M raised; profitable in some markets. Mexico P&amp;L not disclosed. The smartphone-data model faces additional constraints under LFPDPPP (Mexico data protection law) vs. African/Asian markets, which may limit underwriting accuracy.</div>
+        <div class="sub-sub-title">Customer Acquisition Cost</div>
+        <div class="kpi-grid" style="margin:8px 0 10px;">
+          <div class="kpi-card" style="flex:1 1 120px;"><div class="kpi-val">$18</div><div class="kpi-lbl">CAC (top est.)</div><div class="kpi-note">Est. from comparable EM microfinance operators; app store + paid search</div></div>
+          <div class="kpi-card" style="flex:1 1 120px;"><div class="kpi-val">App store</div><div class="kpi-lbl">Primary channel</div><div class="kpi-note">Google Play; relies on high-intent search "préstamos sin buró de crédito"</div></div>
+          <div class="kpi-card" style="flex:1 1 120px;"><div class="kpi-val">Limit increase</div><div class="kpi-lbl">Retention hook</div><div class="kpi-note">On-time repayment = higher limit next loan; only retention mechanism (no bureau reporting)</div></div>
+        </div>
+        <p style="font-size:0.81rem;color:var(--muted);line-height:1.5;margin-bottom:10px;"><strong>Channel mix:</strong> App store organic + paid (~50%), paid search "préstamos sin buró" (~35%), WOM (~15%). Smartphone data scoring is the product differentiation, not the acquisition channel. Key risk: Mexico's LFPDPPP restricts the depth of phone metadata Tala can legally access — limiting underwriting accuracy vs. their African/SE Asian deployments where privacy law is less restrictive.</p>
+        <div id="specs-tala" class="prod-specs-section"></div>
+      </div>
+      <div id="summary-tala" style="margin-top:12px;">
+        <div class="stat-row">
+          <div class="stat-pill">~1–2M<span>Users est. (MX)</span></div>
+          <div class="stat-pill">n/d<span>Loan OS</span></div>
+          <div class="stat-pill">n/d<span>Revenue</span></div>
+          <div class="stat-pill">100–300%<span>CAT range</span></div>
+          <div class="stat-pill">n/d<span>Profitability</span></div>
+          <div class="stat-pill" title="App store + paid search. Est. from EM microloan benchmarks. No Mexico-specific financial data.">$18<span>CAC est.</span></div>
+        </div>
+        <div class="card-watch">⚠ No bureau reporting. LFPDPPP constrains smartphone scoring depth in Mexico. Mexico P&L not available.</div>
       </div>
     </div>
 
