@@ -77,13 +77,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 
 /* ── PANELS ── */
 .panel-container{margin-top:calc(var(--topbar-h) + var(--filterbar-h));min-height:calc(100vh - var(--topbar-h) - var(--filterbar-h))}
-.tab-panel{display:none;padding:24px 28px 60px}
+.tab-panel{display:none;padding:28px 32px 60px}
 .tab-panel.active{display:block}
 
 /* ── PANEL HEADER ── */
-.panel-header{margin-bottom:20px}
-.panel-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:3px}
-.panel-sub{font-size:.8rem;color:var(--muted)}
+.panel-header{
+  margin-bottom:24px;padding-bottom:18px;
+  border-bottom:2px solid var(--border);
+  display:flex;flex-direction:column;gap:4px
+}
+.panel-title{
+  font-family:'DM Serif Display',serif;font-size:2rem;
+  color:var(--navy);font-weight:400;line-height:1.15
+}
+.panel-sub{font-size:.82rem;color:var(--muted);line-height:1.5}
 
 /* ── DIGEST FEED ── */
 .digest-columns{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
@@ -105,7 +112,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 .feed-card.fc-upcoming{background:var(--surface);border-color:var(--border)}
 .feed-card.fc-promoted{border-left:3px solid var(--amber)}
 .fc-meta{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
-.cat-badge{font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:3px;text-transform:uppercase;letter-spacing:.5px;background:var(--surface);color:var(--muted);border:1px solid var(--border)}
+/* Shared badge sizing — identical across NEWS and UPCOMING */
+.cat-badge,.comp-badge{
+  display:inline-block;font-size:.62rem;font-weight:700;
+  padding:3px 8px;border-radius:4px;
+  text-transform:uppercase;letter-spacing:.5px;
+  border:1px solid var(--border);white-space:nowrap;line-height:1
+}
+.cat-badge{background:var(--surface);color:var(--muted)}
 .cat-badge.upcoming{background:var(--amber-light);color:#92400e;border-color:var(--amber)}
 .cat-badge.funding{background:#e8eeff;color:var(--navy-mid);border-color:#c7d4f5}
 .cat-badge.regulatory{background:var(--red-light);color:var(--red);border-color:#fc8181}
@@ -113,14 +127,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text
 .cat-badge.competitor{background:var(--green-light);color:var(--green-dark);border-color:#b2ddd3}
 .cat-badge.mx-fintech,.cat-badge.mxfintech{background:#f3e8ff;color:#6b21a8;border-color:#d8b4fe}
 .cat-badge.event{background:var(--amber-light);color:#92400e;border-color:var(--amber)}
-.comp-badge{font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--surface);color:var(--navy);border:1px solid var(--border)}
+.comp-badge{background:var(--surface);color:var(--navy);border-radius:10px}
 .fc-date{font-size:.65rem;color:var(--muted);margin-left:auto;white-space:nowrap}
 .fc-headline{font-size:.88rem;font-weight:700;color:var(--navy);line-height:1.4;margin-bottom:4px}
 .fc-headline a{color:inherit;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s}
 .fc-headline a:hover{color:var(--navy-light);border-bottom-color:var(--navy-light)}
 .fc-summary{font-size:.77rem;color:#4a5568;line-height:1.5}
-.fc-note{font-size:.73rem;color:var(--muted);line-height:1.5;margin-top:3px}
-.up-note{font-size:.7rem;color:var(--muted);margin-top:2px}
+.fc-note{font-size:.75rem;color:#4a5568;line-height:1.5;margin-top:3px}
+.fc-importance{
+  font-size:.73rem;color:var(--muted);line-height:1.5;
+  margin-top:6px;padding-top:6px;border-top:1px solid var(--border)
+}
 
 /* ── MARKETING CARDS ── */
 .mkt-feed-header{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
@@ -398,13 +415,34 @@ newsItems: [
 ],
 
 upcomingEvents: [
-  {date:'Jun 1–6, 2026',sortDate:'2026-06-01',title:'Hot Sale 2026',note:'Mexico\'s biggest e-commerce event. All BNPL players activate. Kueski main sponsor.',type:'critical'},
-  {date:'Jun 26, 2026',sortDate:'2026-06-26',title:'Banxico rate decision',note:'Consensus: -25bps to 6.25%. 9th consecutive cut.',type:'soon'},
-  {date:'~Aug 2026',sortDate:'2026-08-01',title:'Nu Holdings Q2 2026 earnings',note:'Mexico NPL trend, deposit cost, and banking product KPIs expected.',type:'normal'},
-  {date:'~Aug 2026',sortDate:'2026-08-15',title:'Plata first CNBV bank reporting',note:'First public disclosures of deposit volumes, NPL, and product mix post-banking-licence.',type:'soon'},
-  {date:'Q3 2026 TBD',sortDate:'2026-09-01',title:'CNBV interchange cap final decision',note:'Proposal at 0.6% (down from 1.35%). Applies to all card issuers.',type:'critical'},
-  {date:'~Q3 2026',sortDate:'2026-09-15',title:'Plata deposit product launch',note:'Expected post-banking-licence.',type:'soon'},
-  {date:'Nov 14–17, 2026',sortDate:'2026-11-14',title:'Buen Fin 2026',note:'Annual shopping event. BNPL and credit card seasonal activations.',type:'critical'},
+  {date:'Jun 1–6, 2026',sortDate:'2026-06-01',title:'Hot Sale 2026',
+   summary:'Mexico\'s largest annual e-commerce event. All major BNPL and credit card players run seasonal promotions.',
+   importance:'Peak BNPL activation window. Kueski Pay historically main sponsor. Credit card interchange and promo spend peaks. First major commercial event of 2026 shopping calendar.',
+   type:'critical'},
+  {date:'Jun 26, 2026',sortDate:'2026-06-26',title:'Banxico rate decision',
+   summary:'Scheduled monetary policy meeting. Consensus expects a 25bps cut to 6.25% — 9th consecutive reduction.',
+   importance:'Each cut narrows the gap between policy rate and fintech deposit costs (still 12–15%). Reduces cost of debt funding for lenders. Directly affects NIM for deposit-funded players (Nu) and debt-funded players (Plata, Kueski).',
+   type:'soon'},
+  {date:'~Aug 2026',sortDate:'2026-08-01',title:'Nu Holdings Q2 2026 earnings',
+   summary:'Nu Holdings quarterly results. Expected to include Mexico segment metrics after confirmed market break-even.',
+   importance:'First earnings after Nu Mexico reaches break-even. Watch: NPL trajectory, deposit cost vs loan yield spread, and banking product uptake. Sets market tone for neobank valuations across LatAm.',
+   type:'normal'},
+  {date:'~Aug 2026',sortDate:'2026-08-15',title:'Plata first CNBV bank reporting',
+   summary:'Plata\'s first mandatory CNBV financial disclosures as a regulated bank (Banco Plata, licensed Feb 2026).',
+   importance:'First independent view of Plata\'s NPL rate, deposit volumes, and product mix since banking licence. Will confirm or challenge the $600M+ annualised revenue claim and validate growth trajectory.',
+   type:'soon'},
+  {date:'Q3 2026 TBD',sortDate:'2026-09-01',title:'CNBV interchange cap final decision',
+   summary:'CNBV expected to issue final ruling on proposed cap of 0.6% on card interchange fees (current: 1.35%).',
+   importance:'Structural reset for all card-issuing fintechs. A 0.6% cap cuts Nu\'s MXN 1.9B annual interchange income by ~55%. Forces repricing of cashback rewards — the primary acquisition hook for Nu, Plata (15%), Klar, DiDi, and RappiCard.',
+   type:'critical'},
+  {date:'~Q3 2026',sortDate:'2026-09-15',title:'Plata deposit product launch',
+   summary:'Plata expected to launch customer savings/deposit accounts post-banking-licence.',
+   importance:'Shifts Plata\'s funding from expensive debt (~15% Nomura facility) to lower-cost deposits. If Plata offers 12%+ yields, triggers a three-way deposit acquisition battle with Nu and Mercado Pago. Net interest margins shift across the sector.',
+   type:'soon'},
+  {date:'Nov 14–17, 2026',sortDate:'2026-11-14',title:'Buen Fin 2026',
+   summary:'Mexico\'s Black Friday equivalent — four-day nationwide sales event.',
+   importance:'Peak consumer credit disbursement period of the year. BNPL transaction volumes spike 3–5×. All card issuers run MSI offers. Largest single marketing spend window for fintechs. Kueski Pay typically runs its biggest promotional campaign of the year.',
+   type:'critical'},
 ],
 
 marketingItems: [
@@ -994,7 +1032,8 @@ function renderDigest(){
         <span class="fc-date">${escHtml(e.date)}</span>
       </div>
       <div class="fc-headline">${escHtml(e.title)}</div>
-      <div class="fc-note">${escHtml(e.note)}</div>
+      ${e.summary ? `<div class="fc-note">${escHtml(e.summary)}</div>` : ''}
+      ${e.importance ? `<div class="fc-importance">${escHtml(e.importance)}</div>` : ''}
     </div>`;
   }
 
@@ -1093,9 +1132,9 @@ function renderMarketing(){
   }).join('') : `<div class="empty-state">🔍<p>No ads match the current filter. <button onclick="clearMktFilters()" style="background:none;border:none;color:var(--navy-light);cursor:pointer;font-size:.85rem;text-decoration:underline">Clear filters</button></p></div>`;
 
   document.getElementById('panel-marketing').innerHTML = `
-    <div class="mkt-feed-header">
-      <div class="mkt-feed-title">Latest active competitor ads — Meta Ads Library &amp; Google Ads Transparency Center</div>
-      <div class="mkt-feed-meta">Last captured: 2026-05-21 &nbsp;·&nbsp; ${items.length} of ${DATA.marketingItems.length} entries shown &nbsp;·&nbsp; Meta Ads Library and Google Ads Transparency Center require JavaScript — paid ad library entries not directly accessible; data sourced from landing pages and confirmed public posts</div>
+    <div class="panel-header">
+      <div class="panel-title">Marketing Feed</div>
+      <div class="panel-sub">Latest active competitor ads — Meta Ads Library &amp; Google Ads Transparency Center · Last captured: 2026-05-21 · ${items.length} of ${DATA.marketingItems.length} shown</div>
     </div>
     <div class="mkt-inline-filters" id="mktFilters">
       <div class="mkt-filter-row"><span class="mkt-filter-label">Channel</span>${makeChips(ALL_CHANNELS,'mktChannel',state.mktChannel)}</div>
@@ -1444,9 +1483,6 @@ function init(){
   });
 
   setupChips();
-  // Digest is the default tab — hide filter bar on load
-  document.getElementById('filterbar').style.display = 'none';
-  document.querySelector('.panel-container').style.marginTop = 'var(--topbar-h)';
   renderDigest();
 }
 
