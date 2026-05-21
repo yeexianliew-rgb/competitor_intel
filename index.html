@@ -240,6 +240,40 @@ body.tab-marketing .panel-container{margin-top:var(--topbar-h)}
 .mkt-prm-row-top{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
 .prm-mechanic-sm{font-size:.78rem;color:var(--text);line-height:1.4;margin-bottom:4px}
 
+/* ── EXPANDABLE ROW STATES ── */
+.mkt-row-clickable{cursor:pointer;transition:background .12s}
+.mkt-row-clickable:hover{background:var(--surface)}
+.mkt-row-active{background:#f0f6ff!important;border-left:3px solid var(--navy-light)!important}
+.mkt-row-expand{font-size:1.1rem;font-weight:700;color:var(--muted);flex-shrink:0;transition:color .12s,transform .15s;display:inline-block}
+.mkt-row-clickable:hover .mkt-row-expand,.mkt-row-active .mkt-row-expand{color:var(--navy);transform:rotate(90deg)}
+.mkt-campaign-row{cursor:pointer;transition:background .12s}
+.mkt-campaign-row:hover{background:var(--surface)}
+.mkt-campaign-row.mkt-row-active{background:#f0f6ff!important;border-left:3px solid var(--navy-light)!important}
+.mkt-prm-row{cursor:pointer;transition:background .12s}
+.mkt-prm-row:hover{background:var(--surface)}
+.mkt-prm-row.mkt-row-active{background:#f0f6ff!important;border-left:3px solid var(--navy-light)!important}
+
+/* ── AD DETAIL PANEL ── */
+.mkt-detail-panel{margin-top:20px;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;scroll-margin-top:calc(var(--topbar-h) + 16px)}
+.mkt-detail-header{display:flex;justify-content:space-between;align-items:flex-start;padding:14px 18px 12px;border-bottom:2px solid var(--border);gap:12px;background:var(--navy)}
+.mkt-detail-label{font-family:'DM Serif Display',serif;font-size:1.05rem;color:#fff;margin-bottom:2px}
+.mkt-detail-sublabel{font-size:.68rem;color:rgba(255,255,255,.55)}
+.mkt-detail-close{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:.85rem;width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;transition:all .15s}
+.mkt-detail-close:hover{background:rgba(229,62,62,.8)}
+.mkt-ad-grid{display:flex;flex-wrap:wrap;gap:14px;padding:18px 18px 22px}
+.mkt-ad-card{width:300px;flex-shrink:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.05);display:flex;flex-direction:column}
+.mkt-ad-preview{height:130px;background:var(--surface);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);flex-shrink:0}
+.mkt-ad-preview-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:1.6rem;width:100%;height:100%}
+.mkt-ad-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
+.mkt-ad-headline{font-size:.83rem;font-weight:700;color:var(--navy);line-height:1.4}
+.mkt-ad-copy-es{font-size:.77rem;color:var(--text);line-height:1.5}
+.mkt-ad-copy-en{font-size:.71rem;color:var(--muted);line-height:1.45;font-style:italic;border-left:2px solid var(--border);padding-left:8px;margin-top:2px}
+.mkt-ad-footer{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px;border-top:1px solid var(--border);flex-wrap:wrap;gap:5px}
+.mkt-ad-footer-right{display:flex;align-items:center;gap:5px}
+.mkt-ad-cta{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;background:var(--navy);color:#fff;padding:3px 8px;border-radius:3px;white-space:nowrap}
+.mkt-ad-src-link{font-size:.65rem;font-weight:600;color:var(--navy-light);text-decoration:none;padding:2px 6px;border:1px solid var(--border);border-radius:3px;background:var(--surface)}
+.mkt-ad-src-link:hover{border-color:var(--navy);color:var(--navy)}
+
 /* ── PRODUCT FEED ── */
 .prod-subnav{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 .prod-tab-btn{font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
@@ -1218,6 +1252,401 @@ macroData: {
 
 };// end DATA
 
+// ─── AD EXAMPLES (keyed by {comp}_{section}_{idx}) ───────────────────────────
+const mktAds = {
+  // ── NU ──
+  nu_channels_0: [ // Meta (FB/IG) — 5 ads
+    {id:'nu-m-1',format:'image',previewUrl:'',headlineEs:'¿Todavía pagando anualidad?',
+     adCopyEs:'Con Nu, la anualidad siempre es $0. Sin letra chica, sin cargos escondidos. Pide tu tarjeta Mastercard Nu hoy — llega a tu casa en días.',
+     adCopyEn:'With Nu, the annual fee is always $0. No fine print, no hidden charges. Order your Nu Mastercard today — arrives at your home within days.',
+     ctaEs:'Solicitar tarjeta',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=nu+anualidad',dateSeen:'2026-05'},
+    {id:'nu-m-2',format:'video',previewUrl:'',headlineEs:'10 millones de mexicanos ya eligieron Nu',
+     adCopyEs:'¿Qué saben que tú no? Sin anualidad, sin comisiones, sin sucursales. La cuenta y tarjeta que sí trabaja para ti.',
+     adCopyEn:"What do they know that you don't? No annual fee, no commissions, no branches. The account and card that actually works for you.",
+     ctaEs:'Abrir cuenta gratis',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=nu+10+millones',dateSeen:'2026-04'},
+    {id:'nu-m-3',format:'image',previewUrl:'',headlineEs:'Tu dinero ganando 12.25% al año',
+     adCopyEs:'Abre tu Cuenta Nu y tu dinero empieza a generar rendimientos desde el primer peso. Retira cuando quieras, sin penalizaciones.',
+     adCopyEn:'Open your Nu Account and your money starts generating returns from day one. Withdraw whenever you want, with no penalties.',
+     ctaEs:'Abrir cuenta',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=nu+rendimientos',dateSeen:'2026-05'},
+    {id:'nu-m-4',format:'carousel',previewUrl:'',headlineEs:'Controla tu dinero, no al revés',
+     adCopyEs:'Con la app Nu: bloquea tu tarjeta al instante, ajusta tu límite de crédito, programa pagos automáticos y ve cada movimiento en tiempo real.',
+     adCopyEn:'With the Nu app: instantly block your card, adjust your credit limit, schedule automatic payments, see every transaction in real time.',
+     ctaEs:'Conocer más',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=nu+app+tarjeta',dateSeen:'2026-03'},
+    {id:'nu-m-5',format:'image',previewUrl:'',headlineEs:'Nu Rewards: tus compras ahora dan puntos',
+     adCopyEs:'Cada peso que gastas con tu tarjeta Nu ahora acumula puntos Nu Rewards. Canjéalos por efectivo, viajes o experiencias. Sin costo adicional.',
+     adCopyEn:'Every peso you spend with your Nu card now accumulates Nu Rewards points. Redeem them for cash, travel, or experiences. No additional cost.',
+     ctaEs:'Ver mis recompensas',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=nu+rewards',dateSeen:'2026-04'},
+  ],
+  nu_channels_1: [ // TikTok
+    {id:'nu-tt-1',format:'video',previewUrl:'',headlineEs:'"Cancelé mi tarjeta bancaria después de 10 años"',
+     adCopyEs:'Usuario real comparte cómo Nu le ahorró más de $2,400 pesos al año en anualidad y comisiones que pagaba sin darse cuenta.',
+     adCopyEn:'"Cancelled my bank card after 10 years" — Real user shares how Nu saved them over $2,400 pesos/year in annual fees and hidden commissions.',
+     ctaEs:'Ver mi ahorro',sourceUrl:'https://www.tiktok.com/@nu_mexico',dateSeen:'2026-04'},
+    {id:'nu-tt-2',format:'video',previewUrl:'',headlineEs:'POV: Abriste tu cuenta Nu en 4 minutos',
+     adCopyEs:'Tutorial mostrando apertura de cuenta: INE + selfie + CURP. Tarjeta aprobada al instante. Sin ir a sucursal, sin filas, sin papeleo.',
+     adCopyEn:'Tutorial showing account opening: National ID + selfie + CURP. Card approved instantly. No branch visit, no queues, no paperwork.',
+     ctaEs:'Abrir la mía',sourceUrl:'https://www.tiktok.com/@nu_mexico',dateSeen:'2026-05'},
+    {id:'nu-tt-3',format:'video',previewUrl:'',headlineEs:'10 millones de historias — la mía incluida',
+     adCopyEs:'Serie de TikToks UGC con clientes reales: sin anualidad, control de gastos, límite accesible. Boosteado como paid ad.',
+     adCopyEn:'UGC TikTok series with real customers: no annual fee, expense control, accessible credit limit. Boosted as paid ad.',
+     ctaEs:'Únete a ellos',sourceUrl:'https://www.tiktok.com/@nu_mexico',dateSeen:'2026-02'},
+  ],
+  nu_channels_2: [ // Google
+    {id:'nu-g-1',format:'search_ad',previewUrl:'',headlineEs:'Nu Tarjeta Crédito — Sin Anualidad Para Siempre',
+     adCopyEs:'Anuncio de búsqueda: "Tarjeta de crédito Nu sin anualidad. Aprobación en minutos. Sin comisiones ocultas." Aparece en búsquedas de "tarjeta sin anualidad" y "tarjeta sin buró".',
+     adCopyEn:'Search ad: "Nu credit card with no annual fee. Approval in minutes. No hidden fees." Appears on searches for "card no annual fee" and "card no credit bureau".',
+     ctaEs:'Solicitar ahora',sourceUrl:'https://nu.com.mx/cuenta',dateSeen:'2026-05'},
+    {id:'nu-g-2',format:'search_ad',previewUrl:'',headlineEs:'Cuenta Nu — Rendimiento 12.25% Anual',
+     adCopyEs:'Anuncio en búsquedas de "cuenta de ahorro" y "rendimientos". "Tu dinero rinde 12.25% anual. Disponible en cualquier momento. Sin monto mínimo. Abre gratis."',
+     adCopyEn:'Search ad targeting "savings account" queries. "Your money earns 12.25% annually. Available anytime. No minimum balance. Open for free."',
+     ctaEs:'Abrir cuenta',sourceUrl:'https://nu.com.mx/cuenta',dateSeen:'2026-05'},
+  ],
+  nu_channels_4: [ // WhatsApp referral
+    {id:'nu-wa-1',format:'message',previewUrl:'',headlineEs:'[Mensaje de referido] ¿Ya tienes tu Nu?',
+     adCopyEs:'"Oye, yo uso Nu y no pago nada de anualidad. Te comparto mi link — los dos ganamos $50 de cashback si abres tu cuenta. Es en serio, 100% gratis." [link de referido personal]',
+     adCopyEn:'"Hey, I use Nu and pay zero annual fee. Sharing my link — we both earn $50 cashback if you open an account. Seriously, 100% free." [personal referral link]',
+     ctaEs:'Abrir con link de amigo',sourceUrl:'https://nu.com.mx/invita',dateSeen:'2026-05'},
+  ],
+  nu_campaigns_0: [ // 10M Historias
+    {id:'nu-c-1',format:'video',previewUrl:'',headlineEs:'"Nunca pensé que podría tener una tarjeta de crédito"',
+     adCopyEs:'Historia real: rechazada 3 veces por el banco. Nu la aprobó en minutos. Ahora usa su tarjeta para construir historial crediticio.',
+     adCopyEn:'Real story: rejected 3 times by the bank. Nu approved her in minutes. Now uses her card to build credit history.',
+     ctaEs:'Ver mi historia',sourceUrl:'https://www.tiktok.com/@nu_mexico',dateSeen:'2026-02'},
+    {id:'nu-c-2',format:'video',previewUrl:'',headlineEs:'"Llevaba 5 años pagando $800 de anualidad sin saberlo"',
+     adCopyEs:'Cliente descubre que su banco le cobraba $800/año de anualidad automática. Cambia a Nu: $0 de anualidad para siempre.',
+     adCopyEn:'Customer discovers their bank was charging $800/year automatically. Switches to Nu: $0 annual fee forever.',
+     ctaEs:'Cambiarme a Nu',sourceUrl:'https://www.tiktok.com/@nu_mexico',dateSeen:'2026-01'},
+    {id:'nu-c-3',format:'video',previewUrl:'',headlineEs:'"Construí mi historial de crédito desde cero con Nu"',
+     adCopyEs:'Joven de 22 años sin historial crediticio. Nu fue su primera tarjeta. En 18 meses subió su score de 0 a 680. Ahora califica para crédito en otros bancos.',
+     adCopyEn:'22-year-old with no credit history. Nu was their first card. In 18 months their score went from 0 to 680. Now qualifies for credit at other banks.',
+     ctaEs:'Empezar mi historial',sourceUrl:'https://www.tiktok.com/@nu_mexico',dateSeen:'2026-03'},
+  ],
+  nu_campaigns_1: [ // Sin Comisiones para Siempre
+    {id:'nu-sc-1',format:'image',previewUrl:'',headlineEs:'Otros cobran. Nu no.',
+     adCopyEs:'Anualidad: $0. Comisión por pago: $0. Por retiro: $0. Por reposición: $0. Sin letra chica. Sin sorpresas. La tarjeta que trabaja para ti.',
+     adCopyEn:'Annual fee: $0. Payment fee: $0. Withdrawal fee: $0. Replacement fee: $0. No fine print. No surprises. The card that works for you.',
+     ctaEs:'Pedir mi tarjeta gratis',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=nu+sin+comisiones',dateSeen:'2026-05'},
+    {id:'nu-sc-2',format:'video',previewUrl:'',headlineEs:'¿Cuánto te cobra tu banco este mes?',
+     adCopyEs:'Video animado comparando bancos vs Nu. BBVA, Banamex, Santander = $800–2,400/año en cargos varios. Nu = $0. Pregunta final: "¿Sigues con ellos?"',
+     adCopyEn:'Animated video comparing banks vs Nu. BBVA, Banamex, Santander = $800–2,400/year in various charges. Nu = $0. Final question: "Still with them?"',
+     ctaEs:'Cambiarme a Nu',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=nu+bancos',dateSeen:'2026-03'},
+  ],
+  nu_campaigns_2: [ // Nu Rewards launch
+    {id:'nu-rw-1',format:'image',previewUrl:'',headlineEs:'Ahora tus compras también dan puntos',
+     adCopyEs:'Presentamos Nu Rewards. Gana puntos en cada compra y canjéalos por lo que quieras — efectivo, vuelos, experiencias. Actívalo desde la app.',
+     adCopyEn:'Introducing Nu Rewards. Earn points on every purchase and redeem for whatever you want — cash, flights, experiences. Activate in the app.',
+     ctaEs:'Activar Nu Rewards',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=nu+rewards',dateSeen:'2026-04'},
+    {id:'nu-rw-2',format:'video',previewUrl:'',headlineEs:'Nu Rewards: así funciona en 60 segundos',
+     adCopyEs:'Video tutorial: cada compra acumula puntos → entra a la app → elige cómo canjear → cashback deposita en tu cuenta en 24 hrs. Sin puntos que expiran. Sin categorías complicadas.',
+     adCopyEn:'Tutorial video: every purchase earns points → open the app → choose how to redeem → cashback deposited in your account within 24 hrs. No expiring points. No complicated categories.',
+     ctaEs:'Ver mi saldo de puntos',sourceUrl:'https://nu.com.mx/rewards',dateSeen:'2026-04'},
+  ],
+  nu_prm_0: [ // Referral $50
+    {id:'nu-p-ref-1',format:'image',previewUrl:'',headlineEs:'Invita y ganan los dos',
+     adCopyEs:'Comparte tu link de Nu con un amigo. Cuando abra su cuenta y active su tarjeta, ambos reciben $50 de cashback directo. Sin condiciones extra.',
+     adCopyEn:'Share your Nu link with a friend. When they open their account and activate their card, you both receive $50 cashback directly. No extra conditions.',
+     ctaEs:'Invitar amigos',sourceUrl:'https://nu.com.mx/invita',dateSeen:'2026-05'},
+  ],
+  nu_prm_1: [ // 0% first billing cycle
+    {id:'nu-p-int-1',format:'image',previewUrl:'',headlineEs:'Tu primer mes de crédito sin intereses',
+     adCopyEs:'Estrena tu tarjeta Nu y paga sin intereses durante tu primer periodo de facturación. Aplica automáticamente para nuevos clientes. Después, tasas competitivas sin sorpresas.',
+     adCopyEn:'Try your Nu card and pay no interest during your first billing period. Automatically applied for new customers. Afterwards, competitive rates with no surprises.',
+     ctaEs:'Solicitar mi tarjeta',sourceUrl:'https://nu.com.mx/credito',dateSeen:'2026-05'},
+  ],
+  nu_prm_2: [ // Savings yield
+    {id:'nu-p-sav-1',format:'image',previewUrl:'',headlineEs:'Tu dinero trabaja mientras tú duermes',
+     adCopyEs:'Cuenta Nu: 12.25% de rendimiento anual sobre tu saldo. Disponible 24/7. Sin monto mínimo. Prueba las Cajitas Turbo: hasta 15% en ahorro programado.',
+     adCopyEn:'Nu Account: 12.25% annual return on your balance. Available 24/7. No minimum balance. Try Cajitas Turbo: up to 15% on scheduled savings.',
+     ctaEs:'Abrir Cuenta Nu',sourceUrl:'https://nu.com.mx/cuenta-nu',dateSeen:'2026-05'},
+  ],
+
+  // ── MERCADO PAGO ──
+  mp_channels_0: [ // ML in-app
+    {id:'mp-ml-1',format:'screenshot',previewUrl:'',headlineEs:'Banner checkout: "Paga en MSI con Mercado Pago"',
+     adCopyEs:'Banner en pantalla de pago de ML: "3, 6 o 12 meses sin intereses con tu tarjeta Mercado Pago. Aplica en miles de productos." Botón: "Activar ahora". Aparece para compradores sin tarjeta MP activa.',
+     adCopyEn:'Banner on ML payment screen: "3, 6 or 12 interest-free months with your Mercado Pago card. Applies on thousands of products." Button: "Activate now". Shown to buyers without an active MP card.',
+     ctaEs:'Activar ahora',sourceUrl:'https://www.mercadopago.com.mx/credito',dateSeen:'2026-05'},
+    {id:'mp-ml-2',format:'push',previewUrl:'',headlineEs:'Push ML: "Tu crédito preaprobado te espera"',
+     adCopyEs:'Push notification en app ML: "¡Buenas noticias! Tienes crédito preaprobado de hasta $15,000 MXN con Mercado Pago. ¿Lo activas ahora?" — basado en historial de compras.',
+     adCopyEn:'ML app push: "Good news! You have pre-approved credit of up to MXN $15,000 with Mercado Pago. Activate it now?" — based on purchase history.',
+     ctaEs:'Ver mi crédito',sourceUrl:'https://www.mercadopago.com.mx/credito-sin-tarjeta',dateSeen:'2026-04'},
+    {id:'mp-ml-3',format:'screenshot',previewUrl:'',headlineEs:'Home ML: "Activa tu tarjeta y multiplica tus puntos"',
+     adCopyEs:'Banner home ML para usuarios sin tarjeta MP: "Activa tu Tarjeta Mercado Pago y multiplica tus puntos ML Points en cada compra." Link directo al flujo de activación.',
+     adCopyEn:'ML home banner for users without MP card: "Activate your Mercado Pago Card and multiply your ML Points on every purchase." Direct link to activation flow.',
+     ctaEs:'Activar tarjeta',sourceUrl:'https://www.mercadopago.com.mx/tarjeta-mercado-pago',dateSeen:'2026-05'},
+  ],
+  mp_channels_1: [ // Email & push
+    {id:'mp-em-1',format:'email',previewUrl:'',headlineEs:'"[Nombre], tienes crédito disponible de $12,000 MXN"',
+     adCopyEs:'Email personalizado a compradores activos. Asunto: "Tu historial de compras califica para crédito MP." Cuerpo: oferta específica basada en monto de compras acumulado + tasa ofrecida + CTA directo.',
+     adCopyEn:'Personalised email to active buyers. Subject: "Your purchase history qualifies for MP credit." Body: specific offer based on accumulated purchase amount + offered rate + direct CTA.',
+     ctaEs:'Ver mi oferta',sourceUrl:'https://www.mercadopago.com.mx/credito',dateSeen:'2026-04'},
+    {id:'mp-em-2',format:'push',previewUrl:'',headlineEs:'"Tu dinero en MP ganó $127 este mes"',
+     adCopyEs:'Push mensual de rendimientos: "Tu saldo de $12,500 MXN generó $127.08 de rendimiento este mes. Así se ve el dinero trabajando para ti."',
+     adCopyEn:'Monthly returns push: "Your balance of MXN $12,500 generated $127.08 in returns this month. This is what money working for you looks like."',
+     ctaEs:'Ver mis rendimientos',sourceUrl:'https://www.mercadopago.com.mx/cuenta',dateSeen:'2026-05'},
+  ],
+  mp_channels_3: [ // Meta
+    {id:'mp-m-1',format:'image',previewUrl:'',headlineEs:'Tu historial de Mercado Libre ya es tu crédito',
+     adCopyEs:'¿Compras en Mercado Libre? Tu historial habla por ti. Activa tu crédito MP sin buró tradicional. Hasta $50,000 MXN disponibles.',
+     adCopyEn:'Do you shop on Mercado Libre? Your purchase history speaks for you. Activate your MP credit without traditional bureau. Up to MXN $50,000 available.',
+     ctaEs:'Activar mi crédito',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=mercado+pago+credito',dateSeen:'2026-05'},
+    {id:'mp-m-2',format:'video',previewUrl:'',headlineEs:'Hot Sale: hasta 24 MSI con Mercado Pago',
+     adCopyEs:'Compra todo lo que quieres en Hot Sale y paga hasta en 24 meses sin intereses. Aplica en millones de productos en ML y tiendas participantes.',
+     adCopyEn:'Buy everything you want at Hot Sale and pay in up to 24 interest-free months. Applies on millions of products on ML and participating stores.',
+     ctaEs:'Activar tarjeta',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=mercado+pago+hot+sale',dateSeen:'2026-05'},
+    {id:'mp-m-3',format:'image',previewUrl:'',headlineEs:'Gana intereses con tu saldo: 12% anual',
+     adCopyEs:'¿Por qué tener tu dinero dormido en el banco? Con MP tu saldo genera rendimientos automáticamente. 12% anual. Sin mínimos. Retira cuando quieras.',
+     adCopyEn:'Why keep your money sleeping in the bank? With MP your balance generates returns automatically. 12% annually. No minimums. Withdraw whenever.',
+     ctaEs:'Abrir cuenta',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=mercado+pago+rendimientos',dateSeen:'2026-04'},
+  ],
+  mp_campaigns_0: [ // Hot Sale MSI
+    {id:'mp-hs-1',format:'video',previewUrl:'',headlineEs:'Hot Sale 2026: Hasta 24 MSI en todo Mercado Libre',
+     adCopyEs:'El Hot Sale más grande está aquí. Compra lo que quieras y págalo en 24 meses sin intereses con tu tarjeta MP. Del 1 al 10 de junio 2026.',
+     adCopyEn:'The biggest Hot Sale is here. Buy whatever you want and pay in 24 interest-free months with your MP card. June 1–10 2026.',
+     ctaEs:'Ver ofertas Hot Sale',sourceUrl:'https://www.mercadolibre.com.mx/hot-sale',dateSeen:'2026-05'},
+    {id:'mp-hs-2',format:'image',previewUrl:'',headlineEs:'"Compré mi refrigerador en 12 MSI sin intereses"',
+     adCopyEs:'Testimonial: refrigerador Samsung $18,000 en Hot Sale, pagado en 12 MSI con tarjeta MP. Pago mensual: $1,500. "No sentí el gasto."',
+     adCopyEn:'Testimonial: Samsung refrigerator $18,000 at Hot Sale, paid in 12 MSI with MP card. Monthly payment: $1,500. "I didn\'t feel the expense."',
+     ctaEs:'Comprar ahora en MSI',sourceUrl:'https://www.mercadolibre.com.mx/hot-sale',dateSeen:'2026-05'},
+    {id:'mp-hs-3',format:'email',previewUrl:'',headlineEs:'[Pre-evento] Activa tu tarjeta antes del Hot Sale',
+     adCopyEs:'Email enviado 2 semanas antes: "Activa tu Tarjeta MP ahora y llega al Hot Sale listo para hasta 24 MSI. No te quedes sin tu tarjeta el día del evento." CTA urgente.',
+     adCopyEn:'Email sent 2 weeks before: "Activate your MP Card now and arrive at Hot Sale ready for up to 24 MSI. Don\'t miss out on your card on event day." Urgency CTA.',
+     ctaEs:'Activar mi tarjeta',sourceUrl:'https://www.mercadopago.com.mx/tarjeta-mercado-pago',dateSeen:'2026-05'},
+  ],
+  mp_campaigns_1: [ // Crédito para vendedores
+    {id:'mp-vend-1',format:'email',previewUrl:'',headlineEs:'"[Nombre], tu tienda califica para crédito de $200,000"',
+     adCopyEs:'Email a vendedores ML con +500 ventas/mes. "Tu historial de ventas ya es tu credencial." Oferta personalizada de capital de trabajo basada en ventas de últimos 6 meses. Tasa preferencial.',
+     adCopyEn:'Email to ML sellers with 500+ sales/month. "Your sales history is already your credential." Personalised working capital offer based on 6-month sales volume. Preferential rate.',
+     ctaEs:'Ver mi oferta de crédito',sourceUrl:'https://www.mercadopago.com.mx/credito-vendedores',dateSeen:'2026-04'},
+    {id:'mp-vend-2',format:'push',previewUrl:'',headlineEs:'Push in-app: "Capital de trabajo disponible para tu tienda"',
+     adCopyEs:'Push a vendedores Top en ML: "Tu tienda tiene un crédito preaprobado de $150,000 para comprar inventario. Tasa especial por ser vendedor Top. ¿Lo activas?"',
+     adCopyEn:'Push to Top ML sellers: "Your store has pre-approved credit of $150,000 to purchase inventory. Special rate for Top Seller status. Activate it?"',
+     ctaEs:'Ver mi crédito empresarial',sourceUrl:'https://www.mercadopago.com.mx/credito-vendedores',dateSeen:'2026-04'},
+  ],
+  mp_campaigns_2: [ // Buen Fin 2025
+    {id:'mp-bf-1',format:'video',previewUrl:'',headlineEs:'Buen Fin 2025: 4 días, hasta 24 MSI',
+     adCopyEs:'4 días. Millones de productos. Hasta 24 MSI sin intereses con Mercado Pago. Del 14 al 17 de noviembre. Activa tu tarjeta y compra sin límites.',
+     adCopyEn:'4 days. Millions of products. Up to 24 interest-free months with Mercado Pago. November 14–17. Activate your card and shop without limits.',
+     ctaEs:'Activar mi tarjeta',sourceUrl:'https://www.mercadolibre.com.mx/buen-fin',dateSeen:'2025-11'},
+    {id:'mp-bf-2',format:'image',previewUrl:'',headlineEs:'¿Sin tarjeta aún? Actívala antes del Buen Fin',
+     adCopyEs:'"Todavía estás a tiempo. Activa tu Tarjeta MP antes del 14 de noviembre y aprovecha el Buen Fin con hasta 24 MSI en todo ML. Aprobación en minutos."',
+     adCopyEn:'"You still have time. Activate your MP Card before November 14 and take advantage of Buen Fin with up to 24 MSI across all of ML. Approval in minutes."',
+     ctaEs:'Activar ahora',sourceUrl:'https://www.mercadopago.com.mx/tarjeta-mercado-pago',dateSeen:'2025-10'},
+  ],
+  mp_prm_0: [ // MSI at checkout
+    {id:'mp-msi-1',format:'screenshot',previewUrl:'',headlineEs:'Checkout: "Elige tu plan de pagos sin intereses"',
+     adCopyEs:'Pantalla de checkout ML: "3 MSI: $1,000/mes · 6 MSI: $500/mes · 12 MSI: $250/mes · 24 MSI: $125/mes". Selección en 1 toque, crédito activado al instante. Sin aval, sin papeles.',
+     adCopyEn:'ML checkout screen: "3 MSI: $1,000/mo · 6 MSI: $500/mo · 12 MSI: $250/mo · 24 MSI: $125/mo". 1-tap selection, credit activated instantly. No guarantor, no paperwork.',
+     ctaEs:'Pagar en MSI',sourceUrl:'https://www.mercadopago.com.mx/meses-sin-intereses',dateSeen:'2026-05'},
+  ],
+  mp_prm_2: [ // QR cashback weekends
+    {id:'mp-qr-1',format:'push',previewUrl:'',headlineEs:'Viernes: 5% de cashback pagando con QR este fin de semana',
+     adCopyEs:'Push viernes AM: "Este sábado y domingo paga con el QR MP en cualquier negocio y recibe 5% de cashback directo a tu cuenta. Aplica en pagos de $50 o más."',
+     adCopyEn:'Friday AM push: "This Saturday and Sunday pay with the MP QR at any business and receive 5% cashback directly to your account. Applies on payments of $50 or more."',
+     ctaEs:'Ver mi cuenta',sourceUrl:'https://www.mercadopago.com.mx/qr',dateSeen:'2026-05'},
+  ],
+
+  // ── KUESKI ──
+  kueski_channels_0: [ // Amazon checkout embed
+    {id:'ku-az-1',format:'screenshot',previewUrl:'',headlineEs:'Checkout Amazon: opción "Paga con Kueski Pay"',
+     adCopyEs:'Pantalla de checkout Amazon.com.mx con Kueski Pay como opción: "Sin buró de crédito. Paga en 6 quincenas. Tasa desde 0%." Mostrado junto a OXXO Pay y tarjetas de débito.',
+     adCopyEn:'Amazon.com.mx checkout with Kueski Pay as an option: "No credit bureau. Pay in 6 fortnightly instalments. Rate from 0%." Shown alongside OXXO Pay and debit cards.',
+     ctaEs:'Seleccionar Kueski Pay',sourceUrl:'https://www.amazon.com.mx',dateSeen:'2026-05'},
+    {id:'ku-az-2',format:'screenshot',previewUrl:'',headlineEs:'Confirmación de compra: "¡Aprobado con Kueski Pay!"',
+     adCopyEs:'Pantalla post-checkout: "Tu compra de $1,850 fue aprobada. Pagarás 6 quincenas de $308.33. Descarga la app Kueski para gestionar tus pagos." Con QR de descarga.',
+     adCopyEn:'Post-checkout screen: "Your $1,850 purchase was approved. You will pay 6 instalments of $308.33. Download the Kueski app to manage your payments." With download QR code.',
+     ctaEs:'Descargar app Kueski',sourceUrl:'https://www.kueskipay.com',dateSeen:'2026-05'},
+    {id:'ku-az-3',format:'screenshot',previewUrl:'',headlineEs:'Página de producto Amazon: "Disponible con Kueski Pay"',
+     adCopyEs:'Bajo el precio del producto en Amazon: "Disponible con Kueski Pay — 6 quincenas de $308 sin buró". Badge de Kueski Pay con logo verde. Expande para ver condiciones.',
+     adCopyEn:'Under the product price on Amazon: "Available with Kueski Pay — 6 instalments of $308, no bureau check". Kueski Pay badge with green logo. Expands to show terms.',
+     ctaEs:'Ver condiciones',sourceUrl:'https://www.kueskipay.com/amazon',dateSeen:'2026-05'},
+  ],
+  kueski_channels_1: [ // Meta
+    {id:'ku-m-1',format:'image',previewUrl:'',headlineEs:'¿Te dijeron que no? En Kueski te decimos sí',
+     adCopyEs:'Sin buró. Sin aval. Sin complicaciones. Compra en Amazon y 11,000+ tiendas y págalo en quincenas. Tu primera compra hasta $500 sin intereses.',
+     adCopyEn:"They said no? At Kueski we say yes. No credit bureau. No guarantor. Shop on Amazon and 11,000+ stores, pay in fortnightly instalments. First purchase up to $500 interest-free.",
+     ctaEs:'Comprar sin buró',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=kueski+sin+buro',dateSeen:'2026-05'},
+    {id:'ku-m-2',format:'video',previewUrl:'',headlineEs:'Compra ahora en Amazon, paga en quincenas',
+     adCopyEs:'Video del flujo completo: selecciona Kueski Pay en Amazon → KYC de 2 min → aprobado → compra completa → paga en 6 quincenas. Sin tarjeta de crédito. Sin historial previo.',
+     adCopyEn:'Full flow video: select Kueski Pay on Amazon → 2-min KYC → approved → purchase done → pay in 6 fortnightly instalments. No credit card. No prior history required.',
+     ctaEs:'Registrarme gratis',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=kueski+amazon',dateSeen:'2026-04'},
+    {id:'ku-m-3',format:'carousel',previewUrl:'',headlineEs:'Kueski Pay en tus tiendas favoritas',
+     adCopyEs:'Carrusel: Amazon, ML, Liverpool, Walmart, Temu, SHEIN, Zara, H&M y 11,000+ más. "Paga en todas con Kueski Pay. Sin buró, sin tarjeta de crédito."',
+     adCopyEn:'Carousel: Amazon, ML, Liverpool, Walmart, Temu, SHEIN, Zara, H&M and 11,000+ more. "Pay at all of them with Kueski Pay. No bureau, no credit card."',
+     ctaEs:'Ver todas las tiendas',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=kueski+tiendas',dateSeen:'2026-03'},
+    {id:'ku-m-4',format:'image',previewUrl:'',headlineEs:'Emergencia: Préstamo en efectivo hoy mismo',
+     adCopyEs:'¿Necesitas dinero ahora? Préstamos en efectivo hasta $26,000 MXN. Depósito el mismo día. 100% en línea. Respuesta en minutos.',
+     adCopyEn:'Need money now? Cash loans up to MXN $26,000. Same-day deposit. 100% online. Response in minutes.',
+     ctaEs:'Solicitar préstamo',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=kueski+prestamo+efectivo',dateSeen:'2026-05'},
+  ],
+  kueski_channels_2: [ // TikTok influencer
+    {id:'ku-tt-1',format:'video',previewUrl:'',headlineEs:'[Influencer] "Así compré mi iPhone sin tarjeta de crédito"',
+     adCopyEs:'Influencer muestra el flujo completo: elige iPhone en Amazon → selecciona Kueski Pay → KYC rápido → aprobado → iPhone en camino. "Sin buró, sin tarjeta, fácil y rápido."',
+     adCopyEn:'Influencer shows complete flow: picks iPhone on Amazon → selects Kueski Pay → quick KYC → approved → iPhone on its way. "No bureau, no card, easy and fast."',
+     ctaEs:'Descargar Kueski',sourceUrl:'https://www.tiktok.com/tag/kueskipay',dateSeen:'2026-05'},
+    {id:'ku-tt-2',format:'video',previewUrl:'',headlineEs:'POV: Primera compra en Amazon sin tarjeta de crédito',
+     adCopyEs:'TikTok del proceso completo. Caption: "Así se ve no necesitar a los bancos." Muestra aprobación en 90 segundos.',
+     adCopyEn:'TikTok of the complete process. Caption: "This is what not needing banks looks like." Shows approval in 90 seconds.',
+     ctaEs:'Intentarlo yo también',sourceUrl:'https://www.tiktok.com/tag/kueskipay',dateSeen:'2026-04'},
+  ],
+  kueski_campaigns_0: [ // Amazon Prime Day
+    {id:'ku-pd-1',format:'image',previewUrl:'',headlineEs:'Prime Day: Tus compras en quincenas, sin buró',
+     adCopyEs:'El Prime Day 2026 es tuyo. Compra todo en Amazon y págalo en quincenas con Kueski Pay. Sin buró. Sin tarjeta bancaria.',
+     adCopyEn:'Prime Day 2026 is yours. Buy everything on Amazon and pay in fortnightly instalments with Kueski Pay. No credit bureau. No bank card.',
+     ctaEs:'Comprar en Prime Day',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=kueski+prime+day',dateSeen:'2026-06'},
+    {id:'ku-pd-2',format:'push',previewUrl:'',headlineEs:'Push: "Prime Day empieza en 24 horas — prepara tu Kueski"',
+     adCopyEs:'Push 24h antes del Prime Day: "¡Prime Day mañana! Asegúrate de tener tu Kueski Pay listo. Verifica tu límite de crédito ahora para no perder las mejores ofertas."',
+     adCopyEn:'Push 24h before Prime Day: "Prime Day tomorrow! Make sure your Kueski Pay is ready. Check your credit limit now so you don\'t miss the best deals."',
+     ctaEs:'Verificar mi límite',sourceUrl:'https://www.kueskipay.com',dateSeen:'2026-07'},
+  ],
+  kueski_campaigns_1: [ // Buen Fin
+    {id:'ku-bf-1',format:'video',previewUrl:'',headlineEs:'Buen Fin sin intereses con Kueski Pay',
+     adCopyEs:'Tu primera compra de Buen Fin sin intereses. Solo regístrate antes del 14 de noviembre y compra en tiendas participantes. Sin buró, sin letra chica.',
+     adCopyEn:'Your first Buen Fin purchase interest-free. Just register before November 14 and shop at participating stores. No credit bureau, no fine print.',
+     ctaEs:'Registrarme gratis',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=kueski+buen+fin',dateSeen:'2025-10'},
+    {id:'ku-bf-2',format:'image',previewUrl:'',headlineEs:'Descuentos hasta 70% + 0% de interés en Kueski',
+     adCopyEs:'Buen Fin: descuentos de hasta 70% en Amazon, Liverpool, Walmart y 11,000+ tiendas. Más Kueski Pay sin intereses en tu primera compra. Doble ahorro.',
+     adCopyEn:'Buen Fin: discounts up to 70% at Amazon, Liverpool, Walmart and 11,000+ stores. Plus Kueski Pay interest-free on your first purchase. Double savings.',
+     ctaEs:'Registrar Kueski Pay',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=kueski+buen+fin+descuentos',dateSeen:'2025-10'},
+  ],
+  kueski_campaigns_2: [ // Tu primera compra
+    {id:'ku-tp-1',format:'image',previewUrl:'',headlineEs:'Tu primera compra: 0% de interés',
+     adCopyEs:'Regístrate en Kueski Pay y paga tu primera compra sin ningún interés. Hasta $500 MXN completamente gratis. Sin condiciones raras. Solo tú, tu teléfono, y tus compras.',
+     adCopyEn:'Register for Kueski Pay and pay your first purchase with zero interest. Up to MXN $500 completely free. No weird conditions. Just you, your phone, and your purchases.',
+     ctaEs:'Comenzar gratis',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=kueski+primera+compra',dateSeen:'2026-05'},
+    {id:'ku-tp-2',format:'carousel',previewUrl:'',headlineEs:'¿Qué comprarías con $500 sin interés?',
+     adCopyEs:'Carrusel mostrando productos populares en Amazon con Kueski Pay: "Auriculares $450 → $0 de interés" / "Perfume $380 → $0" / "Zapatillas $490 → $0". CTA: "¿Cuál es el tuyo?"',
+     adCopyEn:'Carousel showing popular Amazon products with Kueski Pay: "Headphones $450 → $0 interest" / "Perfume $380 → $0" / "Sneakers $490 → $0". CTA: "Which one is yours?"',
+     ctaEs:'Elegir mi producto',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=kueski+primera+compra+gratis',dateSeen:'2026-04'},
+  ],
+  kueski_prm_0: [ // 0% first purchase
+    {id:'ku-zero-1',format:'image',previewUrl:'',headlineEs:'Cero intereses en tu primera compra — siempre',
+     adCopyEs:'Cuando haces tu primera compra con Kueski Pay, te cobramos exactamente lo que costó el producto. $0 de interés. Sin condiciones ocultas. Aplica en compras de hasta $500 para todos los usuarios nuevos.',
+     adCopyEn:'When you make your first purchase with Kueski Pay, we charge you exactly what the product cost. $0 interest. No hidden conditions. Applies on purchases up to $500 for all new users.',
+     ctaEs:'Hacer mi primera compra',sourceUrl:'https://www.kueskipay.com/primera-compra',dateSeen:'2026-05'},
+  ],
+  kueski_prm_1: [ // Referral $500
+    {id:'ku-ref-1',format:'push',previewUrl:'',headlineEs:'"Tu amigo aceptó tu invitación — ¡$500 para ti!"',
+     adCopyEs:'Push: "¡Felicidades! [Amigo] tomó su primer préstamo con Kueski usando tu link. Te hemos acreditado $500 de cashback en tu cuenta. ¡Sigue invitando!"',
+     adCopyEn:'"Your friend accepted your invitation — $500 for you!" Push: "Congratulations! [Friend] took their first Kueski loan using your link. We\'ve credited $500 cashback to your account. Keep inviting!"',
+     ctaEs:'Invitar más amigos',sourceUrl:'https://www.kueskipay.com/invita',dateSeen:'2026-05'},
+  ],
+  kueski_prm_2: [ // Seasonal vouchers
+    {id:'ku-vouch-1',format:'image',previewUrl:'',headlineEs:'Cupón: 30% de descuento en tu próxima compra',
+     adCopyEs:'Cupón estacional para usuarios activos: "30% de descuento en tu próxima compra en Amazon o tiendas participantes con Kueski Pay. Válido hasta [fecha]. Aplica automáticamente al pagar."',
+     adCopyEn:'Seasonal coupon for active users: "30% discount on your next purchase at Amazon or participating stores with Kueski Pay. Valid until [date]. Automatically applies at checkout."',
+     ctaEs:'Usar mi cupón',sourceUrl:'https://www.kueskipay.com/cupones',dateSeen:'2026-11'},
+  ],
+
+  // ── PLATA ──
+  plata_channels_0: [ // Meta — 5 ads
+    {id:'pl-m-1',format:'video',previewUrl:'',headlineEs:'La Visa Infinite que sí es para todos',
+     adCopyEs:'Acceso a salas VIP en aeropuertos. Seguro de viaje. Concierge. Cashback en todo. Sin anualidad. ¿Quién dijo que los beneficios premium son solo para los ricos?',
+     adCopyEn:'Airport VIP lounge access. Travel insurance. Concierge. Cashback on everything. No annual fee. Who said premium benefits are only for the wealthy?',
+     ctaEs:'Solicitar mi Plata',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=plata+visa+infinite',dateSeen:'2026-05'},
+    {id:'pl-m-2',format:'image',previewUrl:'',headlineEs:'Hasta 24% de cashback en tus categorías favoritas',
+     adCopyEs:'Tú decides dónde ganas más. Elige 3 categorías: gasolineras, restaurantes, super, viajes y más. Hasta 24% de regreso en cada compra. Sin topes, sin letra chica.',
+     adCopyEn:'You decide where you earn most. Choose 3 categories: gas stations, restaurants, supermarkets, travel and more. Up to 24% back on every purchase. No caps, no fine print.',
+     ctaEs:'Elegir mis categorías',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=plata+cashback+categorias',dateSeen:'2026-04'},
+    {id:'pl-m-3',format:'carousel',previewUrl:'',headlineEs:'Plata vs tu tarjeta actual — la comparativa',
+     adCopyEs:'Carrusel: Anualidad — Plata $0 vs Banco $1,200–4,800/año. Cashback — Plata 24% vs Banco 0–3%. Visa — Plata Infinite vs Banco Clásica.',
+     adCopyEn:'Carousel: Annual fee — Plata $0 vs Bank $1,200–4,800/year. Cashback — Plata 24% vs Bank 0–3%. Visa level — Plata Infinite vs Bank Classic.',
+     ctaEs:'Cambiarme a Plata',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=plata+comparativa+bancos',dateSeen:'2026-03'},
+    {id:'pl-m-4',format:'image',previewUrl:'',headlineEs:'Sin anualidad. Siempre. No es un descuento de primer año.',
+     adCopyEs:'Muchos bancos te dan el primer año gratis y después cobran. En Plata nunca pagas anualidad. Ni el primer año. Ni el segundo. Nunca.',
+     adCopyEn:'Many banks give you the first year free, then charge you. At Plata you never pay an annual fee. Not the first year. Not the second. Never.',
+     ctaEs:'Comprobarlo yo mismo',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=plata+sin+anualidad',dateSeen:'2026-05'},
+    {id:'pl-m-5',format:'video',previewUrl:'',headlineEs:'$300 de cashback de bienvenida — así se ganan',
+     adCopyEs:'Solicita tu Plata Card → gasta $1,500 en 60 días → recibe $300 de cashback automático. Sin códigos, sin formularios. Solo gasta y recibe.',
+     adCopyEn:'Apply for your Plata Card → spend $1,500 in 60 days → receive $300 cashback automatically. No codes, no forms. Just spend and receive.',
+     ctaEs:'Solicitar mi Plata',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=plata+bienvenida+cashback',dateSeen:'2026-04'},
+  ],
+  plata_channels_1: [ // TikTok
+    {id:'pl-tt-1',format:'video',previewUrl:'',headlineEs:'POV: Te aprobaron una Visa Infinite sin pagar anualidad',
+     adCopyEs:'TikTok viral: usuario desempaca su Plata Card. Muestra beneficios Visa Infinite en la app. Reacción: "¿En serio esto es gratis?" Caption: "Beneficios premium sin precio premium."',
+     adCopyEn:'Viral TikTok: user unboxes their Plata Card. Shows Visa Infinite benefits in the app. Reaction: "Is this seriously free?" Caption: "Premium benefits without premium price."',
+     ctaEs:'Solicitar la mía',sourceUrl:'https://www.tiktok.com/@platacardmx',dateSeen:'2026-05'},
+    {id:'pl-tt-2',format:'video',previewUrl:'',headlineEs:'"Gané $1,200 de cashback este mes solo gastando normal"',
+     adCopyEs:'TikTok mostrando estado de cuenta con $1,247 de cashback en un mes. Desglose: 24% gasolineras + 15% restaurantes + 8% super. "No cambié mis hábitos."',
+     adCopyEn:'TikTok showing statement with $1,247 cashback in one month. Breakdown: 24% gas + 15% restaurants + 8% supermarket. "I didn\'t change my spending habits."',
+     ctaEs:'Calcular mi cashback',sourceUrl:'https://www.tiktok.com/@platacardmx',dateSeen:'2026-04'},
+  ],
+  plata_channels_2: [ // Celebrity / influencer
+    {id:'pl-cel-1',format:'video',previewUrl:'',headlineEs:'[Celebrity] te explica por qué usa Plata',
+     adCopyEs:'Celebrity muestra su Plata Card. Beneficios: cashback, VIP lounge, sin anualidad. Producción de alta calidad, tono aspiracional pero accesible.',
+     adCopyEn:'Celebrity shows their Plata Card. Benefits: cashback, VIP lounge, no annual fee. High production quality, aspirational but accessible tone.',
+     ctaEs:'Solicitar en plata.com.mx',sourceUrl:'https://www.instagram.com/platacardmx',dateSeen:'2026-03'},
+    {id:'pl-cel-2',format:'image',previewUrl:'',headlineEs:'[Celebrity] y yo tenemos algo en común: nuestra Plata',
+     adCopyEs:'Imagen lado a lado: celebrity con su Plata Card y usuario promedio con la misma. "[Celebrity] paga $0 de anualidad. Yo también. Los dos tenemos Plata."',
+     adCopyEn:'Side-by-side image: celebrity with their Plata Card and average user with the same card. "[Celebrity] pays $0 annual fee. Me neither. We both have Plata."',
+     ctaEs:'Unirme a ellos',sourceUrl:'https://www.instagram.com/platacardmx',dateSeen:'2026-04'},
+  ],
+  plata_campaigns_0: [ // Visa Infinite launch
+    {id:'pl-vi-1',format:'video',previewUrl:'',headlineEs:'Presentamos la Visa Infinite para todos los mexicanos',
+     adCopyEs:'"Por primera vez, todos los mexicanos pueden tener una Visa Infinite. Sin anualidad. Con cashback real. Acceso a 1,300+ salas VIP. Plata Card — la tarjeta que rompe las reglas."',
+     adCopyEn:'"For the first time, all Mexicans can have a Visa Infinite. No annual fee. With real cashback. Access to 1,300+ VIP lounges. Plata Card — the card that breaks the rules."',
+     ctaEs:'Solicitar mi Plata',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=plata+visa+infinite+lanzamiento',dateSeen:'2025-12'},
+    {id:'pl-vi-2',format:'image',previewUrl:'',headlineEs:'Lo que antes era exclusivo, ahora es para todos',
+     adCopyEs:'"Antes necesitabas $4,800 de anualidad para acceder a sala VIP. Ahora solo necesitas Plata Card — gratis, para siempre."',
+     adCopyEn:'"Before you needed a $4,800 annual fee card for VIP lounge access. Now you just need Plata Card — free, forever."',
+     ctaEs:'Entrar con Plata',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=plata+sala+vip',dateSeen:'2025-11'},
+    {id:'pl-vi-3',format:'carousel',previewUrl:'',headlineEs:'Beneficios Visa Infinite — todos incluidos sin costo',
+     adCopyEs:'Carrusel de beneficios: "Sala VIP en 1,300+ aeropuertos" / "Seguro de viaje internacional" / "Asistencia en carretera" / "Concierge 24/7" / "Precio de tarjeta premium: $0".',
+     adCopyEn:'Benefits carousel: "VIP lounge at 1,300+ airports" / "International travel insurance" / "Roadside assistance" / "24/7 Concierge" / "Premium card price: $0".',
+     ctaEs:'Ver todos los beneficios',sourceUrl:'https://plata.com.mx/beneficios-visa',dateSeen:'2025-12'},
+  ],
+  plata_campaigns_1: [ // Celebrity ambassador
+    {id:'pl-cel-c-1',format:'video',previewUrl:'',headlineEs:'"¿Por qué uso Plata?" — Ambassador',
+     adCopyEs:'"Tenía tarjetas de bancos caros y nunca vi beneficios reales. Con Plata gano cashback de verdad, sin puntos que expiran, sin cargos ocultos. Y $0 de anualidad."',
+     adCopyEn:'"I had cards from expensive banks and never saw real benefits. With Plata I earn real cashback, no expiring points, no hidden charges. And $0 annual fee."',
+     ctaEs:'Solicitar la tuya',sourceUrl:'https://www.instagram.com/platacardmx',dateSeen:'2026-03'},
+    {id:'pl-cel-c-2',format:'image',previewUrl:'',headlineEs:'El ambassador elige sus categorías — ¿cuáles elegiría tú?',
+     adCopyEs:'Celebrity mostrando su selección de 3 categorías en la app. "Yo elegí restaurantes, gasolineras y viajes. ¿Y tú? Elige las tuyas y empieza a ganar."',
+     adCopyEn:'Celebrity showing their 3-category selection in the app. "I chose restaurants, gas stations, and travel. What about you? Choose yours and start earning."',
+     ctaEs:'Elegir mis categorías',sourceUrl:'https://plata.com.mx/categorias',dateSeen:'2026-04'},
+  ],
+  plata_campaigns_2: [ // Cashback maximizer
+    {id:'pl-cb-1',format:'image',previewUrl:'',headlineEs:'¿Cuánto cashback puedes ganar este mes?',
+     adCopyEs:'Calculadora visual: $3,000 en gasolineras (24% = $720) + $2,000 en restaurantes (15% = $300) + $4,000 en super (8% = $320) = $1,340 cashback/mes.',
+     adCopyEn:'Visual calculator: $3,000 at gas stations (24% = $720) + $2,000 at restaurants (15% = $300) + $4,000 at supermarket (8% = $320) = $1,340 cashback/month.',
+     ctaEs:'Calcular mi cashback',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=plata+cashback+calculadora',dateSeen:'2026-05'},
+    {id:'pl-cb-2',format:'carousel',previewUrl:'',headlineEs:'Elige tus 3 categorías — empieza a ganar hoy',
+     adCopyEs:'Carrusel: "🚗 Gasolineras 24%" / "🍽 Restaurantes 15%" / "🛒 Super 8%" / "✈️ Viajes 12%" / "🏥 Salud 10%". "Elige 3 en la app. Activa hoy."',
+     adCopyEn:'Carousel: "🚗 Gas stations 24%" / "🍽 Restaurants 15%" / "🛒 Supermarkets 8%" / "✈️ Travel 12%" / "🏥 Health 10%". "Pick 3 in the app. Activate today."',
+     ctaEs:'Elegir mis categorías',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=plata+categorias',dateSeen:'2026-04'},
+    {id:'pl-cb-3',format:'video',previewUrl:'',headlineEs:'Así cambias tus categorías mes a mes',
+     adCopyEs:'Tutorial: tap en "Categorías" → elige 3 → guarda → activo al instante. "Un mes eliges viajes, el otro restaurantes. Tú mandas."',
+     adCopyEn:'Tutorial: tap "Categories" → choose 3 → save → active instantly. "One month you choose travel, the next restaurants. You\'re in charge."',
+     ctaEs:'Cambiar mis categorías',sourceUrl:'https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=MX&q=plata+app+categorias',dateSeen:'2026-03'},
+  ],
+  plata_prm_0: [ // Variable cashback tiers
+    {id:'pl-cb-s-1',format:'screenshot',previewUrl:'',headlineEs:'App: Selector de categorías de cashback activas',
+     adCopyEs:'Screenshot de la app mostrando 3 categorías seleccionadas con porcentajes. Verde = activas este mes. Botón: "Cambiar el mes que viene". Muestra cashback acumulado en el mes.',
+     adCopyEn:'App screenshot showing 3 selected categories with percentages. Green = active this month. Button: "Change next month". Shows cashback accumulated this month.',
+     ctaEs:'Ver mis categorías',sourceUrl:'https://plata.com.mx/cashback',dateSeen:'2026-05'},
+  ],
+  plata_prm_2: [ // Welcome bonus $300
+    {id:'pl-wb-1',format:'image',previewUrl:'',headlineEs:'$300 de bienvenida — así funciona',
+     adCopyEs:'1. Solicita tu Plata Card. 2. Recíbela en 5–7 días. 3. Gasta $1,500 en 60 días. 4. Recibe $300 cashback automático. Sin códigos, sin formularios.',
+     adCopyEn:'1. Apply for your Plata Card. 2. Receive it in 5–7 days. 3. Spend $1,500 in 60 days. 4. Receive $300 cashback automatically. No codes, no forms.',
+     ctaEs:'Empezar ahora',sourceUrl:'https://plata.com.mx/bienvenida',dateSeen:'2026-05'},
+  ],
+  plata_prm_3: [ // Referral $150
+    {id:'pl-ref-1',format:'image',previewUrl:'',headlineEs:'Invita a un amigo y los dos ganan $150',
+     adCopyEs:'Comparte tu link Plata. Cuando active su tarjeta, ambos reciben $150 de cashback. Sin mínimo de gasto. Sin condiciones. Hasta 10 invitados al mes.',
+     adCopyEn:'Share your Plata link. When they activate their card, you both receive $150 cashback. No minimum spend. No conditions. Up to 10 referrals per month.',
+     ctaEs:'Invitar amigos',sourceUrl:'https://plata.com.mx/invita',dateSeen:'2026-05'},
+  ],
+  plata_prm_4: [ // Buen Fin double cashback
+    {id:'pl-bf-1',format:'push',previewUrl:'',headlineEs:'Buen Fin: Tu cashback se duplica automáticamente',
+     adCopyEs:'Push el jueves antes del Buen Fin: "¡Este Buen Fin (14–17 Nov) tu cashback se DUPLICA en todas tus categorías. Gasolineras: 48%. Restaurantes: 30%. ¡A gastar con cabeza!"',
+     adCopyEn:'Push sent Thursday before Buen Fin: "This Buen Fin (14–17 Nov) your cashback DOUBLES in all your categories. Gas stations: 48%. Restaurants: 30%. Smart spending time!"',
+     ctaEs:'Ver mis categorías activas',sourceUrl:'https://plata.com.mx/buen-fin',dateSeen:'2025-11'},
+  ],
+};
+// Attach to DATA
+DATA.mktAds = mktAds;
+
 // ═══════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════
@@ -1228,6 +1657,7 @@ const state = {
   productTab: 'kueski',
   chartsInit: {},
   mktSection: 'awareness',
+  mktDetail: null,
   productsInit: false,
 };
 
@@ -1412,18 +1842,27 @@ function renderMarketing(){
     `<button class="mkt-subnav-btn${s.key===section?' active':''}" onclick="switchMktSection('${s.key}')">${s.label}</button>`
   ).join('');
 
+  function hasAds(k,type,i){ return !!(DATA.mktAds && DATA.mktAds[k+'_'+type+'_'+i] && DATA.mktAds[k+'_'+type+'_'+i].length); }
+  function isActive(k,type,i){ const m=state.mktDetail; return !!(m && m.comp===k && m.section===type && m.idx===i); }
+  function expandArrow(k,type,i){ return hasAds(k,type,i)?`<span class="mkt-row-expand">›</span>`:''; }
+
   let cols = '';
 
   if(section === 'awareness'){
     cols = comps.map(k => {
       const d = DATA.mktFunnels[k];
-      const chRows = d.channels.map(ch => {
+      const chRows = d.channels.map((ch,i) => {
         const spendCls = spendMap[ch.spendLevel] || 'spend-low';
         const rawType = ch.type.split(' ')[0].replace(/-/g,'_');
-        return `<div class="mkt-ch-row">
+        const active = isActive(k,'channels',i);
+        const clickable = hasAds(k,'channels',i);
+        return `<div class="mkt-ch-row${clickable?' mkt-row-clickable':''}${active?' mkt-row-active':''}"${clickable?` onclick="showMktDetail('${k}','channels',${i})"`:''}>
           <div class="mkt-ch-row-top">
             <span class="mkt-ch-name">${escHtml(ch.name)}</span>
-            <span class="${spendCls}">${escHtml(ch.spendLevel)}</span>
+            <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
+              <span class="${spendCls}">${escHtml(ch.spendLevel)}</span>
+              ${expandArrow(k,'channels',i)}
+            </div>
           </div>
           <div class="mkt-ch-row-type"><span class="ct-badge ct-${rawType}">${escHtml(ch.type.replace(/_/g,' '))}</span></div>
           <div class="mkt-ch-flow">${escHtml(ch.uxFlow)}</div>
@@ -1444,17 +1883,24 @@ function renderMarketing(){
       const pillars = d.messaging.evergreen.map(p =>
         `<span class="pillar-tag" title="${escHtml(p.channels.join(', '))}: ${escHtml(p.copy)}">${escHtml(p.pillar)}</span>`
       ).join('');
-      const campRows = d.messaging.campaigns.map(c => `
-        <div class="mkt-campaign-row">
-          <div class="mkt-campaign-row-name">${escHtml(c.name)}<span class="mkt-date">${escHtml(c.period)}</span></div>
+      const campRows = d.messaging.campaigns.map((c,i) => {
+        const active = isActive(k,'campaigns',i);
+        return `<div class="mkt-campaign-row${active?' mkt-row-active':''}" onclick="showMktDetail('${k}','campaigns',${i})">
+          <div class="mkt-campaign-row-name">
+            ${escHtml(c.name)}
+            <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
+              <span class="mkt-date">${escHtml(c.period)}</span>
+              <span class="mkt-row-expand">›</span>
+            </div>
+          </div>
           <div class="campaign-meta">
             <span class="mkt-channel-badge">${escHtml(c.channel)}</span>
             <span class="mkt-hook-badge">${escHtml(c.hook)}</span>
           </div>
           <div class="campaign-copy">${escHtml(c.copy)}</div>
           ${c.notes ? `<div class="campaign-notes">${escHtml(c.notes)}</div>` : ''}
-        </div>`
-      ).join('');
+        </div>`;
+      }).join('');
       return `<div class="mkt-comp-col">
         <div class="mkt-comp-col-header" style="border-top-color:${compColors[k]}">${labels[k]}</div>
         <div class="mkt-pillars-wrap">
@@ -1469,13 +1915,18 @@ function renderMarketing(){
   } else if(section === 'promotions'){
     cols = comps.map(k => {
       const d = DATA.mktFunnels[k];
-      const prmRows = d.prm.map(p => {
+      const prmRows = d.prm.map((p,i) => {
         const typeSlug = p.type.toLowerCase().replace(/[^a-z]/g,'');
         const statusCls = (p.status||'').toLowerCase()==='active' ? 'prm-status-active' : 'prm-status-historic';
-        return `<div class="mkt-prm-row">
+        const active = isActive(k,'prm',i);
+        const clickable = hasAds(k,'prm',i);
+        return `<div class="mkt-prm-row${clickable?' mkt-row-clickable':''}${active?' mkt-row-active':''}"${clickable?` onclick="showMktDetail('${k}','prm',${i})"`:''}>
           <div class="mkt-prm-row-top">
             <span class="prm-type-badge prm-t-${typeSlug}">${escHtml(p.type)}</span>
-            <span class="${statusCls}">${escHtml(p.status)}</span>
+            <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
+              <span class="${statusCls}">${escHtml(p.status)}</span>
+              ${expandArrow(k,'prm',i)}
+            </div>
           </div>
           <div class="prm-mechanic-sm">${escHtml(p.mechanic)}</div>
           <div class="prm-segment">${escHtml(p.segment)} · ${escHtml(p.period)}</div>
@@ -1489,6 +1940,53 @@ function renderMarketing(){
     }).join('');
   }
 
+  // ── Detail panel ──
+  let detailHtml = '';
+  if(state.mktDetail){
+    const {comp:dc, section:ds, idx:di} = state.mktDetail;
+    const ads = DATA.mktAds && DATA.mktAds[dc+'_'+ds+'_'+di];
+    if(ads && ads.length){
+      const dd = DATA.mktFunnels[dc];
+      const dLabel = labels[dc] || dc;
+      let itemName = '';
+      if(ds==='channels' && dd.channels[di]) itemName = dd.channels[di].name;
+      else if(ds==='campaigns' && dd.messaging.campaigns[di]) itemName = dd.messaging.campaigns[di].name;
+      else if(ds==='prm' && dd.prm[di]) itemName = dd.prm[di].type;
+      const fmtIcons = {image:'🖼',video:'▶',carousel:'▤',screenshot:'📱',search_ad:'🔍',email:'✉',push:'🔔',message:'💬'};
+      const adCards = ads.map(ad => {
+        const icon = fmtIcons[ad.format] || '📄';
+        const preview = ad.previewUrl
+          ? `<img src="${escHtml(ad.previewUrl)}" style="width:100%;height:100%;object-fit:cover" loading="lazy">`
+          : `<div class="mkt-ad-preview-inner">${icon}${ad.sourceUrl?`<a href="${escHtml(ad.sourceUrl)}" target="_blank" class="mkt-ad-src-link">View ad ↗</a>`:'<span style="font-size:.65rem">Preview unavailable</span>'}</div>`;
+        return `<div class="mkt-ad-card">
+          <div class="mkt-ad-preview">${preview}</div>
+          <div class="mkt-ad-body">
+            ${ad.headlineEs ? `<div class="mkt-ad-headline">${escHtml(ad.headlineEs)}</div>` : ''}
+            <div class="mkt-ad-copy-es">${escHtml(ad.adCopyEs)}</div>
+            <div class="mkt-ad-copy-en">${escHtml(ad.adCopyEn)}</div>
+            <div class="mkt-ad-footer">
+              ${ad.ctaEs ? `<span class="mkt-ad-cta">${escHtml(ad.ctaEs)}</span>` : ''}
+              <div class="mkt-ad-footer-right">
+                ${ad.dateSeen ? `<span class="mkt-date">${escHtml(ad.dateSeen)}</span>` : ''}
+                ${ad.sourceUrl ? `<a href="${escHtml(ad.sourceUrl)}" target="_blank" class="mkt-ad-src-link">Source ↗</a>` : ''}
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+      detailHtml = `<div class="mkt-detail-panel" id="mktDetailPanel">
+        <div class="mkt-detail-header">
+          <div>
+            <div class="mkt-detail-label">${escHtml(dLabel)} — ${escHtml(itemName)}</div>
+            <div class="mkt-detail-sublabel">${ads.length} ad example${ads.length>1?'s':''} · Click "Source ↗" on each card to view the original · Research as of 2026-05-21</div>
+          </div>
+          <button class="mkt-detail-close" onclick="closeMktDetail()">✕</button>
+        </div>
+        <div class="mkt-ad-grid">${adCards}</div>
+      </div>`;
+    }
+  }
+
   document.getElementById('panel-marketing').innerHTML = `
     <div class="panel-header">
       <div class="panel-title">Marketing Feed — Competitive Intelligence</div>
@@ -1498,10 +1996,20 @@ function renderMarketing(){
     <div class="mkt-comp-grid-wrap">
       <div class="mkt-comp-grid">${cols}</div>
     </div>
+    ${detailHtml}
   `;
 }
 
-window.switchMktSection = function(k){ state.mktSection = k; renderMarketing(); };
+window.switchMktSection = function(k){ state.mktDetail = null; state.mktSection = k; renderMarketing(); };
+window.showMktDetail = function(comp,section,idx){
+  if(state.mktDetail && state.mktDetail.comp===comp && state.mktDetail.section===section && state.mktDetail.idx===idx){
+    state.mktDetail = null; renderMarketing(); return;
+  }
+  state.mktDetail = {comp,section,idx};
+  renderMarketing();
+  setTimeout(()=>{ const el=document.getElementById('mktDetailPanel'); if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'}); },60);
+};
+window.closeMktDetail = function(){ state.mktDetail = null; renderMarketing(); };
 
 // ═══════════════════════════════════════════
 // RENDER: PRODUCTS
