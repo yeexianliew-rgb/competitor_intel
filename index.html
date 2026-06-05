@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCredito — Mexico Credit Intelligence</title>
+<title>SCredito — Market Intelligence</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -520,15 +520,46 @@ body.tab-macro .panel-container{margin-top:var(--topbar-h)}
 /* ── SOURCE LINK ── */
 a.src{font-size:.65rem;color:var(--navy-light);text-decoration:none}
 a.src:hover{text-decoration:underline}
+
+/* ── LANDING SCREEN ── */
+#landing-screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;background:var(--bg)}
+.landing-brand{font-family:'DM Serif Display',serif;font-size:2.2rem;color:var(--navy);text-align:center;margin-bottom:4px}
+.landing-brand span{color:var(--muted);font-size:1.1rem;display:block;font-family:'Inter',sans-serif;font-weight:400;margin-top:6px}
+.landing-sub{font-size:.88rem;color:var(--muted);margin:14px 0 36px;text-align:center}
+.market-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:400px;width:100%}
+.market-card{background:#fff;border:2px solid var(--border);border-radius:14px;padding:28px 20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:.9rem;font-weight:700;color:var(--navy);transition:border-color .15s,box-shadow .15s;line-height:1.3}
+.market-card:hover{border-color:var(--navy);box-shadow:0 4px 18px rgba(15,35,66,.13)}
+.market-flag{font-size:2.4rem;line-height:1}
+/* Visibility: default shows landing, hides dashboard */
+body:not(.market-selected) #landing-screen{display:flex}
+body:not(.market-selected) #topbar,body:not(.market-selected) #filterbar,body:not(.market-selected) .panel-container{display:none}
+body.market-selected #landing-screen{display:none}
+body.market-selected #topbar{display:flex}
+/* Back button */
+#backBtn{background:none;border:1px solid var(--border);color:var(--navy-light);font-size:.72rem;font-weight:600;padding:5px 11px;border-radius:6px;cursor:pointer;white-space:nowrap;margin-right:10px;flex-shrink:0}
+#backBtn:hover{border-color:var(--navy);color:var(--navy)}
 </style>
 </head>
 <body>
 
+<!-- LANDING SCREEN -->
+<div id="landing-screen">
+  <div class="landing-brand">SCredito <span>Market Intelligence</span></div>
+  <p class="landing-sub">Select a market to explore</p>
+  <div class="market-grid">
+    <button class="market-card" onclick="selectMarket('mx')"><span class="market-flag">🇲🇽</span>Mexico</button>
+    <button class="market-card" onclick="selectMarket('br')"><span class="market-flag">🇧🇷</span>Brazil</button>
+    <button class="market-card" onclick="selectMarket('id')"><span class="market-flag">🇮🇩</span>Indonesia</button>
+    <button class="market-card" onclick="selectMarket('ph')"><span class="market-flag">🇵🇭</span>Philippines</button>
+  </div>
+</div>
+
 <!-- TOP BAR -->
 <div id="topbar">
+  <button id="backBtn" onclick="goBackToLanding()">← Markets</button>
   <div class="brand">
     <div class="brand-eye">SCredito</div>
-    <div class="brand-name">Mexico Credit Intelligence</div>
+    <div class="brand-name">Market Intelligence</div>
   </div>
   <nav class="tab-nav" id="tabNav">
     <button class="tab-btn active" data-tab="digest">Daily Digest</button>
@@ -1740,10 +1771,680 @@ const mktAds = {
 // Attach to DATA
 DATA.mktAds = mktAds;
 
+// ── MX market metadata & per-market helpers ──
+DATA.meta = { name: 'Mexico', flag: '🇲🇽', currency: 'MXN', lastUpdated: 'May 21, 2026', regulator: 'CNBV / Banxico' };
+DATA.mktComps = ['nu','mp','kueski','plata'];
+DATA.mktLabels = {nu:'Nu',mp:'Mercado Pago',kueski:'Kueski',plata:'Plata'};
+DATA.mktCompColors = {nu:'#00a878',mp:'#f59e0b',kueski:'#007a58',plata:'#0f2342'};
+DATA.competitors = ['All','Nu','Plata','Kueski','Mercado Pago','Klar','Stori','DiDi','Revolut','Baubap','Tala','RappiCard','Ualá','Regulatory','Macro'];
+DATA.businessStats = [];
+DATA.macroData = null;
+
+// ═══════════════════════════════════════════
+// MULTI-MARKET DATA
+// ═══════════════════════════════════════════
+const MARKET_DATA = {
+  mx: DATA,
+
+  br: {
+    meta: { name: 'Brazil', flag: '🇧🇷', currency: 'BRL', lastUpdated: 'Jun 5, 2026', regulator: 'BACEN / BCB' },
+    competitors: ['All','Nubank','Mercado Crédito','PicPay','Creditas','C6 Bank','PagBank','Neon','Serasa','Avante'],
+    mktComps: ['nubank_br','mercado_br','picpay_br','creditas_br'],
+    mktLabels: {nubank_br:'Nubank',mercado_br:'Merc. Crédito',picpay_br:'PicPay',creditas_br:'Creditas'},
+    mktCompColors: {nubank_br:'#8B5CF6',mercado_br:'#f59e0b',picpay_br:'#06B6D4',creditas_br:'#059669'},
+    newsItems: [
+      {id:'br-n1',date:'2026-05-14',category:'Earnings',competitor:'Nubank',
+       headline:'Nubank Q1 2026: 135M Customers, $5B Revenue, 40% Credit Portfolio Growth',
+       oneLineSummary:'Nubank surpassed 135M customers and $5B quarterly revenue; total credit portfolio reached $37.2B (+40% YoY); net income $871M with 29% ROE.',
+       sourceUrl:'https://www.businesswire.com/news/home/20260514553909/en/Nu-Holdings-Ltd.-Reports-First-Quarter-2026-Financial-Results'},
+      {id:'br-n2',date:'2026-04-24',category:'Earnings',competitor:'PicPay',
+       headline:'PicPay IPO (Nasdaq: PICS) Jan 2026; Revenue +70% YoY to R$3.5B in Q1 2026',
+       oneLineSummary:'PicPay reported R$3.5B Q1 2026 revenue (+70% YoY) after its Nasdaq IPO in January; 44M active users with WhatsApp-native payments driving daily engagement.',
+       sourceUrl:'https://www.picpay.com/investidores'},
+      {id:'br-n3',date:'2026-03-20',category:'Investment',competitor:'Nubank',
+       headline:'Nubank Commits R$45 Billion Investment in Brazil for 2026',
+       oneLineSummary:'Nu Holdings announced its largest-ever Brazil investment commitment — R$45B across technology, credit expansion, and product development — cementing its dominant position.',
+       sourceUrl:'https://international.nubank.com.br/press-releases/'},
+      {id:'br-n4',date:'2026-02-28',category:'Earnings',competitor:'Mercado Crédito',
+       headline:'Mercado Crédito Loan Book Grows 87% YoY to $14.6B — Fastest in Brazil',
+       oneLineSummary:'Mercado Pago\'s credit arm posted $14.6B in loans (+87% YoY) as of Q4 2025, the fastest growth rate among major Brazilian digital lenders; 83M Mercado Pago MAUs.',
+       sourceUrl:'https://investor.mercadolibre.com/'},
+      {id:'br-n5',date:'2026-02-15',category:'Regulatory',competitor:'Market-wide',
+       headline:'BCB Cuts SELIC to 14.50% in April; Year-End Forecast at 13.25%',
+       oneLineSummary:'BCB cut the SELIC rate to 14.75% in March and 14.50% in April 2026; Focus survey consensus forecasts ~13.25% by year-end — a significant tailwind for digital lender NIM.',
+       sourceUrl:'https://www.bcb.gov.br/en/monetarypolicy/copomdecisions'},
+      {id:'br-n6',date:'2026-01-31',category:'Earnings',competitor:'PagBank',
+       headline:'PagBank Reports R$575M Net Income in Q4 2025; Active Clients Hit 17.1M',
+       oneLineSummary:'PagBank (NYSE: PAGS) reported R$575M non-GAAP net income in Q4 2025; loan book reached R$5.0B (+35.9% YoY); 17.1M active banking clients.',
+       sourceUrl:'https://investors.pagseguro.com/'},
+      {id:'br-n7',date:'2025-12-10',category:'Market Data',competitor:'Market-wide',
+       headline:'Pix Surpasses 150M Users and 5B Transactions/Month in Brazil',
+       oneLineSummary:'BCB data confirmed Pix now has 150M+ registered keys and processes over 5B transactions per month — the fastest payment rail adoption in global fintech history.',
+       sourceUrl:'https://www.bcb.gov.br/estabilidadefinanceira/pix'},
+      {id:'br-n8',date:'2026-04-10',category:'Expansion',competitor:'Creditas',
+       headline:'Creditas Deepens B2B HR Channel with 2,000+ Employer Partners',
+       oneLineSummary:'Creditas expanded its employer-benefit credit channel to 2,000+ corporate partners, offering secured loans at 1.09%/month as an employee financial wellness benefit.',
+       sourceUrl:'https://www.creditas.com/'},
+      {id:'br-n9',date:'2026-03-01',category:'Product',competitor:'Nubank',
+       headline:'NuPay BNPL Expands Across Amazon Brazil Checkout',
+       oneLineSummary:'Nubank\'s NuPay instalment product expanded to Amazon Brazil checkout, giving Nubank a marketplace-embedded BNPL position alongside Mercado Crédito in Brazil\'s largest e-commerce platform.',
+       sourceUrl:'https://blog.nubank.com.br/'},
+      {id:'br-n10',date:'2026-01-15',category:'Market Data',competitor:'Market-wide',
+       headline:'Brazil BNPL Market to Reach $5.68B in 2026; 22% YoY Growth',
+       oneLineSummary:'Brazil\'s BNPL transaction value is projected at $5.68B in 2026 (+22% YoY), driven by embedded credit in banking apps and marketplace BNPL via Mercado Crédito, Nubank NuPay, and PicPay.',
+       sourceUrl:'https://www.businessresearchinsights.com/market-reports/brazil-buy-now-pay-later-market'},
+    ],
+    upcomingEvents: [
+      {sortDate:'2026-06-12',date:'Jun 12, 2026',title:'Dia dos Namorados (Valentine\'s Day)',note:'Major gifting and e-commerce event. Credit card and BNPL activity spikes for electronics and experiences.',importance:'Medium'},
+      {sortDate:'2026-06-16',date:'Jun 16–17, 2026',title:'COPOM Meeting #4 — SELIC Rate Decision',note:'Expected -25bps to 14.25%. Each cut widens NIM for digital lenders and reduces cost of debt funding.',importance:'High'},
+      {sortDate:'2026-07-30',date:'Jul 30–31, 2026',title:'COPOM Meeting #5 — SELIC Rate Decision',note:'Third consecutive cut expected; trajectory toward 13.25% year-end.',importance:'High'},
+      {sortDate:'2026-10-12',date:'Oct 12, 2026',title:'Dia das Crianças (Children\'s Day)',note:'Second-largest Brazilian retail event after Black Friday. Toy and electronics BNPL peaks.',importance:'Medium'},
+      {sortDate:'2026-10-30',date:'Oct 30, 2026',title:'BACEN VASP Authorization Deadline',note:'Non-authorized crypto/virtual asset providers banned. Fintechs with crypto products must be licensed.',importance:'Medium'},
+      {sortDate:'2026-11-03',date:'Nov 3–4, 2026',title:'COPOM Meeting #7 — SELIC Rate Decision',note:'Focus survey projects ~13.25% SELIC by year-end — 2 more cuts anticipated.',importance:'High'},
+      {sortDate:'2026-11-27',date:'Nov 27, 2026',title:'Black Friday Brazil',note:'Largest annual BNPL event. All major digital lenders deploy promotional offers and credit limit upgrades.',importance:'Very High'},
+      {sortDate:'2026-12-25',date:'Dec 25, 2026',title:'Natal (Christmas)',note:'Peak consumer credit utilization. Aguinaldo (13th salary) drives repayment then new credit demand for gifts.',importance:'High'},
+    ],
+    mktFunnels: {
+      nubank_br: {
+        funnelSummary: 'NPS-led organic growth supplemented by heavy social/TikTok presence and referral program. AI-driven credit scoring enables mass market approval with low CAC.',
+        channelImplication: 'Nubank dominates brand awareness in Brazil. Focus on speed-to-approval and higher limits for credit-thin segments Nubank underserves.',
+        prmCounterMove: 'Target Nubank users with revolving credit limit increases after proven repayment — Nubank\'s stingy limits are the top user complaint.',
+        channels: [
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~5M imp/mo [est.]',engagement:'CTR ~1.2% [est.]',uxFlow:'Ad → nubank.com.br → App Store → onboarding → instant card',spendLevel:'High'},
+          {name:'TikTok',type:'organic_social',trafficEst:'~80M views/mo cumulative',engagement:'High on financial education content',uxFlow:'TikTok → link in bio → nubank.com.br → install',spendLevel:'High'},
+          {name:'Referral Program',type:'owned',trafficEst:'~600K referrals/mo [est.]',engagement:'~12% conversion on referral links',uxFlow:'Invite link → onboarding → card activated',spendLevel:'Low'},
+          {name:'NuPay / Amazon BR checkout',type:'affiliate',trafficEst:'~50M Amazon BR sessions/mo',engagement:'BNPL option shown at cart',uxFlow:'Amazon checkout → NuPay → install → purchase',spendLevel:'Medium'},
+          {name:'App Store / Play Store',type:'aso',trafficEst:'#1 Finance app Brazil',engagement:'4.7★ · 10M+ reviews',uxFlow:'Organic search → install → biometric onboarding',spendLevel:'Medium'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'Zero anuidade para sempre',channels:['Meta','TikTok'],copy:'"Outros bancos cobram anuidade. A gente não. Zero para sempre."'},
+            {pillar:'Crédito para quem o banco disse não',channels:['Meta','TikTok'],copy:'"Aprovamos quem o banco recusou. Sem burocracia, 100% pelo celular."'},
+            {pillar:'Rendimento automático todo dia',channels:['App Store','In-app'],copy:'"Conta Nu: rendimento acima da poupança — sem nada fazer."'},
+          ],
+          campaigns: [
+            {name:'NuPay Amazon BNPL',period:'Q2 2026',channel:'Amazon checkout + Meta',hook:'BNPL / Parcelamento',copy:'"Parcelei minha compra na Amazon em até 12× sem juros com NuPay."',notes:'Partnership expanding across Amazon BR checkout.'},
+            {name:'R$45B Investment in Brazil',period:'Mar 2026',channel:'Press + Social',hook:'Trust / Scale',copy:'"Estamos investindo R$45 bilhões no Brasil em 2026. Isso é compromisso real."',notes:'PR campaign supporting largest-ever Brazil investment commitment.'},
+          ],
+        },
+        prm: [
+          {type:'Referral',mechanic:'R$30–50 cashback credited to both referrer and new user on first purchase',segment:'Existing Nubank users → friends & family',status:'Active',period:'Ongoing'},
+          {type:'Savings yield',mechanic:'Rendimento automático diário acima da poupança na Conta Nu',segment:'All account holders',status:'Active',period:'Ongoing'},
+        ],
+      },
+      mercado_br: {
+        funnelSummary: 'Marketplace-native embedded credit — 83M Mercado Pago users are a captive BNPL audience at checkout. 87% YoY credit growth is the fastest in Brazil.',
+        channelImplication: 'Mercado Crédito\'s captive marketplace funnel is structurally unassailable for in-marketplace BNPL. Focus on underserved segments outside the Mercado Livre ecosystem.',
+        prmCounterMove: 'Target users without ML purchase history with a simpler approval process — no marketplace history required, mobile-data scoring instead.',
+        channels: [
+          {name:'Mercado Livre checkout (native)',type:'owned',trafficEst:'100M+ buyers',engagement:'In-cart BNPL shown at payment',uxFlow:'ML cart → "Parcelar com MP" → 1-tap activation → purchase',spendLevel:'Low'},
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~2M imp/mo [est.]',engagement:'CTR ~0.8% [est.]',uxFlow:'Ad → mercadopago.com.br → app → onboarding',spendLevel:'Medium'},
+          {name:'Email & Push (ML base)',type:'comms',trafficEst:'~20M email/mo [est.]',engagement:'Open 18%, CTR 3%',uxFlow:'Pre-approved offer email → MP app → credit activation',spendLevel:'High'},
+          {name:'App Store / Play Store',type:'aso',trafficEst:'Top 5 Finance BR',engagement:'4.6★ combined',uxFlow:'Organic search → install → wallet + credit',spendLevel:'Medium'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'Ganhe em cima do seu saldo',channels:['Email','In-app'],copy:'"Seu dinheiro parado no MP rende todo dia."'},
+            {pillar:'Parcelamento no Mercado Livre',channels:['ML checkout','Meta'],copy:'"Parcelamos em até 18× sem juros nas melhores lojas do Brasil."'},
+          ],
+          campaigns: [
+            {name:'Black Friday Parcelamento',period:'Nov 2026',channel:'ML checkout + Meta',hook:'BNPL savings',copy:'"Black Friday sem juros: até 18× no Mercado Pago. Não deixe passar."',notes:'Largest annual BNPL volume event in Brazil.'},
+          ],
+        },
+        prm: [
+          {type:'Interest-free',mechanic:'Parcelamento em até 18× sem juros em lojas participantes do ML',segment:'ML shoppers',status:'Active',period:'Ongoing'},
+          {type:'Cashback',mechanic:'Pontos ML Points em compras com cartão Mercado Pago',segment:'All card holders',status:'Active',period:'Ongoing'},
+        ],
+      },
+      picpay_br: {
+        funnelSummary: 'WhatsApp-native P2P payments create daily engagement habit. IPO capital (Jan 2026) accelerates credit product investment. 44M active users growing at 10% YoY.',
+        channelImplication: 'PicPay\'s WhatsApp integration and P2P payment habit are hard to replicate. Compete on credit product speed and limit generosity for users in the PicPay ecosystem.',
+        prmCounterMove: 'Offer a credit product that activates from a Pix payment flow — remove the app download barrier by meeting users where Pix already lives.',
+        channels: [
+          {name:'WhatsApp (Meta partnership)',type:'comms',trafficEst:'~30M active WhatsApp payers [est.]',engagement:'Daily active usage',uxFlow:'WhatsApp payment → PicPay credit upsell → in-chat activation',spendLevel:'High'},
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~2M imp/mo [est.]',engagement:'CTR ~1.1% [est.]',uxFlow:'Ad → picpay.com.br → app install → onboarding',spendLevel:'High'},
+          {name:'TikTok',type:'organic_social',trafficEst:'Strong Gen Z presence',engagement:'High financial education engagement',uxFlow:'TikTok → link → picpay.com → install',spendLevel:'Medium'},
+          {name:'App Store / Play Store',type:'aso',trafficEst:'Top 3 Finance BR',engagement:'4.6★ combined',uxFlow:'Organic search → install → Pix setup → credit upsell',spendLevel:'Medium'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'Pix pelo WhatsApp — sem abrir app',channels:['WhatsApp','Meta'],copy:'"Envie e receba Pix pelo WhatsApp. É PicPay, é fácil, é seu banco."'},
+            {pillar:'Crédito pessoal na hora',channels:['In-app','Meta'],copy:'"Crédito pessoal aprovado em minutos. Dinheiro na conta na hora."'},
+          ],
+          campaigns: [
+            {name:'IPO: Somos agora uma empresa pública',period:'Jan 2026',channel:'Social + Press',hook:'Trust / milestone',copy:'"O PicPay que você conhece agora é listado no Nasdaq. Seu banco, maior ainda."',notes:'Post-IPO brand campaign building institutional trust.'},
+          ],
+        },
+        prm: [
+          {type:'Cashback',mechanic:'Cashback em compras com cartão PicPay em categorias selecionadas',segment:'All card holders',status:'Active',period:'Ongoing'},
+          {type:'Referral',mechanic:'Bônus em dinheiro para quem indica amigos que fazem primeira transação',segment:'Existing users',status:'Active',period:'Ongoing'},
+        ],
+      },
+      creditas_br: {
+        funnelSummary: 'Employer/HR channel and comparison portals drive secured-lending acquisition. Lower APR than neobanks due to asset-backed model. 2,000+ employer partners as of Apr 2026.',
+        channelImplication: 'Creditas occupies the secured-lending niche neobanks cannot easily enter. Target Creditas borrowers who want an unsecured revolving line alongside their secured loan.',
+        prmCounterMove: 'Partner with the same HR/employer platforms to offer complementary unsecured products for employees who don\'t qualify for secured Creditas loans.',
+        channels: [
+          {name:'Employer/HR partnerships',type:'affiliate',trafficEst:'~2,000+ partner employers',engagement:'Employee financial wellness benefit',uxFlow:'HR portal → credit offer → creditas.com.br → application',spendLevel:'Medium'},
+          {name:'Financial comparison portals',type:'affiliate',trafficEst:'Bom Pra Crédito, Serasa, GuiaBolso',engagement:'High-intent credit shoppers',uxFlow:'Comparison portal → Creditas listing → apply → approval',spendLevel:'Medium'},
+          {name:'Google Performance',type:'search',trafficEst:'~300K searches/mo [est.]',engagement:'High-intent secured loan queries',uxFlow:'Search "empréstimo com garantia imóvel" → apply',spendLevel:'High'},
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~1.5M imp/mo [est.]',engagement:'CTR ~0.9% [est.]',uxFlow:'Ad (home equity angle) → creditas.com.br → calculator → application',spendLevel:'High'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'A menor taxa do Brasil',channels:['Google','Meta'],copy:'"Taxa a partir de 1,09% ao mês. O empréstimo com garantia que cabe no seu bolso."'},
+            {pillar:'Use seu imóvel para pagar menos',channels:['Meta','Landing'],copy:'"Seu patrimônio trabalhando por você. Taxa 4× menor que o banco."'},
+          ],
+          campaigns: [
+            {name:'Creditas Benefícios — B2B HR',period:'Q1–Q2 2026',channel:'B2B email + LinkedIn',hook:'Employee benefit',copy:'"Ofereça crédito consciente como benefício. Seus funcionários merecem taxas melhores."',notes:'B2B targeting HR departments of mid-large companies.'},
+          ],
+        },
+        prm: [
+          {type:'Interest',mechanic:'Taxa mínima de 1,09% ao mês para empréstimos com garantia de imóvel',segment:'Home-owning borrowers',status:'Active',period:'Ongoing'},
+          {type:'Loyalty',mechanic:'Taxas reduzidas progressivamente para clientes com histórico positivo',segment:'Repeat borrowers',status:'Active',period:'Ongoing'},
+        ],
+      },
+    },
+    mktAds: {},
+    productItems: {},
+    sentimentItems: [],
+    businessStats: [
+      {id:'br-b1',competitor:'Nubank',users:'135M total (115M+ BR)',loanOS:'$37.2B (+40% YoY)',revenue:'$5B/quarter Q1 2026',
+       funding:'NYSE-listed; ~$77–85B market cap; raised ~$2.6B pre-IPO',
+       fundingAdvantage:'Public equity + low-cost deposits; R$45B committed investment in 2026',
+       estCAC:'~$5–8 (referral-led)',estPromoBurn:'Referral bonuses + zero-fee product subsidies',
+       npl:'~4.8% net (est.)',monetisation:'Credit spreads + interchange + financial services fees',
+       distribution:'Digital; Pix; Nubank Ultravioleta card; NuPay checkout',
+       ueQuality:'strong',ueConfidence:'high',threatLevel:'high',
+       threatWhy:'135M customers, $5B quarterly revenue. R$45B investment commitment signals continued aggression.',
+       implication:'Sets the floor for product quality. AI-driven credit scoring and zero-fee positioning must be matched or differentiated.'},
+      {id:'br-b2',competitor:'Mercado Crédito',users:'83M Mercado Pago MAU',loanOS:'$14.6B (+87% YoY)',revenue:'Embedded in MELI $8.8B quarterly revenue',
+       funding:'MELI Nasdaq-listed; ~$100B+ market cap',
+       fundingAdvantage:'Platform float; no external capital needed; fastest-growing credit book in Brazil',
+       estCAC:'~$0–3 (marketplace activation)',estPromoBurn:'MSI merchant subsidies',
+       npl:'Not disclosed BR-only',monetisation:'Interest + MDR + marketplace take rate',
+       distribution:'Mercado Livre marketplace; Mercado Pago app; 100M+ buyers',
+       ueQuality:'strong',ueConfidence:'high',threatLevel:'high',
+       threatWhy:'87% YoY credit growth — fastest in Brazil. 100M+ buyer base creates captive BNPL distribution at near-zero cost.',
+       implication:'Only compete where Mercado Livre has no data: non-ML users and offline categories.'},
+      {id:'br-b3',competitor:'PicPay',users:'66M total; 44M quarterly active',loanOS:'Not disclosed separately',revenue:'R$3.5B Q1 2026 (+70% YoY)',
+       funding:'Nasdaq IPO Jan 2026 (PICS); ~$2.5B market cap',
+       fundingAdvantage:'IPO capital accelerating product investment; WhatsApp integration creates daily touchpoint',
+       estCAC:'~$8–15',estPromoBurn:'Cashback + referral bonuses',
+       npl:'Not disclosed',monetisation:'Financial services (credit + insurance + investment fees)',
+       distribution:'WhatsApp (Meta); Pix; PicPay app',
+       ueQuality:'strong',ueConfidence:'medium',threatLevel:'high',
+       threatWhy:'WhatsApp-native payments create a daily habit. IPO capital accelerates credit product development.',
+       implication:'PicPay owns the WhatsApp payment moment. Target users who need credit beyond PicPay\'s current limits.'},
+      {id:'br-b4',competitor:'Creditas',users:'~2,000+ employer partners',loanOS:'Significant secured lending (undisclosed)',revenue:'Not publicly reported',
+       funding:'~$981M raised; $3.3B valuation; SoftBank, Fidelity investors',
+       fundingAdvantage:'Secured lending model has lower NPL and lower cost of capital than unsecured digital credit',
+       estCAC:'~$30–60 (employer B2B channel)',estPromoBurn:'Rate subsidies for employer channel',
+       npl:'Low (secured)',monetisation:'Interest spread on secured loans (1.09%/mo+ vs 4–7%/mo unsecured)',
+       distribution:'HR/employer portal; comparison sites; paid digital',
+       ueQuality:'strong',ueConfidence:'medium',threatLevel:'medium',
+       threatWhy:'Unique secured-lending niche; lower-rate product attracts better credit quality borrowers. Expanding HR channel is sticky.',
+       implication:'Target Creditas customers who need complementary unsecured revolving credit for daily expenses.'},
+      {id:'br-b5',competitor:'PagBank',users:'17.1M active banking clients',loanOS:'R$5.0B (+35.9% YoY)',revenue:'R$575M net income Q1 2026',
+       funding:'NYSE-listed (PAGS); ~$2–3B market cap',
+       fundingAdvantage:'SME merchant payment base creates embedded credit distribution',
+       estCAC:'~$15–25',estPromoBurn:'Merchant promotions',
+       npl:'Not disclosed separately',monetisation:'Payment processing + banking credit fees',
+       distribution:'PagSeguro mPOS network; PagBank app',
+       ueQuality:'mixed',ueConfidence:'medium',threatLevel:'medium',
+       threatWhy:'Strong SME merchant base creates B2B2C credit distribution, but limited consumer brand vs. Nubank/PicPay.',
+       implication:'Monitor if PagBank expands working capital to employees of their merchants — a B2B2C credit risk.'},
+    ],
+    macroData: {
+      indicators: [
+        {label:'SELIC Rate (Policy Rate)',value:'14.50%',note:'BCB cut to 14.75% in Mar then 14.50% in Apr 2026. Focus survey expects ~13.25% by year-end 2026.',color:'amber'},
+        {label:'IPCA Inflation',value:'~5.0%',note:'IPCA 4.39% in Apr 2026; Focus survey raised year-end forecast to 5.04%, above BCB 4.5% ceiling.',color:'red'},
+        {label:'GDP Growth 2026',value:'~1.9%',note:'Focus survey consensus. Domestic consumption resilient but constrained by high rates and fiscal uncertainty.',color:'amber'},
+        {label:'Unemployment Rate',value:'7.5%',note:'10-year low as of Apr 2026 (IBGE). Tight labor market supports credit demand and default recovery.',color:'green'},
+        {label:'BNPL Market Size 2026',value:'$5.68B USD',note:'22.4% YoY growth. Projected $11.75B by 2031. Dominated by embedded credit in banking apps and marketplaces.',color:'green'},
+        {label:'Credit Card Penetration',value:'~35% of adults',note:'~35% of Brazilians hold a credit card. ~60M adults remain unbanked or credit-thin — primary BNPL TAM.',color:'amber'},
+      ],
+      regulatory: [
+        {date:'Jun 16–17, 2026',event:'COPOM Meeting #4 — SELIC Decision',impact:'HIGH',note:'Expected -25bps to 14.25%. Each cut widens NIM for digital lenders.'},
+        {date:'Oct 30, 2026',event:'BACEN VASP Authorization Deadline',impact:'MEDIUM',note:'Non-authorized crypto/virtual asset providers banned. Fintechs with crypto products must be licensed.'},
+        {date:'Nov 3–4, 2026',event:'COPOM Meeting #7 — SELIC Decision',impact:'HIGH',note:'Focus survey projects ~13.25% SELIC by year-end — 2 more cuts anticipated.'},
+        {date:'Nov 27, 2026',event:'Black Friday Brazil',impact:'HIGH',note:'Largest annual BNPL event. All major digital lenders deploy promotional offers.'},
+      ],
+    },
+  },
+
+  id: {
+    meta: { name: 'Indonesia', flag: '🇮🇩', currency: 'IDR', lastUpdated: 'Jun 5, 2026', regulator: 'OJK / Bank Indonesia' },
+    competitors: ['All','Kredivo','GoPay / GoPayLater','Akulaku','SPayLater','OVO PayLater','DANA','JULO','Honest','AdaKami','SeaBank'],
+    mktComps: ['kredivo_id','gopay_id','akulaku_id','julo_id'],
+    mktLabels: {kredivo_id:'Kredivo',gopay_id:'GoPayLater',akulaku_id:'Akulaku',julo_id:'JULO'},
+    mktCompColors: {kredivo_id:'#DC2626',gopay_id:'#059669',akulaku_id:'#2563EB',julo_id:'#7C3AED'},
+    newsItems: [
+      {id:'id-n1',date:'2026-05-07',category:'M&A / Expansion',competitor:'Kredivo',
+       headline:'Kredivo Acquires ~100% of Vietnam\'s Timo Digital Bank for SEA Expansion',
+       oneLineSummary:'Kredivo secured 99.99% ownership of Timo Vietnam JSC, marking its entry into Vietnamese digital banking; will invest ~US$15M in Vietnam over 3 years.',
+       sourceUrl:'https://technode.global/2026/05/07/indonesias-bnpl-platform-kredivo-acquires-nearly-full-ownership-of-vietnams-timo-digital-bank/'},
+      {id:'id-n2',date:'2026-05-20',category:'Regulatory',competitor:'Market-wide',
+       headline:'Bank Indonesia Surprises with 50bps Rate Hike to 5.25% to Defend Rupiah',
+       oneLineSummary:'BI raised BI7DRRR by 50bps to 5.25% — larger than the 25bps expected — marking the first hike since April 2024; raises lending cost pressure for BNPL/fintech sector.',
+       sourceUrl:'https://www.bi.go.id/en/publikasi/ruang-media/news-release/Pages/sp_2810726.aspx'},
+      {id:'id-n3',date:'2026-03-26',category:'Market Data',competitor:'Market-wide',
+       headline:'Indonesia P2P Lending Grows 25% YoY to IDR 98.54 Trillion',
+       oneLineSummary:'OJK data shows fintech P2P outstanding hit IDR 98.54T as of Jan 2026 (+25.52% YoY); JULO highlighted 3.29M users and near-perfect 99% TKB90 repayment rate.',
+       sourceUrl:'https://finance.yahoo.com/markets/crypto/articles/indonesias-p2p-lending-grows-25-101800209.html'},
+      {id:'id-n4',date:'2026-03-05',category:'Earnings',competitor:'Akulaku',
+       headline:'Akulaku Finance Posts IDR 108B Net Profit in 2025, Up 66% YoY',
+       oneLineSummary:'Akulaku disbursed IDR 7.44T in new financing in 2025 (89% BNPL), with net profit rising 66%; NPF held at 1.1%. Targeting IDR 8.2T disbursement in 2026.',
+       sourceUrl:'https://www.dealstreetasia.com/stories/akulaku-profit-growth-2025-474925'},
+      {id:'id-n5',date:'2026-01-15',category:'Regulatory',competitor:'Market-wide',
+       headline:'OJK BNPL Regulation No. 32/2025 Effective — June 15 Compliance Deadline',
+       oneLineSummary:'Indonesia\'s first dedicated BNPL regulatory framework (OJK Reg 32/2025) came into force Dec 15, 2025; banks and multi-finance firms must comply by June 15, 2026.',
+       sourceUrl:'https://www.hbtlaw.com/insights/2026-01/new-ojk-regulation-on-buy-now-pay-later-services'},
+      {id:'id-n6',date:'2026-01-10',category:'Funding',competitor:'Kredivo',
+       headline:'DBS Indonesia Raises Channeling Facility to Kredivo to IDR 3 Trillion for 2026',
+       oneLineSummary:'DBS Indonesia more than doubled its funding channel to Kredivo at the start of 2026, backing surging BNPL demand from Indonesia\'s underbanked consumer segment.',
+       sourceUrl:'https://www.dbs.com/newsroom/As_2026_kicks_off_Bank_DBS_Indonesia_increases_channeling_financing_to_Kredivo_to_IDR_3_trillion'},
+      {id:'id-n7',date:'2025-12-15',category:'Regulatory',competitor:'Market-wide',
+       headline:'OJK Cuts P2P Consumptive Lending Rate Cap to 0.1%/day Effective Jan 1, 2026',
+       oneLineSummary:'OJK reduced the daily rate ceiling for consumer P2P loans to 0.1% (from 0.2%) effective Jan 2026, squeezing margins for all pinjol platforms.',
+       sourceUrl:'https://www.lexology.com/library/detail.aspx?g=832cb6b5-8fd9-4dd1-98a0-aaeefcfb9bb1'},
+      {id:'id-n8',date:'2025-12-10',category:'Funding',competitor:'Kredivo',
+       headline:'Kredivo Group Secures Over US$100M in Fresh Funding Led by Mizuho Bank',
+       oneLineSummary:'Kredivo closed a >US$100M round in Dec 2025 led by longtime backer Mizuho Bank, ahead of its regional expansion push and Vietnam acquisition in May 2026.',
+       sourceUrl:'https://fintechnews.id/109534/funding/'},
+      {id:'id-n9',date:'2025-10-02',category:'Funding',competitor:'Honest',
+       headline:'Honest Credit Card Raises Total Equity to US$100M, Adds US$40M Debt Facility',
+       oneLineSummary:'Indonesia\'s only fintech-licensed credit card issuer closed an oversubscribed round (led by Orico) bringing equity to $100M, targeting a market where <3% of Indonesians hold credit cards.',
+       sourceUrl:'https://fintech.global/2025/10/02/honest-credit-card-issuer-secures-fresh-equity-funding/'},
+      {id:'id-n10',date:'2026-03-01',category:'Market Data',competitor:'Market-wide',
+       headline:'QRIS QR-Code Payments Grow 133% YoY in Feb 2026 — Key BNPL On-Ramp',
+       oneLineSummary:'QRIS QR-code transactions grew 133% YoY in Feb 2026, deepening fintech access for informal merchants and underbanked consumers — a key BNPL entry point for offline expansion.',
+       sourceUrl:'https://www.weforum.org/stories/2026/03/financial-inclusion-indonesia/'},
+    ],
+    upcomingEvents: [
+      {sortDate:'2026-06-15',date:'Jun 15, 2026',title:'OJK BNPL Reg 32/2025 — Final Compliance Deadline',note:'Banks and multi-finance firms must be compliant with Indonesia\'s first dedicated BNPL framework.',importance:'Critical'},
+      {sortDate:'2026-06-17',date:'Jun 17–18, 2026',title:'Bank Indonesia Board Rate Decision Meeting',note:'Markets pricing 50/50 on additional 25bps hike after May\'s surprise 50bps move to 5.25%.',importance:'High'},
+      {sortDate:'2026-07-21',date:'Jul 21–22, 2026',title:'Bank Indonesia Board Rate Decision Meeting',note:'Third rate meeting of the tightening cycle; trajectory depends on Rupiah and inflation.',importance:'High'},
+      {sortDate:'2026-11-11',date:'Nov 11, 2026',title:'Harbolnas 11.11 — Singles Day Shopping Festival',note:'Major e-commerce event; peak BNPL activation, instalment offers, and digital credit usage.',importance:'High'},
+      {sortDate:'2026-12-12',date:'Dec 12–16, 2026',title:'Harbolnas 12.12 — National Online Shopping Day',note:'Combined with year-end spending; historically highest consumer credit utilisation of the year in Indonesia.',importance:'Critical'},
+    ],
+    mktFunnels: {
+      kredivo_id: {
+        funnelSummary: 'Deep e-commerce merchant integrations (Tokopedia, Shopee, Lazada) make Kredivo the default BNPL at checkout. Institutional backing (Mizuho, DBS) drives low cost of funds vs. P2P rivals.',
+        channelImplication: 'Kredivo\'s merchant integration moat is deep. Focus on offline QRIS-enabled BNPL and salary advance — channels Kredivo hasn\'t fully entered.',
+        prmCounterMove: 'Target Kredivo users in Tier 2/3 cities (53.6% of base) with offline QRIS BNPL for small merchants — Kredivo is still primarily online.',
+        channels: [
+          {name:'E-commerce checkout (Tokopedia / Shopee / Lazada)',type:'affiliate',trafficEst:'~50M+ BNPL-eligible transactions/mo [est.]',engagement:'BNPL option shown at cart',uxFlow:'Marketplace checkout → Kredivo option → approve → purchase',spendLevel:'Low'},
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~3M imp/mo [est.]',engagement:'CTR ~1.0% [est.]',uxFlow:'Ad → kredivo.com → app → biometric onboarding',spendLevel:'High'},
+          {name:'App Store / Play Store',type:'aso',trafficEst:'Top 5 Finance ID',engagement:'4.6★ combined',uxFlow:'Organic search → install → KYC onboarding → credit active',spendLevel:'Medium'},
+          {name:'SMS / WhatsApp pre-approval',type:'comms',trafficEst:'~2M pre-approval messages/mo [est.]',engagement:'~15% activation rate [est.]',uxFlow:'Pre-approved credit SMS → app download → activate',spendLevel:'Medium'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'Cicilan 0% untuk semua',channels:['Meta','Checkout'],copy:'"Belanja sekarang, cicil nanti. 0% bunga di ribuan toko."'},
+            {pillar:'Proses kilat, limit besar',channels:['App Store','Meta'],copy:'"Disetujui dalam 3 menit. Limit hingga Rp30 juta."'},
+          ],
+          campaigns: [
+            {name:'Harbolnas 12.12 BNPL',period:'Dec 2026',channel:'Tokopedia + Shopee checkout',hook:'0% instalment peak event',copy:'"12.12 tanpa bunga: cicil sampai 12 bulan di semua toko partner Kredivo."',notes:'Largest annual BNPL volume event in Indonesia.'},
+          ],
+        },
+        prm: [
+          {type:'Interest-free',mechanic:'0% instalment for 1 month or 3/6/12-month plans at partner merchants',segment:'All Kredivo users',status:'Active',period:'Ongoing'},
+          {type:'Cashback',mechanic:'Cashback and reward points for purchases at selected merchant partners',segment:'Active shoppers',status:'Active',period:'Ongoing'},
+        ],
+      },
+      gopay_id: {
+        funnelSummary: 'Super-app embedded credit with daily Gojek/GoFood touchpoints. 20M MTUs and 500M+ monthly transactions create unmatched cross-sell opportunity. Loan book growing at 76–108% YoY.',
+        channelImplication: 'GoPayLater\'s Gojek/Tokopedia ecosystem is a daily habit. Compete on offline QRIS merchant BNPL and salary-advance products outside the GoTo ecosystem.',
+        prmCounterMove: 'Target GoPayLater users who exhaust their credit limit with a higher-limit alternative — GoPayLater\'s limit algorithm is conservative vs. actual usage.',
+        channels: [
+          {name:'Gojek super-app (native)',type:'owned',trafficEst:'20M+ MTUs',engagement:'Daily Gojek/GoFood/GoMart usage',uxFlow:'Gojek app → GoPayLater upsell → 1-tap activation → use at checkout',spendLevel:'Low'},
+          {name:'Tokopedia marketplace',type:'affiliate',trafficEst:'~100M sessions/mo [est.]',engagement:'BNPL option at checkout',uxFlow:'Tokopedia cart → GoPayLater option → activate → purchase',spendLevel:'Low'},
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~5M imp/mo [est.]',engagement:'CTR ~0.9% [est.]',uxFlow:'Ad → GoPay app → GoPayLater activation',spendLevel:'High'},
+          {name:'App Store / Play Store',type:'aso',trafficEst:'#1–2 Fintech ID',engagement:'4.5★ combined',uxFlow:'Organic search → Gojek install → wallet → PayLater',spendLevel:'Medium'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'Bayar nanti, nikmati sekarang',channels:['Gojek app','Meta'],copy:'"GoPayLater: belanja, makan, naik ojek — bayar akhir bulan."'},
+            {pillar:'Limit lebih besar dari yang kamu kira',channels:['Meta','Push'],copy:'"Limit GoPayLater kamu bisa lebih besar. Pakai lebih banyak, naikkan limit."'},
+          ],
+          campaigns: [
+            {name:'GoFood PayLater promo',period:'Q2–Q3 2026',channel:'Gojek in-app',hook:'Daily habit conversion',copy:'"Makan favorit kamu gratis ongkir + PayLater 0%. Coba sekarang."',notes:'Food delivery cross-sell to credit product is GoTo\'s primary acquisition lever.'},
+          ],
+        },
+        prm: [
+          {type:'Cashback',mechanic:'Up to 30% cashback on GoFood orders when paying with GoPayLater',segment:'GoFood users',status:'Active',period:'Ongoing'},
+          {type:'Instalment',mechanic:'0% instalment for Tokopedia purchases up to IDR 5M with GoPayLater',segment:'Tokopedia shoppers',status:'Active',period:'Ongoing'},
+        ],
+      },
+      akulaku_id: {
+        funnelSummary: 'Multi-finance licensed BNPL with Alibaba/MUFG backing. 66% profit growth in 2025; 1.1% NPF demonstrates credit quality discipline. Digital bank (Akulaku Bank) deepens product stack.',
+        channelImplication: 'Akulaku\'s multi-finance license and Alibaba/Lazada distribution is a structural advantage. Compete on transparent pricing and superior customer service vs. Akulaku\'s complex product suite.',
+        prmCounterMove: 'Position against Akulaku\'s virtual credit card with a simpler, transparent product — Akulaku\'s card terms are frequently cited as confusing by users.',
+        channels: [
+          {name:'Lazada marketplace',type:'affiliate',trafficEst:'~30M Lazada sessions/mo [est.]',engagement:'BNPL option at checkout',uxFlow:'Lazada cart → Akulaku option → activate → purchase',spendLevel:'Low'},
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~2M imp/mo [est.]',engagement:'CTR ~0.9% [est.]',uxFlow:'Ad → akulaku.com → app → KYC → credit',spendLevel:'High'},
+          {name:'Offline merchant network',type:'affiliate',trafficEst:'Tier 2/3 cities',engagement:'In-store BNPL at electronics/appliance retailers',uxFlow:'In-store → Akulaku QR → app → buy now pay later',spendLevel:'Medium'},
+          {name:'App Store / Play Store',type:'aso',trafficEst:'Top 10 Finance ID',engagement:'4.4★ combined',uxFlow:'Organic search → install → virtual card or BNPL',spendLevel:'Medium'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'Cicil tanpa kartu kredit',channels:['Meta','App Store'],copy:'"Belanja sekarang, cicil nanti — tanpa kartu kredit. Cukup ID dan selfie."'},
+            {pillar:'Limit virtual card up to Rp20 juta',channels:['Meta','Lazada'],copy:'"Kartu virtual Akulaku: limit hingga Rp20 juta, diterima di semua merchant online."'},
+          ],
+          campaigns: [
+            {name:'Lebaran Cashback 2026',period:'Ramadan 2027 (Q1)',channel:'Meta + Lazada',hook:'Seasonal gift purchasing',copy:'"Lebaran lebih mudah: cicil kado & THR belanja 0% bunga dengan Akulaku."',notes:'Eid is the largest consumer spending season in Indonesia.'},
+          ],
+        },
+        prm: [
+          {type:'Interest-free',mechanic:'0% instalment for up to 12 months at partner merchants (Lazada, JD.ID)',segment:'Active users',status:'Active',period:'Ongoing'},
+          {type:'Virtual card',mechanic:'Virtual credit card up to IDR 20M limit, accepted at all online merchants',segment:'KYC-verified users',status:'Active',period:'Ongoing'},
+        ],
+      },
+      julo_id: {
+        funnelSummary: 'P2P lending platform with 99% TKB90 repayment rate — the best in Indonesia. 3.29M users; focused on productive credit with best-in-class credit quality vs. industry 4.33% TWP90.',
+        channelImplication: 'JULO\'s credit quality advantage is real but niche. Compete on education-first marketing — JULO users are financially literate and respond to transparency.',
+        prmCounterMove: 'Partner with JULO users for premium positioning: "The lender JULO borrowers graduate to when they need more."',
+        channels: [
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~1.5M imp/mo [est.]',engagement:'CTR ~1.1% [est.]',uxFlow:'Ad → julo.co.id → app → KYC → credit disbursement',spendLevel:'High'},
+          {name:'Google / SEO',type:'search',trafficEst:'~200K searches/mo [est.]',engagement:'High-intent personal loan queries',uxFlow:'Search "pinjaman online aman" → JULO ranking → app install',spendLevel:'High'},
+          {name:'App Store / Play Store',type:'aso',trafficEst:'Top 20 Finance ID',engagement:'4.7★ · High review quality',uxFlow:'Organic search → install → KYC → credit in 24h',spendLevel:'Medium'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'Pinjaman aman, berlisensi OJK',channels:['Meta','Google'],copy:'"JULO: pinjaman pribadi berlisensi OJK. Aman, transparan, tidak ada biaya tersembunyi."'},
+            {pillar:'99% repayment rate',channels:['Landing','App Store'],copy:'"Dipercaya jutaan peminjam. Tingkat pembayaran 99% — terbaik di Indonesia."'},
+          ],
+          campaigns: [
+            {name:'Back to School lending',period:'Jul 2026',channel:'Meta + Google',hook:'Education loan seasonal',copy:'"Biaya sekolah jangan tunda pendidikan. Pinjaman JULO: cair dalam 24 jam."',notes:'School year start in July creates education financing demand.'},
+          ],
+        },
+        prm: [
+          {type:'Interest',mechanic:'Bunga mulai 0.1%/hari sesuai regulasi OJK — transparan, tanpa biaya tersembunyi',segment:'All borrowers',status:'Active',period:'Ongoing'},
+          {type:'Referral',mechanic:'Cashback IDR 50K untuk setiap referral berhasil',segment:'Existing users',status:'Active',period:'Ongoing'},
+        ],
+      },
+    },
+    mktAds: {},
+    productItems: {},
+    sentimentItems: [],
+    businessStats: [
+      {id:'id-b1',competitor:'Kredivo',users:'~5M+ registered users in ID; 53.6% from Tier 2/3 cities',loanOS:'Growing ~35% per quarter; DBS IDR 3T facility (2026)',revenue:'Not disclosed (profitable per investor updates)',
+       funding:'~US$904M total raised; $270M Series D (Mizuho 2023); >$100M Dec 2025',
+       fundingAdvantage:'Mizuho + DBS bank-grade funding; cheapest cost of capital in Indonesian BNPL',
+       estCAC:'~$5–10 (e-commerce checkout)',estPromoBurn:'MSI subsidies at partner merchants',
+       npl:'Not disclosed separately',monetisation:'Interest/fees on BNPL installments + Krom Bank deposits',
+       distribution:'Tokopedia, Shopee, Lazada, Bukalapak checkout; Krom Bank; Timo Vietnam',
+       ueQuality:'strong',ueConfidence:'high',threatLevel:'high',
+       threatWhy:'Dominant BNPL incumbent with deep merchant integrations and now a digital bank license (Krom). Timo acquisition opens SEA scale.',
+       implication:'Kredivo\'s merchant moat is deep — differentiate on offline QRIS BNPL and salary-advance for workers outside the e-commerce ecosystem.'},
+      {id:'id-b2',competitor:'GoPay / GoPayLater',users:'20M+ MTUs (GoTo Fintech); 500M+ transactions/month',loanOS:'IDR 5.7T outstanding consumer loans (Q1 2025, +108% YoY)',revenue:'31% of GoTo Group revenue; IDR 7.6T disbursed Sep 2025',
+       funding:'Part of GoTo Group (IDX/NYSE listed); ~$6B+ group capital raised',
+       fundingAdvantage:'Zero incremental CAC via Gojek/Tokopedia; daily-use super-app drives deposit-free credit access',
+       estCAC:'~$0–3 (super-app cross-sell)',estPromoBurn:'GoFood cashback + free delivery promos',
+       npl:'Not disclosed separately',monetisation:'Payment take-rates + consumer loan interest + merchant fees',
+       distribution:'Gojek super-app; Tokopedia; GoPay QRIS; 500K+ merchant partners',
+       ueQuality:'strong',ueConfidence:'high',threatLevel:'high',
+       threatWhy:'20M MTUs, 500M monthly transactions, 76–108% YoY loan growth. Daily-use app data creates scoring advantage impossible to replicate.',
+       implication:'Only compete where Gojek/Tokopedia has no data: non-super-app users and offline salary/payroll segment.'},
+      {id:'id-b3',competitor:'Akulaku',users:'10M+ registered users; operates ID, PH, MY',loanOS:'IDR 7.44T new disbursals in 2025; NPF 1.1%',revenue:'IDR 108B net profit 2025 (+66% YoY)',
+       funding:'~US$522M equity; Alibaba/Ant + MUFG backed; unicorn valuation',
+       fundingAdvantage:'Alibaba/Lazada ecosystem access creates captive marketplace distribution; MUFG bank credibility',
+       estCAC:'~$8–15',estPromoBurn:'0% instalment promos at Lazada',
+       npl:'1.1% NPF (end-2025) — below industry average',monetisation:'Interest income + fees + insurance commissions',
+       distribution:'Lazada; JD.ID; offline electronics retailers; Akulaku Bank digital bank',
+       ueQuality:'strong',ueConfidence:'high',threatLevel:'high',
+       threatWhy:'66% profit growth + low NPL signals operating leverage. Alibaba/Lazada distribution + digital bank license creates full-stack pipeline.',
+       implication:'Position against Akulaku\'s complex virtual card with simpler, transparent terms — UX complexity is Akulaku\'s primary user complaint.'},
+      {id:'id-b4',competitor:'Honest',users:'Targeting 97M unbanked/underbanked adults',loanOS:'Not disclosed (growing)',revenue:'Not disclosed',
+       funding:'~US$100M equity (led by Orico); $40M debt facility; raised 2025',
+       fundingAdvantage:'Only fintech-licensed credit card in Indonesia (<3% credit card penetration); first-mover structural moat',
+       estCAC:'~$20–40',estPromoBurn:'Signup promotions for first card users',
+       npl:'Not disclosed',monetisation:'Interchange fees + interest on revolving credit',
+       distribution:'App; targeted digital acquisition; QRIS-enabled card',
+       ueQuality:'mixed',ueConfidence:'low',threatLevel:'medium',
+       threatWhy:'First-mover in credit card fintech with regulatory license. <3% credit card penetration = massive TAM if they can acquire at scale.',
+       implication:'Monitor Honest closely — their OJK credit card license is a structural moat that would take years and ~$100M+ to replicate.'},
+    ],
+    macroData: {
+      indicators: [
+        {label:'BI7DRRR Policy Rate',value:'5.25%',note:'Raised +50bps on May 20, 2026 (first hike since Apr 2024) to defend Rupiah. Deposit Facility: 4.25%; Lending Facility: 6.00%.',color:'red'},
+        {label:'Inflation (CPI, May 2026)',value:'3.08%',note:'Up from 2.42% in April 2026; still within BI target of 1.5%–3.5%. Full-year 2026 projection: ~3.4% (OECD).',color:'amber'},
+        {label:'GDP Growth Forecast 2026',value:'4.7%',note:'IMF/OECD projection; below pre-pandemic ~5% trend. Consumer spending weighed by higher rates and global uncertainty.',color:'amber'},
+        {label:'P2P Fintech Lending Outstanding',value:'IDR 98.54T (~US$6.1B)',note:'As of Jan 2026; +25.52% YoY. Consumptive cap: 0.1%/day; Productive: 0.067%/day. TWP90 credit risk ratio at 4.33%.',color:'amber'},
+        {label:'BNPL Market Size 2026E',value:'US$11.15B',note:'Projected 22.2% annual growth vs 2025 (US$9.12B). CAGR 2022–2025 was 32.6%. Forecast to reach US$23.55B by 2031.',color:'green'},
+        {label:'Private Sector Credit / GDP',value:'~25%',note:'Critically low vs Malaysia (108%), Thailand (84%), China (114%). Massive structural addressable market for BNPL and digital credit.',color:'green'},
+        {label:'Unbanked / Underbanked',value:'~51–97M adults',note:'OJK financial inclusion index at 85.1% (2022 SNLIK). World Bank 2021: ~97.7M unbanked adults. Digital wallets rapidly narrowing gap.',color:'green'},
+        {label:'QRIS Growth (Feb 2026 YoY)',value:'+133%',note:'QR-code payment adoption expanding the addressable merchant base for PayLater offline integration.',color:'green'},
+      ],
+      regulatory: [
+        {date:'Jun 15, 2026',event:'OJK BNPL Reg 32/2025 — Final Compliance Deadline',impact:'CRITICAL',note:'Banks and multi-finance must be compliant with Indonesia\'s first dedicated BNPL framework.'},
+        {date:'Jun 17–18, 2026',event:'Bank Indonesia Rate Decision Meeting',impact:'HIGH',note:'Markets pricing 50/50 on 25bps hike after May\'s 50bps surprise. Each hike increases fintech funding costs.'},
+        {date:'Jan 1, 2026 (Enacted)',event:'OJK P2P Rate Cap — 0.1%/day consumptive; 0.067%/day productive',impact:'HIGH',note:'Significant margin compression for all P2P consumer lenders. Forces consolidation among smaller platforms.'},
+        {date:'Dec 12–16, 2026',event:'Harbolnas 12.12 — National Online Shopping Day',impact:'HIGH',note:'Largest annual BNPL activation event in Indonesia. Peak credit utilisation and promotional spend.'},
+      ],
+    },
+  },
+
+  ph: {
+    meta: { name: 'Philippines', flag: '🇵🇭', currency: 'PHP', lastUpdated: 'Jun 5, 2026', regulator: 'BSP (Bangko Sentral ng Pilipinas)' },
+    competitors: ['All','GCash','Maya','BillEase','Salmon','Tonik Bank','SeaBank','Tala','Atome','Cashalo','CIMB PH'],
+    mktComps: ['gcash_ph','maya_ph','billease_ph','salmon_ph'],
+    mktLabels: {gcash_ph:'GCash',maya_ph:'Maya',billease_ph:'BillEase',salmon_ph:'Salmon'},
+    mktCompColors: {gcash_ph:'#2563EB',maya_ph:'#059669',billease_ph:'#D97706',salmon_ph:'#DC2626'},
+    newsItems: [
+      {id:'ph-n1',date:'2026-04-21',category:'Funding',competitor:'Salmon',
+       headline:'Salmon Raises $100M (Equity + Debt) to Accelerate Philippines Expansion',
+       oneLineSummary:'Round comprised $60M equity led by Spice Expeditions and $40M Nordic bond at 13.7% yield; proceeds to scale Salmon Bank and grow lending portfolio.',
+       sourceUrl:'https://techcrunch.com/2026/04/23/salmon-raises-100m-in-equity-and-debt-to-bring-digital-credit-to-underbanked-filipinos/'},
+      {id:'ph-n2',date:'2026-05-14',category:'IPO / Milestone',competitor:'GCash',
+       headline:'Mynt (GCash) Eyes $8B Valuation in Planned $1B Philippines IPO as Early as Jul 2026',
+       oneLineSummary:'GCash parent Mynt is targeting a PSE IPO to raise ~$1B; Q1 2026 Globe-attributable earnings hit PHP 1.9B (+120% YoY), underscoring rapid profit growth ahead of listing.',
+       sourceUrl:'https://www.bworldonline.com/top-stories/2026/05/14/749727/mynt-aiming-for-8-billion-valuation-in-ipo-sources-say/'},
+      {id:'ph-n3',date:'2026-02-17',category:'IPO / Earnings',competitor:'Maya',
+       headline:'Maya Targets $500M–$1B Dual IPO (PSE + Nasdaq) in H2 2026 After First Profitable Year',
+       oneLineSummary:'Maya/Voyager Innovations targeting a dual listing after its first profitable year in 2025 (PHP 1.7B net income); Maya Bank holds PHP 68B in deposits from 8.2M customers.',
+       sourceUrl:'https://www.coinreporter.io/2026/02/philippines-digital-bank-maya-plans-up-to-1-billion-us-ipo/'},
+      {id:'ph-n4',date:'2026-04-24',category:'Regulatory',competitor:'Market-wide',
+       headline:'BSP Hikes Rate 25bps to 4.5% — Signals More Hikes as Inflation Hits 3-Year High',
+       oneLineSummary:'BSP reversed its February 2026 cut and raised the reverse repurchase rate to 4.5% in April, citing oil-driven inflation at 7.2% in April — well above the 2–4% target band.',
+       sourceUrl:'https://www.bworldonline.com/top-stories/2026/04/24/745239/bsp-raises-rates-signals-more-hikes/'},
+      {id:'ph-n5',date:'2026-01-15',category:'Regulatory',competitor:'Market-wide',
+       headline:'BSP Reopens Digital Banking License Applications in January 2026',
+       oneLineSummary:'BSP lifted its moratorium on new digital bank applications, signalling readiness to expand beyond the current six licensed digital banks to deepen financial inclusion and competition.',
+       sourceUrl:'https://fintechnews.ph/fintech-startups-philippines/'},
+      {id:'ph-n6',date:'2026-02-26',category:'Funding / Earnings',competitor:'Tonik Bank',
+       headline:'Tonik Raises US$12M Pre-Series C; Reports 15× Loan Portfolio Growth to US$83M',
+       oneLineSummary:'Tonik secured a US$12M Pre-Series C; annualised revenue exceeds US$40M and cash-flow breakeven targeted for H1 2026.',
+       sourceUrl:'https://www.prnewswire.com/apac/news-releases/tonik-raises-us12m-pre-series-c-to-scale-capital-efficient-lending-in-the-philippines-302631494.html'},
+      {id:'ph-n7',date:'2026-02-04',category:'Partnership',competitor:'Tala',
+       headline:'Tala Partners with CIMB Group in $100M Deal for Vietnam Launch After Philippines Success',
+       oneLineSummary:'Tala and CIMB Group signed a $100M partnership to launch Tala\'s platform in Vietnam, leveraging the operating model proven in the Philippines.',
+       sourceUrl:'https://business.inquirer.net/572081/tala-partners-with-cimb-in-100m-deal-for-vietnam-launch'},
+      {id:'ph-n8',date:'2026-02-04',category:'Product Launch',competitor:'BillEase',
+       headline:'BillEase Acquires Rural Bank of Sta. Maria; Targets 50% Loan Book Growth to PHP 15B',
+       oneLineSummary:'BillEase acquired >90% of Rural Bank of Sta. Maria to build a full digital banking stack; targeting PHP 15B loan book by year-end (+50% growth).',
+       sourceUrl:'https://business.inquirer.net/559253/billease-levels-up-lending-with-rural-bank-debut'},
+      {id:'ph-n9',date:'2026-02-16',category:'Macro',competitor:'Market-wide',
+       headline:'OFW Remittances Hit All-Time Record $35.63B in 2025; Jan 2026 Inflows Up 3.5% YoY',
+       oneLineSummary:'BSP confirmed 2025 full-year cash remittances at $35.63B (+3.3% YoY); January 2026 posted $3.02B, sustaining the record trajectory that underpins consumer spending and BNPL repayment.',
+       sourceUrl:'https://www.bworldonline.com/top-stories/2026/02/16/730762/ofw-remittances-soar-to-all-time-high-35-63-billion-in-2025/'},
+      {id:'ph-n10',date:'2026-03-01',category:'Market Data',competitor:'Market-wide',
+       headline:'Philippines BNPL Market at $3.21B (2025); Projected to Reach $5.37B by 2030',
+       oneLineSummary:'Philippines BNPL transactions reached $3.21B in 2025, growing 14.6% annually; digital loan balance hit $4.26B (+11% YoY). Total fintech market projected to reach $4.66B by 2034.',
+       sourceUrl:'https://fintechnews.ph/top-bnpl-philippines/'},
+    ],
+    upcomingEvents: [
+      {sortDate:'2026-06-18',date:'Jun 18, 2026',title:'BSP Monetary Board Policy Meeting — Rate Decision',note:'Market expects second consecutive 25bps hike to 4.75%; outcome directly affects BNPL and digital lending funding costs.',importance:'Critical'},
+      {sortDate:'2026-07-01',date:'Jul 2026',title:'Mynt (GCash) IPO Filing Window — Target PSE Listing',note:'Mynt targets filing as early as July 2026 for ~$1B raise at $8B valuation; landmark Philippine fintech event.',importance:'High'},
+      {sortDate:'2026-07-15',date:'H2 2026',title:'Maya (Voyager) Dual IPO — PSE + Nasdaq',note:'PLDT targeting $500M–$1B dual listing. If concurrent with GCash IPO, the Philippines\' biggest fintech capital market event.',importance:'High'},
+      {sortDate:'2026-09-09',date:'Sep 9, 2026',title:'9.9 Super Shopping Sale — Shopee / Lazada',note:'Mid-year e-commerce peak; BNPL providers activate instalment promotions and merchant co-marketing campaigns.',importance:'Medium'},
+      {sortDate:'2026-11-11',date:'Nov 11, 2026',title:'11.11 Singles Day Sale — Lazada / Shopee',note:'Largest single e-commerce event in the Philippines calendar; peak BNPL activation and digital credit usage.',importance:'Very High'},
+      {sortDate:'2026-12-12',date:'Dec 12, 2026',title:'12.12 Online Revolution Sale + OFW Christmas Remittances',note:'Combined mega sale + peak OFW December remittances ($3.52B in Dec 2025). Highest consumer credit utilisation of the year.',importance:'Very High'},
+    ],
+    mktFunnels: {
+      gcash_ph: {
+        funnelSummary: 'Super-app with 94M users (~83% of Philippine population). GCredit and GGives BNPL are embedded in daily payment habits. IPO at $8B valuation signals monetisation acceleration.',
+        channelImplication: 'GCash\'s near-monopoly reach makes head-on competition futile. Focus on credit products for Filipinos who use GCash but can\'t access GCredit due to thin transaction history.',
+        prmCounterMove: 'Target GCash users rejected by GCredit. GCash approves based on GCash transaction history — users without history are systematically excluded from credit.',
+        channels: [
+          {name:'GCash super-app (native)',type:'owned',trafficEst:'94M+ registered users',engagement:'Daily QR payment usage',uxFlow:'GCash wallet → GCredit/GGives tab → activate → use at checkout',spendLevel:'Low'},
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~5M imp/mo [est.]',engagement:'CTR ~1.0% [est.]',uxFlow:'Ad → gcash.com → app → KYC → wallet + credit',spendLevel:'High'},
+          {name:'TikTok',type:'organic_social',trafficEst:'Strong youth presence (Gen Z PH)',engagement:'High financial education engagement',uxFlow:'TikTok → link → gcash.com → install',spendLevel:'Medium'},
+          {name:'App Store / Play Store',type:'aso',trafficEst:'#1 Finance app Philippines',engagement:'4.3★ combined',uxFlow:'Organic search → install → biometric KYC → wallet',spendLevel:'High'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'Send money anywhere in seconds',channels:['Meta','TikTok'],copy:'"GCash: send money to anyone in the Philippines — no bank account needed."'},
+            {pillar:'GGives — shop now, pay later',channels:['GCash app','Meta'],copy:'"GGives lets you buy what you need and pay in easy installments. Zero fees on select stores."'},
+          ],
+          campaigns: [
+            {name:'GCash IPO Awareness',period:'Jul 2026',channel:'Press + Social',hook:'Trust / legitimacy milestone',copy:'"GCash is going public. The finance app that changed how Filipinos pay is now yours to own."',notes:'PSE IPO is a major trust signal and PR event for the brand.'},
+          ],
+        },
+        prm: [
+          {type:'GCash Padala',mechanic:'Zero-fee remittance for OFW cash-ins and send money to family in PH',segment:'OFW families; domestic P2P',status:'Active',period:'Ongoing'},
+          {type:'GGives instalment',mechanic:'0% instalment at select merchant partners; 1.5–3% fee per instalment otherwise',segment:'GCash users with GCredit',status:'Active',period:'Ongoing'},
+        ],
+      },
+      maya_ph: {
+        funnelSummary: 'BSP-licensed digital bank with PHP 68B deposits; first profitable year in 2025. 70% of users outside Metro Manila — structural rural inclusion advantage. IPO in H2 2026.',
+        channelImplication: 'Maya is the only credible full-service challenger to GCash. Its rural user base and digital bank license (high-yield savings) are differentiated. Compete on credit product terms vs. Maya\'s growing loan portfolio.',
+        prmCounterMove: 'Target Maya Business merchants and their employees with consumer credit that leverages the merchant relationship — Maya hasn\'t fully activated this B2B2C channel.',
+        channels: [
+          {name:'Maya Wallet app (native)',type:'owned',trafficEst:'50M+ registered; 8.2M bank customers',engagement:'Daily payment usage',uxFlow:'Maya Wallet → Maya Bank tab → savings or loan → activate',spendLevel:'Low'},
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~3M imp/mo [est.]',engagement:'CTR ~1.0% [est.]',uxFlow:'Ad → maya.ph → app → KYC → wallet + bank',spendLevel:'High'},
+          {name:'Maya Business POS merchants',type:'affiliate',trafficEst:'300K+ merchants on Maya Business POS',engagement:'Merchant-to-customer cross-sell',uxFlow:'Merchant POS → "Pay with Maya" → app install → account open → credit upsell',spendLevel:'Medium'},
+          {name:'App Store / Play Store',type:'aso',trafficEst:'#2 Finance app Philippines',engagement:'4.5★ combined',uxFlow:'Organic search → install → high-yield savings onboarding',spendLevel:'High'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'Up to 15% p.a. savings rate',channels:['Meta','App Store'],copy:'"Maya Savings: up to 15% interest per year. The highest rate you\'ll find — on any amount."'},
+            {pillar:'Pay in 4 — zero interest',channels:['Maya app','Lazada'],copy:'"Split your purchase into 4 payments — zero interest, zero fees, 100% online."'},
+          ],
+          campaigns: [
+            {name:'Maya IPO Campaign',period:'H2 2026',channel:'Press + Social',hook:'Trust / legitimacy milestone',copy:'"Maya is going public — the bank that banked 70% of rural Philippines. Now invest in it."',notes:'Dual IPO on PSE + Nasdaq is a landmark brand trust event.'},
+          ],
+        },
+        prm: [
+          {type:'High-yield savings',mechanic:'Up to 15% p.a. promo interest rate on Maya Savings (promotional periods)',segment:'All Maya Bank customers',status:'Active',period:'Ongoing'},
+          {type:'Pay in 4',mechanic:'Zero-interest 4-installment plan at Maya partner merchants and Lazada',segment:'Maya users',status:'Active',period:'Ongoing'},
+        ],
+      },
+      billease_ph: {
+        funnelSummary: 'Philippines\' #1 pure-play BNPL with 1.5M users and 20K+ merchant partners. Acquired Rural Bank of Sta. Maria for full digital banking; targeting PHP 15B loan book in 2026.',
+        channelImplication: 'BillEase is the entrenched BNPL incumbent with a path to full digital banking. Focus on merchant categories BillEase hasn\'t penetrated: telecom, utilities, and agricultural supply.',
+        prmCounterMove: 'Target BillEase users with a credit limit increase offer after 6+ months of on-time payments — BillEase\'s limit upgrade path is slow and opaque.',
+        channels: [
+          {name:'Lazada marketplace (#1 BNPL)',type:'affiliate',trafficEst:'#1 BNPL on Lazada PH',engagement:'BNPL shown at checkout',uxFlow:'Lazada cart → BillEase option → activate → purchase',spendLevel:'Low'},
+          {name:'Agoda / travel merchant',type:'affiliate',trafficEst:'Travel instalment partner',engagement:'0% instalment on hotel bookings',uxFlow:'Agoda checkout → BillEase instalment → activate → book',spendLevel:'Low'},
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~1.5M imp/mo [est.]',engagement:'CTR ~0.9% [est.]',uxFlow:'Ad → billease.ph → app → KYC → BNPL',spendLevel:'High'},
+          {name:'Maya Business POS (embedded)',type:'affiliate',trafficEst:'~300K merchants on Maya POS',engagement:'Embedded BNPL at Maya merchant checkout',uxFlow:'Maya merchant POS → BillEase BNPL option → activate',spendLevel:'Medium'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'Shop now, pay later — no credit card needed',channels:['Meta','Lazada'],copy:'"BillEase: buy what you need today, pay in easy installments. No credit card required."'},
+            {pillar:'0% interest on select stores',channels:['Meta','App Store'],copy:'"Shop at 20,000+ stores — 0% interest, flexible payment terms."'},
+          ],
+          campaigns: [
+            {name:'11.11 BillEase BNPL',period:'Nov 2026',channel:'Lazada + Meta',hook:'Peak e-commerce BNPL',copy:'"11.11 on BillEase: 0% for 3 months on everything. Your biggest sale is now your easiest payment."',notes:'Singles Day is the largest BNPL activation event in the Philippines.'},
+          ],
+        },
+        prm: [
+          {type:'Interest-free',mechanic:'0% instalment on select merchant partners for up to 12 months',segment:'All BillEase users',status:'Active',period:'Ongoing'},
+          {type:'Healthcare',mechanic:'Hati Health: 0% healthcare financing (medical, dental, optical)',segment:'BillEase users with health needs',status:'Active',period:'Ongoing'},
+        ],
+      },
+      salmon_ph: {
+        funnelSummary: 'Newest well-funded entrant ($100M Apr 2026) targeting underbanked Filipinos. Salmon Bank is the full digital bank play alongside BNPL; Nordic bond issuance signals institutional-grade funding.',
+        channelImplication: 'Salmon is the most aggressive new entrant. Monitor their credit product terms and merchant partnerships — they are likely to undercut on APR to acquire market share quickly.',
+        prmCounterMove: 'Target Salmon\'s likely first-movers: tech-savvy underbanked Filipinos who want a full digital bank account, not just BNPL. Offer the account first, credit second.',
+        channels: [
+          {name:'Meta (FB/IG)',type:'paid_social',trafficEst:'~1M imp/mo [est.]',engagement:'CTR ~1.2% [est.]',uxFlow:'Ad → salmon.ph → app → KYC → Salmon Bank account',spendLevel:'High'},
+          {name:'TikTok',type:'organic_social',trafficEst:'Growing youth presence',engagement:'Financial inclusion content',uxFlow:'TikTok → link → salmon.ph → install',spendLevel:'High'},
+          {name:'App Store / Play Store',type:'aso',trafficEst:'Rising — new app (2024 launch)',engagement:'Early positive reviews',uxFlow:'Organic search → install → bank account + BNPL',spendLevel:'High'},
+        ],
+        messaging: {
+          evergreen: [
+            {pillar:'Banking for every Filipino',channels:['Meta','TikTok'],copy:'"Salmon Bank: a real bank account for every Filipino — no minimum balance, no hidden fees."'},
+            {pillar:'Credit for the underbanked',channels:['Meta','App Store'],copy:'"Rejected by other lenders? Salmon uses more than your bank history to approve you."'},
+          ],
+          campaigns: [
+            {name:'$100M Funding Awareness',period:'May 2026',channel:'Press + Social',hook:'Trust / scale milestone',copy:'"Salmon just raised $100M to bring fair credit to every Filipino. Join us."',notes:'Post-funding PR campaign to build brand trust with first-time digital lenders.'},
+          ],
+        },
+        prm: [
+          {type:'Signup',mechanic:'Welcome bonus for first 90 days — fee waiver and promotional credit rate',segment:'New Salmon Bank customers',status:'Active',period:'2026'},
+          {type:'Referral',mechanic:'Cash reward for successful referrals who open a Salmon Bank account',segment:'Existing users',status:'Active',period:'Ongoing'},
+        ],
+      },
+    },
+    mktAds: {},
+    productItems: {},
+    sentimentItems: [],
+    businessStats: [
+      {id:'ph-b1',competitor:'GCash (Mynt)',users:'94–100M registered (83% of Philippines population); ~80%+ e-wallet market share',loanOS:'Not disclosed (GCredit + GGives embedded); PHP 1.9B Q1 2026 Globe-attributable earnings (+120% YoY)',revenue:'PHP 1.9B Q1 2026 Globe earnings from Mynt; targeting $8B IPO valuation',
+       funding:'$5B valuation (Aug 2024 round); Ayala Corp, MUFG investors; Globe Telecom, Ant Group shareholders; $1B PSE IPO planned (Jul 2026)',
+       fundingAdvantage:'Near-monopoly platform distribution; IPO capitalisation adds $1B+ in public market equity',
+       estCAC:'~$0–3 (GCash ecosystem activation)',estPromoBurn:'GGives merchant subsidies + zero-fee promotions',
+       npl:'Not disclosed separately',monetisation:'Transaction fees + GCredit interest + GGives fees + GSave fees + GInsure commissions',
+       distribution:'GCash app; QR merchant network; GCash Padala (remittance); Citi/BPI (GSave)',
+       ueQuality:'mixed',ueConfidence:'medium',threatLevel:'high',
+       threatWhy:'Near-monopoly at 94M users. IPO will further capitalise and legitimise. Primary risk: regulatory scrutiny of market dominance.',
+       implication:'Targeting GCash users rejected by GCredit is the main opportunity — GCash approves based on GCash history, creating a large excluded segment.'},
+      {id:'ph-b2',competitor:'Maya (Voyager Innovations)',users:'50M+ registered; 8.2M Maya Bank customers; PHP 68B deposits; 70% outside Metro Manila',loanOS:'PHP 256B total loans disbursed since 2022 (~USD 4.4B); offers PHP 250K personal loans',revenue:'PHP 1.7B net income 2025 (first profitable year); targeting $500M–$1B dual IPO H2 2026',
+       funding:'Parent PLDT/Voyager; KKR, Tencent, IFC investors; BSP-licensed digital bank',
+       fundingAdvantage:'BSP digital bank license (full deposit-taking); PLDT telecom distribution for rural users',
+       estCAC:'~$5–15',estPromoBurn:'15% p.a. savings rate promo + merchant POS promos',
+       npl:'Not disclosed',monetisation:'Loan interest + payment gateway fees + crypto trading + remittances',
+       distribution:'Maya Wallet; Maya Business POS; PayMaya (merchant); Lazada (BillEase embedded)',
+       ueQuality:'strong',ueConfidence:'high',threatLevel:'high',
+       threatWhy:'First profitable year + IPO ambitions + BSP digital bank license + 70% rural reach. Only credible full-service GCash challenger.',
+       implication:'Maya\'s rural reach and high-yield savings are differentiated. Compete on credit product speed and limit generosity for users who have Maya but haven\'t activated credit.'},
+      {id:'ph-b3',competitor:'BillEase',users:'1.5M+ users; 20K+ merchant partners; Lazada #1 BNPL',loanOS:'USD 140M+ (2024); targeting PHP 15B (~USD 260M) by end-2026',revenue:'Second consecutive profitable year (2024); undisclosed revenue',
+       funding:'Acquired Rural Bank of Sta. Maria >90% stake (2025); MDI Novare (Ayala-linked) backed',
+       fundingAdvantage:'Rural bank acquisition eliminates funding cost disadvantage; Maya POS partnership creates co-distribution scale',
+       estCAC:'~$10–20',estPromoBurn:'0% instalment merchant subsidies',
+       npl:'Not disclosed',monetisation:'Instalment interest + fees + healthcare financing',
+       distribution:'Lazada; Agoda; Kimstore; health/wellness partners; Maya Business POS',
+       ueQuality:'strong',ueConfidence:'high',threatLevel:'high',
+       threatWhy:'Entrenched BNPL leader with path to full digital banking via RBSM. Maya partnership creates co-distribution scale. Targeting PHP 15B loan book.',
+       implication:'BillEase dominates e-commerce BNPL on Lazada. Focus on merchant categories they\'ve missed: telecom, utilities, and agricultural supply.'},
+      {id:'ph-b4',competitor:'Salmon',users:'Growing (new entrant 2024); targeting underbanked segment',loanOS:'Not disclosed (early stage)',revenue:'Not disclosed',
+       funding:'$100M total (Apr 2026): $60M equity + $40M Nordic bond at 13.7%',
+       fundingAdvantage:'$100M capitalisation gives 2–3 years of aggressive market entry; Nordic bond signals institutional-grade credit quality',
+       estCAC:'~$20–40 (new brand building)',estPromoBurn:'Signup promos + promo credit rates',
+       npl:'Not disclosed (early stage)',monetisation:'Interest income + Salmon Bank fees',
+       distribution:'Salmon app; Salmon Bank; targeted digital acquisition',
+       ueQuality:'mixed',ueConfidence:'low',threatLevel:'medium',
+       threatWhy:'$100M April 2026 raise signals serious long-term intent. Nordic bond issuance demonstrates institutional funding access. Most aggressive new entrant.',
+       implication:'Monitor Salmon\'s merchant partnerships and APR positioning — they will undercut to acquire market share and may displace smaller BNPL players within 24 months.'},
+    ],
+    macroData: {
+      indicators: [
+        {label:'BSP Policy Rate (Reverse Repo)',value:'4.50%',note:'Raised 25bps at April 23, 2026 meeting (first hike in 2+ years). Another 25bps hike to 4.75% expected at June 18 meeting.',color:'red'},
+        {label:'Headline CPI Inflation (May 2026)',value:'6.8% YoY',note:'Eased from April\'s 7.2% 3-year high but remains well above BSP\'s 2–4% target band. BSP 2026 full-year forecast revised to 6.3%.',color:'red'},
+        {label:'GDP Growth (Q1 2026)',value:'2.8% YoY',note:'Significantly below ADB\'s revised 4.4% 2026 forecast. Rate tightening and global headwinds weighing on consumer demand.',color:'red'},
+        {label:'Financial Inclusion — Account Ownership',value:'~50% of adults (15+)',note:'World Bank Global Findex 2025. ~60M adults remain unbanked or credit-thin. Household-level access higher at 85%.',color:'amber'},
+        {label:'OFW Remittances (Full Year 2025)',value:'USD 35.63B (record)',note:'All-time record; +3.3% YoY from $34.49B in 2024. Equals ~7.3% of GDP. Jan 2026 up 3.5% YoY at $3.02B.',color:'green'},
+        {label:'BNPL Market Size (Philippines, 2025)',value:'USD 3.21B',note:'14.6% annual growth; projected to reach USD 5.37B by 2030. Digital loan balance: USD 4.26B (+11% YoY).',color:'green'},
+      ],
+      regulatory: [
+        {date:'Jun 18, 2026',event:'BSP Monetary Board Policy Meeting — Rate Decision',impact:'CRITICAL',note:'Market expects second consecutive 25bps hike to 4.75%. Outcome directly affects BNPL and digital lending funding costs.'},
+        {date:'Jul 2026',event:'Mynt (GCash) IPO Filing Window — PSE Listing',impact:'HIGH',note:'~$1B raise at $8B valuation. Landmark Philippine fintech capital event.'},
+        {date:'Nov 11, 2026',event:'11.11 Singles Day Sale — Lazada / Shopee',impact:'HIGH',note:'Largest single e-commerce event; peak BNPL activation and digital credit usage.'},
+        {date:'Dec 12, 2026',event:'12.12 Online Revolution + OFW Christmas Remittances',impact:'VERY HIGH',note:'Combined mega sale + peak OFW December remittances ($3.52B in Dec 2025). Highest consumer credit utilisation of the year.'},
+      ],
+    },
+  },
+
+};
+
 // ═══════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════
 const state = {
+  market: null,
   tab: 'digest',
   competitor: 'all',
   search: '',
@@ -1756,6 +2457,9 @@ const state = {
 
 const COMPETITORS = ['Nu','Plata','Kueski','Mercado Pago','Klar','Stori','DiDi','Revolut','Macro','Regulatory','Baubap'];
 const CHANNELS = ['Social/Meta','TikTok','Google / SEO','App / In-app','Marketplace / Amazon','Influencer / Offline','Marketplace / Landing'];
+
+// Active market data accessor
+function MD(){ return MARKET_DATA[state.market] || MARKET_DATA.mx; }
 
 // ═══════════════════════════════════════════
 // SEEN-ITEMS PERSISTENCE
@@ -1804,14 +2508,14 @@ function renderDigest(){
   // Split upcoming events: past/today → promoted to NEWS; future → UPCOMING column
   const promoted = [];
   const futureUpcoming = [];
-  DATA.upcomingEvents.forEach(e => {
+  MD().upcomingEvents.forEach(e => {
     const d = new Date(e.sortDate);
     if(d <= today) promoted.push(e);
     else futureUpcoming.push(e);
   });
 
   // NEWS column: no competitor filter — digest is an open feed
-  const baseNews = DATA.newsItems.filter(n =>
+  const baseNews = MD().newsItems.filter(n =>
     matchesSearch([n.headline, n.oneLineSummary, n.competitor, n.category], q)
   );
   const promotedAsNews = promoted.filter(e =>
@@ -1878,7 +2582,7 @@ function renderDigest(){
   document.getElementById('panel-digest').innerHTML = `
     <div class="panel-header">
       <div class="panel-title">Daily Digest</div>
-      <div class="panel-sub">Mexico credit &amp; fintech · ${allNews.length} news · ${upcomingFiltered.length} upcoming</div>
+      <div class="panel-sub">${escHtml(MD().meta.name)} credit &amp; fintech · ${allNews.length} news · ${upcomingFiltered.length} upcoming</div>
     </div>
     <div class="digest-columns">
       <div>
@@ -1921,9 +2625,9 @@ function renderDigest(){
 // ═══════════════════════════════════════════
 function renderMarketing(){
   const section = state.mktSection;
-  const comps = ['nu','mp','kueski','plata'];
-  const labels = {nu:'Nu',mp:'Mercado Pago',kueski:'Kueski',plata:'Plata'};
-  const compColors = {nu:'#00a878',mp:'#f59e0b',kueski:'#007a58',plata:'#0f2342'};
+  const comps = MD().mktComps;
+  const labels = MD().mktLabels;
+  const compColors = MD().mktCompColors || {};
   const spendMap = {High:'spend-high',Medium:'spend-medium',Low:'spend-low'};
 
   // ── Row definitions (shared by Awareness + Creatives) ──
@@ -1954,7 +2658,7 @@ function renderMarketing(){
     `<button class="mkt-subnav-btn${s.key===section?' active':''}" onclick="switchMktSection('${s.key}')">${s.label}</button>`
   ).join('');
 
-  function hasAds(k,type,i){ return !!(DATA.mktAds && DATA.mktAds[k+'_'+type+'_'+i] && DATA.mktAds[k+'_'+type+'_'+i].length); }
+  function hasAds(k,type,i){ const ma=MD().mktAds; return !!(ma && ma[k+'_'+type+'_'+i] && ma[k+'_'+type+'_'+i].length); }
   function isActive(k,type,i){ const m=state.mktDetail; return !!(m && m.comp===k && m.section===type && m.idx===i); }
   function expandArrow(k,type,i){ return hasAds(k,type,i)?`<span class="mkt-row-expand">›</span>`:''; }
 
@@ -1999,14 +2703,14 @@ function renderMarketing(){
         <div class="mkt-surface-label-title" style="color:rgba(255,255,255,.6)">Overview</div>
       </div>
       ${comps.map(k=>{
-        const d=DATA.mktFunnels[k];
+        const d=MD().mktFunnels[k];
         return `<div class="mkt-surface-cell" style="background:var(--surface)"><div style="font-size:.71rem;line-height:1.5;color:var(--muted);font-style:italic">${escHtml(d.funnelSummary)}</div></div>`;
       }).join('')}
     </div>`;
 
     // 5 channel rows
     const chRows = rowDefs.map(row => surfaceRow(row, (k, rowKey) => {
-      const d = DATA.mktFunnels[k];
+      const d = MD().mktFunnels[k];
       const items = d.channels.map((ch,i)=>({ch,i})).filter(({ch})=>(chCatMap[ch.type]||'socials')===rowKey);
       if(!items.length) return `<div class="mkt-surface-cell empty"><span class="mkt-surface-empty-txt">No presence</span></div>`;
       return `<div class="mkt-surface-cell">${items.map(({ch,i})=>chCard(k,ch,i)).join('')}</div>`;
@@ -2019,7 +2723,7 @@ function renderMarketing(){
         <div class="mkt-surface-label-sub" style="color:#b45309">Implication</div>
       </div>
       ${comps.map(k=>{
-        const d=DATA.mktFunnels[k];
+        const d=MD().mktFunnels[k];
         return `<div class="mkt-surface-cell" style="background:var(--amber-light);border-right-color:rgba(245,158,11,.25)"><div style="font-size:.7rem;line-height:1.5;color:#78350f">${escHtml(d.channelImplication)}</div></div>`;
       }).join('')}
     </div>`;
@@ -2036,7 +2740,7 @@ function renderMarketing(){
         <div class="mkt-surface-label-sub" style="color:rgba(255,255,255,.4)">Evergreen pillars</div>
       </div>
       ${comps.map(k=>{
-        const d=DATA.mktFunnels[k];
+        const d=MD().mktFunnels[k];
         const pillars=d.messaging.evergreen.map(p=>`<span class="pillar-tag" style="font-size:.63rem;padding:3px 8px" title="${escHtml(p.channels.join(', '))}: ${escHtml(p.copy)}">${escHtml(p.pillar)}</span>`).join('');
         return `<div class="mkt-surface-cell mkt-pillars-cell">${pillars}</div>`;
       }).join('')}
@@ -2044,7 +2748,7 @@ function renderMarketing(){
 
     // 5 campaign rows grouped by surface
     const campRows = rowDefs.map(row => surfaceRow(row, (k, rowKey) => {
-      const d = DATA.mktFunnels[k];
+      const d = MD().mktFunnels[k];
       const items = d.messaging.campaigns.map((c,i)=>({c,i})).filter(({c})=>campRow(c.channel,c.name)===rowKey);
       if(!items.length) return `<div class="mkt-surface-cell empty"><span class="mkt-surface-empty-txt">No campaigns</span></div>`;
       return `<div class="mkt-surface-cell">${items.map(({c,i})=>campCard(k,c,i)).join('')}</div>`;
@@ -2057,7 +2761,7 @@ function renderMarketing(){
   } else if(section === 'promotions'){
     // Promotions: keep original 4-column card layout (unchanged)
     const cols = comps.map(k => {
-      const d = DATA.mktFunnels[k];
+      const d = MD().mktFunnels[k];
       const prmRows = d.prm.map((p,i) => {
         const typeSlug = p.type.toLowerCase().replace(/[^a-z]/g,'');
         const statusCls = (p.status||'').toLowerCase()==='active' ? 'prm-status-active' : 'prm-status-historic';
@@ -2084,9 +2788,9 @@ function renderMarketing(){
   let detailHtml = '';
   if(state.mktDetail){
     const {comp:dc, section:ds, idx:di} = state.mktDetail;
-    const ads = DATA.mktAds && DATA.mktAds[dc+'_'+ds+'_'+di];
+    const _ma = MD().mktAds; const ads = _ma && _ma[dc+'_'+ds+'_'+di];
     if(ads && ads.length){
-      const dd = DATA.mktFunnels[dc];
+      const dd = MD().mktFunnels[dc];
       const dLabel = labels[dc] || dc;
       let itemName = '';
       if(ds==='channels' && dd.channels[di]) itemName = dd.channels[di].name;
@@ -2130,7 +2834,7 @@ function renderMarketing(){
   document.getElementById('panel-marketing').innerHTML = `
     <div class="panel-header">
       <div class="panel-title">Marketing Feed — Competitive Intelligence</div>
-      <div class="panel-sub">Nu · Mercado Pago · Kueski · Plata — side-by-side comparison · Last updated: 2026-05-21</div>
+      <div class="panel-sub">${Object.values(labels).join(' · ')} — side-by-side comparison · Last updated: ${escHtml(MD().meta.lastUpdated)}</div>
     </div>
     <div class="mkt-subnav">${subnav}</div>
     ${gridContent}
@@ -2153,6 +2857,7 @@ window.closeMktDetail = function(){ state.mktDetail = null; renderMarketing(); }
 // RENDER: PRODUCTS
 // ═══════════════════════════════════════════
 function renderProducts(){
+  if(state.market !== 'mx'){ renderGenericProducts(); return; }
   if(state.productsInit) return;
   state.productsInit = true;
 
@@ -2880,7 +3585,7 @@ function renderProducts(){
 function renderSentiment(){
   const q = state.search;
   const comp = state.competitor;
-  const items = DATA.sentimentItems.filter(s =>
+  const items = (MD().sentimentItems||[]).filter(s =>
     matchesComp(s.competitor, comp) &&
     matchesSearch([s.competitor, ...s.complaints, ...s.praises], q)
   );
@@ -2929,7 +3634,7 @@ window.toggleDetail = function(id){
     detail.dataset.specsInjected = 'true';
     const specs = document.getElementById('specs-'+id);
     if(specs){
-      const items = DATA.productItems[id];
+      const items = (MD().productItems||{})[id];
       if(items && items.length > 0){
         const typeLabel = {bnpl:'BNPL',loan:'Cash Loan',card:'Credit Card',savings:'Savings',wallet:'Wallet'};
         specs.innerHTML = '<div class=”prod-specs-header”>Product Specs (Detailed Research)</div><div class=”prod-grid”>'+
@@ -2978,6 +3683,7 @@ function closeDetailModal(){
 // RENDER: MACRO (Sections 1 + 2 from original report)
 // ═══════════════════════════════════════════
 function renderMacro(){
+  if(state.market !== 'mx'){ renderGenericMacro(); return; }
   if(state.chartsInit.macro) return; // already rendered — preserve chart state
   state.chartsInit.macro = true;
   const NAVY='#0f2342',GREEN='#00a878',AMBER='#f59e0b',RED='#e53e3e',GRID='#eef2f6';
@@ -3158,7 +3864,7 @@ function renderMacro(){
 // ═══════════════════════════════════════════
 function switchTab(tab){
   state.tab = tab;
-  document.body.className = 'tab-' + tab;
+  document.body.className = (state.market ? 'market-selected ' : '') + 'tab-' + tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===tab));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id==='panel-'+tab));
   renderActiveTab();
@@ -3177,7 +3883,7 @@ function renderActiveTab(){
 // FILTER CHIPS SETUP
 // ═══════════════════════════════════════════
 function setupChips(){
-  const compList = ['All','Nu','Plata','Kueski','Mercado Pago','Klar','Stori','DiDi','Revolut','Baubap','Tala','RappiCard','Ualá','Regulatory','Macro'];
+  const compList = (state.market && MD().competitors) ? MD().competitors : ['All'];
   const cc = document.getElementById('competitorChips');
   cc.innerHTML = compList.map(c => {
     const val = c.toLowerCase() === 'all' ? 'all' : c;
@@ -3191,6 +3897,124 @@ function setupChips(){
       renderActiveTab();
     });
   });
+}
+
+// ═══════════════════════════════════════════
+// MARKET ROUTING
+// ═══════════════════════════════════════════
+function selectMarket(slug){
+  state.market = slug;
+  state.tab = 'digest';
+  state.competitor = 'all';
+  state.search = '';
+  state.productsInit = false;
+  state.chartsInit = {};
+  state.mktDetail = null;
+  const m = MARKET_DATA[slug].meta;
+  document.querySelector('.brand-name').textContent = m.name + ' Credit Intelligence';
+  document.querySelector('.topbar-meta').innerHTML = '<span class="live-dot"></span>Last updated: ' + m.lastUpdated;
+  document.getElementById('searchInput').value = '';
+  document.body.className = 'market-selected tab-digest';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'digest'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-digest'));
+  setupChips();
+  renderDigest();
+}
+
+function goBackToLanding(){
+  state.market = null;
+  state.productsInit = false;
+  state.chartsInit = {};
+  state.mktDetail = null;
+  document.body.className = '';
+}
+
+// ═══════════════════════════════════════════
+// GENERIC RENDERERS (non-MX markets)
+// ═══════════════════════════════════════════
+function renderGenericProducts(){
+  const mkt = MARKET_DATA[state.market];
+  if(!mkt || !mkt.businessStats || !mkt.businessStats.length){
+    document.getElementById('panel-products').innerHTML = `<div class="panel-header"><div class="panel-title">Competitor Feed</div><div class="panel-sub">Detailed data coming soon for this market.</div></div><div class="empty-state"><p>Research in progress.</p></div>`;
+    return;
+  }
+  const q = state.search;
+  const comp = state.competitor;
+  const items = mkt.businessStats.filter(b =>
+    matchesComp(b.competitor, comp) &&
+    matchesSearch([b.competitor, b.users, b.loanOS, b.threatWhy, b.implication, b.funding], q)
+  );
+  const cards = items.map(b => `
+    <div class="player-card" style="border-top-color:${b.threatLevel==='high'?'var(--red)':b.threatLevel==='medium'?'var(--amber)':'var(--border)'}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div>
+          <div class="card-type">${escHtml(b.competitor)}</div>
+          <div class="card-name" style="font-size:.85rem;color:var(--muted);font-weight:400">${escHtml(b.users)}</div>
+        </div>
+        ${threatBadge(b.threatLevel)}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0;font-size:.75rem">
+        <div><span style="color:var(--muted);display:block;margin-bottom:1px">Loan OS / AUM</span><strong>${escHtml(b.loanOS)}</strong></div>
+        <div><span style="color:var(--muted);display:block;margin-bottom:1px">Revenue</span><strong>${escHtml(b.revenue||'—')}</strong></div>
+        <div><span style="color:var(--muted);display:block;margin-bottom:1px">Est. CAC</span><strong>${escHtml(b.estCAC||'—')}</strong></div>
+        <div><span style="color:var(--muted);display:block;margin-bottom:1px">NPL</span><strong>${escHtml(b.npl||'—')}</strong></div>
+      </div>
+      <div style="font-size:.75rem;margin-bottom:5px"><span style="color:var(--muted)">Funding:</span> ${escHtml(b.funding)}</div>
+      <div style="font-size:.75rem;margin-bottom:5px"><span style="color:var(--muted)">Funding advantage:</span> ${escHtml(b.fundingAdvantage||'—')}</div>
+      <div style="font-size:.75rem;margin-bottom:5px"><span style="color:var(--muted)">Distribution:</span> ${escHtml(b.distribution||'—')}</div>
+      <div style="font-size:.75rem;background:var(--amber-light);border-radius:6px;padding:8px;margin-top:8px">
+        <span style="color:#92400e;font-weight:700">Why it\'s a threat:</span> ${escHtml(b.threatWhy)}
+      </div>
+      <div style="font-size:.75rem;background:var(--green-light);border-radius:6px;padding:8px;margin-top:6px">
+        <span style="color:var(--green-dark);font-weight:700">SCredito implication:</span> ${escHtml(b.implication)}
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('panel-products').innerHTML = `
+    <div class="panel-header">
+      <div class="panel-title">Competitor Feed</div>
+      <div class="panel-sub">${escHtml(mkt.meta.name)} credit &amp; fintech — competitive intelligence 2025–2026</div>
+    </div>
+    <div class="player-grid">${cards || '<div class="empty-state"><p>No competitors match the current filter.</p></div>'}</div>
+  `;
+}
+
+function renderGenericMacro(){
+  const mkt = MARKET_DATA[state.market];
+  if(!mkt || !mkt.macroData){
+    document.getElementById('panel-macro').innerHTML = `<div class="panel-header"><div class="panel-title">Macro &amp; Market Stats</div><div class="panel-sub">Data coming soon.</div></div>`;
+    return;
+  }
+  const md = mkt.macroData;
+  const indicatorCards = md.indicators.map(ind => `
+    <div class="kpi-card ${ind.color||''}">
+      <div class="kpi-val">${escHtml(ind.value)}</div>
+      <div class="kpi-lbl">${escHtml(ind.label)}</div>
+      <div class="kpi-note">${escHtml(ind.note)}</div>
+    </div>
+  `).join('');
+  const regRows = (md.regulatory||[]).map(r => `
+    <tr>
+      <td style="white-space:nowrap;color:var(--muted);font-size:.75rem;padding:8px 10px">${escHtml(r.date)}</td>
+      <td style="padding:8px 10px"><strong style="font-size:.8rem">${escHtml(r.event)}</strong></td>
+      <td style="padding:8px 10px"><span class="cat-badge" style="font-size:.65rem">${escHtml(r.impact)}</span></td>
+      <td style="font-size:.75rem;color:var(--muted);padding:8px 10px">${escHtml(r.note)}</td>
+    </tr>
+  `).join('');
+  document.getElementById('panel-macro').innerHTML = `
+    <div class="panel-header">
+      <div class="panel-title">Macro &amp; Market Stats</div>
+      <div class="panel-sub">${escHtml(mkt.meta.name)} credit market — key indicators &amp; regulatory calendar 2026 · Regulator: ${escHtml(mkt.meta.regulator)}</div>
+    </div>
+    <div class="section-title-old" style="margin-top:24px">Key Macro Indicators</div>
+    <div class="kpi-grid">${indicatorCards}</div>
+    ${regRows ? `
+    <div class="section-title-old" style="margin-top:32px">Regulatory &amp; Market Calendar</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Date</th><th>Event</th><th>Impact</th><th>Note</th></tr></thead>
+      <tbody>${regRows}</tbody>
+    </table></div>` : ''}
+  `;
 }
 
 // ═══════════════════════════════════════════
@@ -3208,9 +4032,9 @@ function init(){
     renderActiveTab();
   });
 
-  setupChips();
-  document.body.className = 'tab-digest';
-  renderDigest();
+  // Start on landing screen (no market selected)
+  document.body.className = '';
+
   // Modal dismiss: Escape key or click on backdrop
   document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDetailModal(); });
   document.getElementById('detail-modal-overlay').addEventListener('click', e => {
