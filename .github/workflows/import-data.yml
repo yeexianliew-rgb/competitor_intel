@@ -1,0 +1,64 @@
+name: Import Data to Supabase
+
+on:
+  # Manual trigger (run from GitHub Actions UI with optional run_type override)
+  workflow_dispatch:
+    inputs:
+      run_type:
+        description: 'Run type label stored in intel_ingestion_runs'
+        required: false
+        default: 'baseline_import'
+
+  # Scheduled runs per section cadence
+  schedule:
+    # Daily digest — every day at 06:00 UTC
+    - cron: '0 6 * * *'
+    # Weekly marketing/sentiment/macro — every Monday at 07:00 UTC
+    - cron: '0 7 * * 1'
+    # Monthly competitor feed — 1st of each month at 08:00 UTC
+    - cron: '0 8 1 * *'
+
+jobs:
+  import:
+    name: Import index.html → Supabase
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Determine run_type from trigger context
+      - name: Set run_type
+        id: run_type
+        shell: pwsh
+        run: |
+          $event  = "${{ github.event_name }}"
+          $manual = "${{ github.event.inputs.run_type }}"
+
+          if ($event -eq "workflow_dispatch" -and $manual) {
+            $type = $manual
+          } elseif ($event -eq "schedule") {
+            # Map cron expression to run type
+            $cron = "${{ github.event.schedule }}"
+            if ($cron -eq "0 6 * * *")  { $type = "daily_digest" }
+            elseif ($cron -eq "0 7 * * 1") { $type = "weekly_scan" }
+            elseif ($cron -eq "0 8 1 * *") { $type = "monthly_competitor_feed" }
+            else { $type = "scheduled_import" }
+          } else {
+            $type = "baseline_import"
+          }
+
+          echo "run_type=$type" >> $env:GITHUB_OUTPUT
+          Write-Host "Run type: $type"
+
+      - name: Run importer
+        shell: pwsh
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          Set-Location competitor_intel-main
+          .\scripts\import-index-to-supabase.ps1 `
+            -Apply `
+            -RunType "${{ steps.run_type.outputs.run_type }}" `
+            -SourceFile "index.html (GitHub Actions)"
