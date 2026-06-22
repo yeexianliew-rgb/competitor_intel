@@ -2570,7 +2570,9 @@ function renderDigest(){
         <span class="fc-date">${fmtDate(n.date)}</span>
       </div>
       <div class="fc-headline">${escHtml(n.headline)}</div>
-      <div class="fc-summary">${escHtml(n.oneLineSummary)}</div>
+      ${n.whatHappened ? `<div class="fc-summary">${escHtml(n.whatHappened)}</div>` : ''}
+      ${n.whyItMatters ? `<div class="fc-summary fc-why" style="color:var(--muted);margin-top:3px">${escHtml(n.whyItMatters)}</div>` : ''}
+      ${(!n.whatHappened && n.oneLineSummary) ? `<div class="fc-summary">${escHtml(n.oneLineSummary)}</div>` : ''}
     </div>`;
   }
 
@@ -4161,23 +4163,33 @@ function clearFreshnessBadges(){
     });
   }
 
-  function applyPayload(slug, payload){
+  // Tracks the snapshot created_at timestamp per market slug
+  const _snapshotTs = {};
+
+  function applyPayload(slug, payload, createdAt){
     if(!payload || typeof payload !== 'object') return false;
     // Merge into the existing market object so that fields set only in the HTML
     // (meta, competitors, mktComps, mktLabels, etc.) are preserved.
     // Supabase payload fields (newsItems, productItems, mktAds, macroData, etc.) overwrite.
     Object.assign(MARKET_DATA[slug], payload);
+    if(createdAt) _snapshotTs[slug] = createdAt;
     return true;
+  }
+
+  function fmtSnapshotTs(slug){
+    const raw = _snapshotTs[slug];
+    if(!raw) return null;
+    const d = new Date(raw);
+    if(isNaN(d)) return null;
+    return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+      + ' ' + d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
   }
 
   function refreshCurrentMarket(slug){
     if(state.market === slug){
-      // Re-render the active tab with new data
-      const m = MARKET_DATA[slug].meta;
-      if(m){
-        const ts = m.lastUpdated || new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-        document.querySelector('.topbar-meta').innerHTML = '<span class="live-dot" style="background:var(--green)" title="Live — data from Supabase"></span>Live — ' + ts;
-      }
+      const ts = fmtSnapshotTs(slug) || MARKET_DATA[slug]?.meta?.lastUpdated || '';
+      document.querySelector('.topbar-meta').innerHTML =
+        '<span class="live-dot" style="background:var(--green)" title="Live — data from Supabase"></span>Last updated: ' + ts;
       state.chartsInit = {};
       state.productsInit = false;
       renderActiveTab();
@@ -4214,7 +4226,7 @@ function clearFreshnessBadges(){
 
       let loaded = 0;
       data.forEach(row => {
-        if(applyPayload(row.market_slug, row.payload)) loaded++;
+        if(applyPayload(row.market_slug, row.payload, row.created_at)) loaded++;
       });
 
       if(loaded > 0){
@@ -4246,7 +4258,7 @@ function clearFreshnessBadges(){
           .eq('market_slug', slug)
           .single();
         if(!error && data){
-          applyPayload(slug, data.payload);
+          applyPayload(slug, data.payload, data.created_at);
           setLiveDot('live');
           refreshCurrentMarket(slug);
         }

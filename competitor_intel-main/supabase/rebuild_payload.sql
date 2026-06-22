@@ -22,14 +22,57 @@ declare
   v_funnels       jsonb;
   v_product_items jsonb;
   v_sentiment     jsonb;
-  v_biz_stats     jsonb;  -- used in macroData.bizStats
+  v_biz_stats     jsonb;
   v_macro_ind     jsonb;
   v_macro_reg     jsonb;
   v_macro_seas    jsonb;
   v_mkt_ads       jsonb;
+
+  -- latest run per section type (so each section uses its own most recent run)
+  v_latest_digest_run   uuid;
+  v_latest_macro_run    uuid;
+  v_latest_product_run  uuid;
+  v_latest_mkt_run      uuid;
+  v_latest_sentiment_run uuid;
 begin
 
-  -- ── 1. newsItems ──────────────────────────────────────────
+  -- Resolve the most recent run per section type
+  select id into v_latest_digest_run
+  from public.intel_ingestion_runs
+  where market_slug = p_market_slug
+    and run_type in ('daily_digest')
+    and status = 'completed'
+  order by captured_at desc limit 1;
+
+  select id into v_latest_macro_run
+  from public.intel_ingestion_runs
+  where market_slug = p_market_slug
+    and run_type in ('weekly_macro')
+    and status = 'completed'
+  order by captured_at desc limit 1;
+
+  select id into v_latest_product_run
+  from public.intel_ingestion_runs
+  where market_slug = p_market_slug
+    and run_type in ('monthly_competitor_feed')
+    and status = 'completed'
+  order by captured_at desc limit 1;
+
+  select id into v_latest_mkt_run
+  from public.intel_ingestion_runs
+  where market_slug = p_market_slug
+    and run_type in ('weekly_marketing')
+    and status = 'completed'
+  order by captured_at desc limit 1;
+
+  select id into v_latest_sentiment_run
+  from public.intel_ingestion_runs
+  where market_slug = p_market_slug
+    and run_type in ('weekly_sentiment')
+    and status = 'completed'
+  order by captured_at desc limit 1;
+
+  -- ── 1. newsItems — last 30 days across all digest runs ────
   select coalesce(jsonb_agg(
     jsonb_build_object(
       'id',             n.item_id,
@@ -37,6 +80,8 @@ begin
       'category',       n.category,
       'competitor',     n.company_slug,
       'headline',       n.headline,
+      'whatHappened',   n.what_happened,
+      'whyItMatters',   n.why_it_matters,
       'oneLineSummary', n.one_line_summary,
       'sourceUrl',      n.source_url
     ) order by n.item_date desc
@@ -44,11 +89,7 @@ begin
   into v_news
   from public.intel_news_items n
   where n.market_slug = p_market_slug
-    and n.run_id = (
-      select id from public.intel_ingestion_runs
-      where market_slug = p_market_slug and status = 'completed'
-      order by captured_at desc limit 1
-    );
+    and n.item_date::date >= (current_date - interval '30 days');
 
   -- ── 2. upcomingEvents ─────────────────────────────────────
   select coalesce(jsonb_agg(
@@ -64,11 +105,7 @@ begin
   into v_events
   from public.intel_upcoming_events e
   where e.market_slug = p_market_slug
-    and e.run_id = (
-      select id from public.intel_ingestion_runs
-      where market_slug = p_market_slug and status = 'completed'
-      order by captured_at desc limit 1
-    );
+    and (v_latest_digest_run is null or e.run_id = v_latest_digest_run);
 
   -- ── 3. marketingItems_old ─────────────────────────────────
   select coalesce(jsonb_agg(
@@ -94,13 +131,9 @@ begin
   into v_mkt_old
   from public.intel_marketing_items_archive a
   where a.market_slug = p_market_slug
-    and a.run_id = (
-      select id from public.intel_ingestion_runs
-      where market_slug = p_market_slug and status = 'completed'
-      order by captured_at desc limit 1
-    );
+    and (v_latest_mkt_run is null or a.run_id = v_latest_mkt_run);
 
-  -- ── 4. mktFunnels (keyed object: { companySlug: {...} }) ──
+  -- ── 4. mktFunnels ─────────────────────────────────────────
   select coalesce(
     jsonb_object_agg(
       f.company_slug,
@@ -154,13 +187,9 @@ begin
   into v_funnels
   from public.intel_marketing_funnels f
   where f.market_slug = p_market_slug
-    and f.run_id = (
-      select id from public.intel_ingestion_runs
-      where market_slug = p_market_slug and status = 'completed'
-      order by captured_at desc limit 1
-    );
+    and (v_latest_mkt_run is null or f.run_id = v_latest_mkt_run);
 
-  -- ── 5. productItems (keyed object: { companySlug: [...] })
+  -- ── 5. productItems ───────────────────────────────────────
   select coalesce(
     (
       select jsonb_object_agg(company_slug, products)
@@ -186,11 +215,7 @@ begin
                ) as products
         from public.intel_product_specs p
         where p.market_slug = p_market_slug
-          and p.run_id = (
-            select id from public.intel_ingestion_runs
-            where market_slug = p_market_slug and status = 'completed'
-            order by captured_at desc limit 1
-          )
+          and (v_latest_product_run is null or p.run_id = v_latest_product_run)
         group by p.company_slug
       ) sub
     ),
@@ -214,11 +239,7 @@ begin
   into v_sentiment
   from public.intel_sentiment_items s
   where s.market_slug = p_market_slug
-    and s.run_id = (
-      select id from public.intel_ingestion_runs
-      where market_slug = p_market_slug and status = 'completed'
-      order by captured_at desc limit 1
-    );
+    and (v_latest_sentiment_run is null or s.run_id = v_latest_sentiment_run);
 
   -- ── 7. businessStats ──────────────────────────────────────
   select coalesce(jsonb_agg(
@@ -244,12 +265,7 @@ begin
   ), '[]'::jsonb)
   into v_biz_stats
   from public.intel_business_stats b
-  where b.market_slug = p_market_slug
-    and b.run_id = (
-      select id from public.intel_ingestion_runs
-      where market_slug = p_market_slug and status = 'completed'
-      order by captured_at desc limit 1
-    );
+  where b.market_slug = p_market_slug;
 
   -- ── 8. macroData ──────────────────────────────────────────
   select coalesce(jsonb_agg(
@@ -263,11 +279,7 @@ begin
   into v_macro_ind
   from public.intel_macro_indicators mi
   where mi.market_slug = p_market_slug
-    and mi.run_id = (
-      select id from public.intel_ingestion_runs
-      where market_slug = p_market_slug and status = 'completed'
-      order by captured_at desc limit 1
-    );
+    and (v_latest_macro_run is null or mi.run_id = v_latest_macro_run);
 
   select coalesce(jsonb_agg(
     jsonb_build_object(
@@ -281,11 +293,7 @@ begin
   from public.intel_macro_events me
   where me.market_slug = p_market_slug
     and me.event_group = 'regulatory'
-    and me.run_id = (
-      select id from public.intel_ingestion_runs
-      where market_slug = p_market_slug and status = 'completed'
-      order by captured_at desc limit 1
-    );
+    and (v_latest_macro_run is null or me.run_id = v_latest_macro_run);
 
   select coalesce(jsonb_agg(
     jsonb_build_object(
@@ -298,13 +306,9 @@ begin
   from public.intel_macro_events me
   where me.market_slug = p_market_slug
     and me.event_group = 'seasonal'
-    and me.run_id = (
-      select id from public.intel_ingestion_runs
-      where market_slug = p_market_slug and status = 'completed'
-      order by captured_at desc limit 1
-    );
+    and (v_latest_macro_run is null or me.run_id = v_latest_macro_run);
 
-  -- ── 9. mktAds (keyed object: { "companySlug_section_idx": {...} }) ──
+  -- ── 9. mktAds ─────────────────────────────────────────────
   select coalesce(
     (
       select jsonb_object_agg(
@@ -323,11 +327,7 @@ begin
       )
       from public.intel_marketing_ad_examples a
       where a.market_slug = p_market_slug
-        and a.run_id = (
-          select id from public.intel_ingestion_runs
-          where market_slug = p_market_slug and status = 'completed'
-          order by captured_at desc limit 1
-        )
+        and (v_latest_mkt_run is null or a.run_id = v_latest_mkt_run)
     ),
     '{}'::jsonb
   )
@@ -335,28 +335,28 @@ begin
 
   -- ── 10. Assemble full payload ──────────────────────────────
   v_payload := jsonb_build_object(
-    'newsItems',         v_news,
-    'upcomingEvents',    v_events,
+    'newsItems',          v_news,
+    'upcomingEvents',     v_events,
     'marketingItems_old', v_mkt_old,
-    'mktFunnels',        v_funnels,
-    'productItems',      v_product_items,
-    'sentimentItems',    v_sentiment,
-    'businessStats',     v_biz_stats,
-    'macroData',         jsonb_build_object(
-                           'indicators', v_macro_ind,
-                           'regulatory', v_macro_reg,
-                           'seasonal',   v_macro_seas
-                         ),
-    'mktAds',            v_mkt_ads
+    'mktFunnels',         v_funnels,
+    'productItems',       v_product_items,
+    'sentimentItems',     v_sentiment,
+    'businessStats',      v_biz_stats,
+    'macroData',          jsonb_build_object(
+                            'indicators', v_macro_ind,
+                            'regulatory', v_macro_reg,
+                            'seasonal',   v_macro_seas
+                          ),
+    'mktAds',             v_mkt_ads
   );
 
-  -- ── 11. Create a new ingestion run (type = 'manual_edit') ──
+  -- ── 11. Create a new ingestion run (type = 'snapshot_rebuild') ──
   v_run_id := gen_random_uuid();
 
   insert into public.intel_ingestion_runs
     (id, market_slug, run_type, source_file, captured_at, status, raw_counts, metadata)
   values
-    (v_run_id, p_market_slug, 'manual_edit', 'supabase_table_editor', now(), 'completed',
+    (v_run_id, p_market_slug, 'snapshot_rebuild', 'rebuild_market_payload()', now(), 'completed',
      '{}'::jsonb,
      jsonb_build_object('trigger', 'rebuild_market_payload', 'rebuilt_at', now()::text));
 
@@ -377,13 +377,8 @@ $$;
 
 -- ============================================================
 -- TRIGGER: auto-rebuild snapshot when normalized tables change
--- Fires AFTER INSERT/UPDATE/DELETE on any data table.
--- Uses a debounce approach via pg_notify — the actual rebuild
--- is done by calling rebuild_market_payload directly since
--- Postgres triggers can call functions synchronously.
 -- ============================================================
 
--- Helper trigger function (calls rebuild for the affected market)
 create or replace function public._trigger_rebuild_payload()
 returns trigger
 language plpgsql
@@ -399,9 +394,6 @@ begin
   return null;
 end;
 $$;
-
--- Attach trigger to all normalized data tables
--- (DROP IF EXISTS first so re-applying this file is safe)
 
 drop trigger if exists trg_rebuild_on_news      on public.intel_news_items;
 drop trigger if exists trg_rebuild_on_events    on public.intel_upcoming_events;
