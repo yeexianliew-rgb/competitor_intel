@@ -2,7 +2,6 @@
 // Pulls macro indicators from central bank public APIs and press release RSS feeds.
 // Cadence: weekly (GitHub Actions cron 0 5 * * 3)
 
-import '../lib/bootstrap.js';
 import fetch from 'node-fetch';
 import Parser from 'rss-parser';
 import { extractStructured } from '../lib/claude.js';

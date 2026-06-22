@@ -1,5 +1,5 @@
-// Shared Supabase client + helper utilities for all fetchers
-import { createClient } from '@supabase/supabase-js';
+// Shared Supabase utilities for fetchers — uses plain fetch (no Realtime/WebSocket)
+// Works on any Node version. Fetchers only write data; they never subscribe.
 import { readFileSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -20,14 +20,51 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set');
 }
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-  auth: { persistSession: false }
-});
+const BASE = SUPABASE_URL.replace(/\/$/, '');
+const HEADERS = {
+  'apikey': SUPABASE_SERVICE_ROLE_KEY,
+  'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=minimal'
+};
+
+async function restPost(path, body) {
+  const res = await fetch(`${BASE}/rest/v1/${path}`, {
+    method: 'POST',
+    headers: HEADERS,
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => res.statusText);
+    throw new Error(`POST ${path} failed (${res.status}): ${detail}`);
+  }
+}
+
+async function restGet(path) {
+  const res = await fetch(`${BASE}/rest/v1/${path}`, { headers: HEADERS });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => res.statusText);
+    throw new Error(`GET ${path} failed (${res.status}): ${detail}`);
+  }
+  return res.json();
+}
+
+async function rpc(fnName, params) {
+  const res = await fetch(`${BASE}/rest/v1/rpc/${fnName}`, {
+    method: 'POST',
+    headers: HEADERS,
+    body: JSON.stringify(params)
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => res.statusText);
+    throw new Error(`RPC ${fnName} failed (${res.status}): ${detail}`);
+  }
+}
 
 // Create an ingestion run row and return its UUID
 export async function createRun(marketSlug, runType, counts = {}) {
   const id = randomUUID();
-  const { error } = await supabase.from('intel_ingestion_runs').insert({
+  await restPost('intel_ingestion_runs', {
     id,
     market_slug: marketSlug,
     run_type: runType,
@@ -37,29 +74,22 @@ export async function createRun(marketSlug, runType, counts = {}) {
     raw_counts: counts,
     metadata: { runner: process.env.GITHUB_RUN_ID || 'local' }
   });
-  if (error) throw new Error(`createRun failed: ${error.message}`);
   return id;
 }
 
 // Mark a section's last_refreshed_at
 export async function markSectionRefreshed(marketSlug, section) {
-  await supabase.rpc('mark_section_refreshed', {
-    p_market_slug: marketSlug,
-    p_section: section
-  });
+  await rpc('mark_section_refreshed', { p_market_slug: marketSlug, p_section: section });
 }
 
 // Rebuild the snapshot for a market (triggers Realtime → browser update)
 export async function rebuildSnapshot(marketSlug) {
-  const { error } = await supabase.rpc('rebuild_market_payload', {
-    p_market_slug: marketSlug
-  });
-  if (error) throw new Error(`rebuildSnapshot(${marketSlug}) failed: ${error.message}`);
+  await rpc('rebuild_market_payload', { p_market_slug: marketSlug });
 }
 
 // Log a change entry
 export async function logChange(marketSlug, section, changeType, delta, summary, runId) {
-  await supabase.from('intel_change_log').insert({
+  await restPost('intel_change_log', {
     market_slug: marketSlug,
     section,
     change_type: changeType,
@@ -74,18 +104,17 @@ export async function batchInsert(table, rows) {
   if (!rows.length) return;
   for (let i = 0; i < rows.length; i += 250) {
     const batch = rows.slice(i, i + 250);
-    const { error } = await supabase.from(table).insert(batch);
-    if (error) throw new Error(`batchInsert(${table}) failed: ${error.message}`);
+    await restPost(table, batch);
   }
 }
 
 // Fetch existing headlines/URLs for dedup (last N days)
 export async function getRecentHeadlines(marketSlug, days = 30) {
   const since = new Date(Date.now() - days * 86400000).toISOString();
-  const { data } = await supabase
-    .from('intel_news_items')
-    .select('headline, source_url')
-    .eq('market_slug', marketSlug)
-    .gte('created_at', since);
-  return data || [];
+  const params = new URLSearchParams({
+    select: 'headline,source_url',
+    market_slug: `eq.${marketSlug}`,
+    created_at: `gte.${since}`
+  });
+  return restGet(`intel_news_items?${params}`);
 }

@@ -2,7 +2,6 @@
 // Cadence: weekly (GitHub Actions cron 0 3 * * 1)
 // Requires: FB_ADS_API_TOKEN in GitHub Secrets (not yet available)
 
-import '../lib/bootstrap.js';
 import { markSectionRefreshed } from '../lib/supabase.js';
 
 async function main() {

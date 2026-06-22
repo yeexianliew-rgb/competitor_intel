@@ -2,7 +2,6 @@
 // Cadence: weekly (GitHub Actions cron 0 4 * * 2)
 // Placeholder until competitor app IDs are confirmed
 
-import '../lib/bootstrap.js';
 import { markSectionRefreshed } from '../lib/supabase.js';
 
 async function main() {

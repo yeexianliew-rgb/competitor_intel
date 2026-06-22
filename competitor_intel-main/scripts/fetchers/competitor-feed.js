@@ -1,10 +1,9 @@
 // Competitor Feed Fetcher — Product specs + business stats via Claude web extraction
 // Cadence: monthly (GitHub Actions cron 0 6 1 * *)
 
-import '../lib/bootstrap.js';
 import fetch from 'node-fetch';
 import { extractStructured } from '../lib/claude.js';
-import { createRun, markSectionRefreshed, rebuildSnapshot, logChange, batchInsert, supabase } from '../lib/supabase.js';
+import { createRun, markSectionRefreshed, rebuildSnapshot, logChange, batchInsert } from '../lib/supabase.js';
 import { createHash } from 'crypto';
 
 // ── Competitor product page config ───────────────────────────────────────────
@@ -85,14 +84,23 @@ async function fetchPageText(url) {
 }
 
 async function getLatestProductSpec(marketSlug, companySlug) {
-  const { data } = await supabase
-    .from('intel_product_specs')
-    .select('fees, apr_cat, credit_limit, product_name')
-    .eq('market_slug', marketSlug)
-    .eq('company_slug', companySlug)
-    .order('created_at', { ascending: false })
-    .limit(1);
-  return data?.[0] || null;
+  const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } = process.env;
+  const params = new URLSearchParams({
+    select: 'fees,apr_cat,credit_limit,product_name',
+    market_slug: `eq.${marketSlug}`,
+    company_slug: `eq.${companySlug}`,
+    order: 'created_at.desc',
+    limit: '1'
+  });
+  const res = await fetch(`${SUPABASE_URL.replace(/\/$/, '')}/rest/v1/intel_product_specs?${params}`, {
+    headers: {
+      'apikey': SUPABASE_SERVICE_ROLE_KEY,
+      'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`
+    }
+  });
+  if (!res.ok) return null;
+  const rows = await res.json();
+  return rows?.[0] || null;
 }
 
 function hasChanged(prev, next) {
