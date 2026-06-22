@@ -72,7 +72,7 @@ Return this exact JSON structure:
       "category": "product|regulatory|funding|marketing|partnership|macro",
       "competitor": "competitor name or null",
       "headline": "concise headline in English",
-      "oneLineSummary": "one sentence explaining significance for a fintech competitor",
+      "oneLineSummary": "max 12 words: significance for a fintech competitor",
       "sourceUrl": "original article URL"
     }
   ]
@@ -137,13 +137,13 @@ async function processMarket(marketSlug) {
     return;
   }
 
-  // Deduplicate articles by URL before sending to Claude
+  // Deduplicate articles by URL before sending to Claude, cap at 25 to control output size
   const seen = new Set();
   const uniqueArticles = allArticles.filter(a => {
     if (!a.url || seen.has(a.url)) return false;
     seen.add(a.url);
     return true;
-  });
+  }).slice(0, 25);
 
   // 2. Send to Claude
   console.log(`  Sending ${uniqueArticles.length} articles to Claude...`);

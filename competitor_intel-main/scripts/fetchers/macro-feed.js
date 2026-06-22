@@ -169,7 +169,7 @@ async function processMarket(marketSlug) {
   let articles = [];
   try {
     const parsed = await rss.parseURL(market.pressRss);
-    articles = (parsed.items || []).slice(0, 25).map(item => ({
+    articles = (parsed.items || []).slice(0, 15).map(item => ({
       title: item.title || '',
       url: item.link || '',
       date: item.pubDate ? new Date(item.pubDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
