@@ -1,5 +1,6 @@
 // Shared Supabase client + helper utilities for all fetchers
 import { createClient } from '@supabase/supabase-js';
+import ws from 'ws';
 import { readFileSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -21,7 +22,8 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-  auth: { persistSession: false }
+  auth: { persistSession: false },
+  realtime: { transport: ws }
 });
 
 // Create an ingestion run row and return its UUID
