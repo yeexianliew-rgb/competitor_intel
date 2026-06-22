@@ -1,0 +1,22 @@
+{
+  "name": "competitor-intel-fetchers",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automated data fetchers for the competitor intelligence dashboard",
+  "type": "module",
+  "scripts": {
+    "fetch:digest": "node scripts/fetchers/daily-digest.js",
+    "fetch:macro": "node scripts/fetchers/macro-feed.js",
+    "fetch:marketing": "node scripts/fetchers/marketing-feed.js",
+    "fetch:sentiment": "node scripts/fetchers/sentiment-feed.js",
+    "fetch:competitor": "node scripts/fetchers/competitor-feed.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "node-fetch": "^3.3.2",
+    "cheerio": "^1.0.0",
+    "rss-parser": "^3.13.0",
+    "dotenv": "^16.4.5"
+  }
+}

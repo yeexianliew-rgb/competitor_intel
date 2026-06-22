@@ -1,0 +1,37 @@
+name: Weekly Macro Fetcher
+
+on:
+  schedule:
+    - cron: '0 5 * * 3'   # 5am UTC Wednesday (1pm SGT)
+  workflow_dispatch:
+    inputs:
+      markets:
+        description: 'Comma-separated market slugs (default: all)'
+        required: false
+        default: 'mx,br,ph,id'
+
+jobs:
+  fetch:
+    name: Fetch macro indicators & regulatory events
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: competitor_intel-main/package.json
+
+      - name: Install dependencies
+        working-directory: competitor_intel-main
+        run: npm install
+
+      - name: Run macro fetcher
+        working-directory: competitor_intel-main
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MARKETS: ${{ github.event.inputs.markets || 'mx,br,ph,id' }}
+        run: node scripts/fetchers/macro-feed.js

@@ -1,0 +1,32 @@
+name: Weekly Marketing Fetcher
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'   # 3am UTC Monday (11am SGT)
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    name: Fetch marketing ads & campaigns
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: competitor_intel-main/package.json
+
+      - name: Install dependencies
+        working-directory: competitor_intel-main
+        run: npm install
+
+      - name: Run marketing fetcher
+        working-directory: competitor_intel-main
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FB_ADS_API_TOKEN: ${{ secrets.FB_ADS_API_TOKEN }}
+        run: node scripts/fetchers/marketing-feed.js
