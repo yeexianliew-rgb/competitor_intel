@@ -8,7 +8,13 @@ import { extractStructured } from '../lib/claude.js';
 import { createRun, markSectionRefreshed, rebuildSnapshot, logChange, batchInsert, getRecentHeadlines } from '../lib/supabase.js';
 import { createHash } from 'crypto';
 
-const rss = new Parser({ timeout: 15000 });
+const rss = new Parser({
+  timeout: 15000,
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+    'Accept': 'application/rss+xml, application/xml, text/xml, */*'
+  }
+});
 
 // ── Source configuration per market ─────────────────────────────────────────
 
@@ -17,10 +23,15 @@ const SOURCES = {
     name: 'Mexico',
     competitors: ['Nu', 'Plata', 'Kueski', 'Mercado Pago', 'Klar', 'Stori', 'DiDi', 'Baubap', 'Tala', 'Ualá', 'RappiCard', 'Spin by OXXO', 'Revolut', 'TikTok', 'Aplazo'],
     feeds: [
-      { url: 'https://news.google.com/rss/search?q=fintech+credito+prestamo+mexico&hl=es-419&gl=MX&ceid=MX:es-419', label: 'Google News MX Fintech' },
-      { url: 'https://news.google.com/rss/search?q=nubank+mexico+OR+plata+banco+OR+kueski+OR+mercado+pago+mexico+OR+klar+OR+stori&hl=es-419&gl=MX&ceid=MX:es-419', label: 'Google News MX Competitors' },
-      { url: 'https://news.google.com/rss/search?q=CNBV+regulacion+fintech+OR+banxico+tasa+OR+open+finance+mexico&hl=es-419&gl=MX&ceid=MX:es-419', label: 'Google News MX Regulation' },
-      { url: 'https://www.cnbv.gob.mx/Paginas/rss.aspx', label: 'CNBV' },
+      // Local language (Spanish)
+      { url: 'https://news.google.com/rss/search?q=fintech+credito+prestamo+mexico&hl=es-419&gl=MX&ceid=MX:es-419', label: 'MX Fintech (ES)' },
+      { url: 'https://news.google.com/rss/search?q=nubank+mexico+OR+plata+banco+OR+kueski+OR+mercado+pago+mexico+OR+klar+OR+stori&hl=es-419&gl=MX&ceid=MX:es-419', label: 'MX Competitors (ES)' },
+      { url: 'https://news.google.com/rss/search?q=CNBV+regulacion+fintech+OR+banxico+tasa+OR+open+finance+mexico&hl=es-419&gl=MX&ceid=MX:es-419', label: 'MX Regulation (ES)' },
+      { url: 'https://news.google.com/rss/search?q=CNBV+site:cnbv.gob.mx&hl=es-419&gl=MX&ceid=MX:es-419', label: 'CNBV Official' },
+      // English language (international coverage)
+      { url: 'https://news.google.com/rss/search?q=fintech+credit+lending+mexico&hl=en-US&gl=US&ceid=US:en', label: 'MX Fintech (EN)' },
+      { url: 'https://news.google.com/rss/search?q=nubank+mexico+OR+kueski+OR+%22mercado+pago%22+mexico+credit&hl=en-US&gl=US&ceid=US:en', label: 'MX Competitors (EN)' },
+      { url: 'https://news.google.com/rss/search?q=CNBV+OR+Banxico+regulation+OR+%22open+finance%22+mexico&hl=en-US&gl=US&ceid=US:en', label: 'MX Regulation (EN)' },
     ],
     include: `
 INCLUDE only events from the last 24 hours that meet at least one criterion:
@@ -65,9 +76,13 @@ EXCLUDE:
     name: 'Brazil',
     competitors: ['Nubank', 'Mercado Crédito', 'PicPay', 'Creditas', 'C6 Bank', 'PagBank', 'Neon', 'Serasa', 'Avante', 'Banco Inter', 'Itaú', 'Bradesco', 'TikTok', 'Pagaleve', 'Magie', 'Caixa'],
     feeds: [
-      { url: 'https://news.google.com/rss/search?q=nubank+OR+picpay+OR+creditas+OR+pagbank+fintech+credito+brasil&hl=pt-BR&gl=BR&ceid=BR:pt-BR', label: 'Google News BR Competitors' },
-      { url: 'https://news.google.com/rss/search?q=BACEN+OR+BCB+credito+consignado+OR+open+finance+brasil+regulacao&hl=pt-BR&gl=BR&ceid=BR:pt-BR', label: 'Google News BR Regulation' },
-      { url: 'https://www.bcb.gov.br/api/feed/pt-br/noticias/rss', label: 'Banco Central do Brasil' },
+      // Local language (Portuguese)
+      { url: 'https://news.google.com/rss/search?q=nubank+OR+picpay+OR+creditas+OR+pagbank+fintech+credito+brasil&hl=pt-BR&gl=BR&ceid=BR:pt-BR', label: 'BR Competitors (PT)' },
+      { url: 'https://news.google.com/rss/search?q=BACEN+OR+BCB+credito+consignado+OR+open+finance+brasil+regulacao&hl=pt-BR&gl=BR&ceid=BR:pt-BR', label: 'BR Regulation (PT)' },
+      { url: 'https://news.google.com/rss/search?q=site:bcb.gov.br+credito+regulacao&hl=pt-BR&gl=BR&ceid=BR:pt-BR', label: 'BCB Official (PT)' },
+      // English language (international coverage)
+      { url: 'https://news.google.com/rss/search?q=nubank+OR+picpay+OR+creditas+brazil+fintech+credit&hl=en-US&gl=US&ceid=US:en', label: 'BR Competitors (EN)' },
+      { url: 'https://news.google.com/rss/search?q=brazil+%22open+finance%22+OR+%22Selic+rate%22+OR+%22PIX+credit%22+OR+consignado&hl=en-US&gl=US&ceid=US:en', label: 'BR Regulation (EN)' },
     ],
     include: `
 INCLUDE only events from the last 24 hours that meet at least one criterion:
@@ -114,9 +129,15 @@ EXCLUDE:
     name: 'Philippines',
     competitors: ['GCash', 'Maya', 'BillEase', 'Salmon', 'Tonik Bank', 'SeaBank', 'Tala', 'Atome', 'Cashalo', 'CIMB PH', 'UnionDigital', 'OLPs'],
     feeds: [
-      { url: 'https://news.google.com/rss/search?q=gcash+OR+maya+OR+billease+OR+salmon+fintech+philippines&hl=en-PH&gl=PH&ceid=PH:en', label: 'Google News PH Competitors' },
-      { url: 'https://news.google.com/rss/search?q=BSP+digital+bank+OR+lending+regulation+OR+online+lending+philippines&hl=en-PH&gl=PH&ceid=PH:en', label: 'Google News PH Regulation' },
-      { url: 'https://www.bsp.gov.ph/feeds/pressreleases.xml', label: 'BSP Press Releases' },
+      // English (primary language for PH fintech coverage)
+      { url: 'https://news.google.com/rss/search?q=gcash+OR+maya+OR+billease+OR+salmon+fintech+philippines&hl=en-PH&gl=PH&ceid=PH:en', label: 'PH Competitors (EN-PH)' },
+      { url: 'https://news.google.com/rss/search?q=BSP+digital+bank+OR+lending+regulation+OR+online+lending+philippines&hl=en-PH&gl=PH&ceid=PH:en', label: 'PH Regulation (EN-PH)' },
+      { url: 'https://news.google.com/rss/search?q=site:bsp.gov.ph&hl=en-PH&gl=PH&ceid=PH:en', label: 'BSP Official' },
+      // International English (catches investor/analyst coverage not in PH media)
+      { url: 'https://news.google.com/rss/search?q=gcash+OR+maya+OR+%22tonik+bank%22+philippines+fintech+credit&hl=en-US&gl=US&ceid=US:en', label: 'PH Competitors (EN-INT)' },
+      { url: 'https://news.google.com/rss/search?q=philippines+%22digital+bank%22+OR+%22BSP%22+lending+fintech&hl=en-US&gl=US&ceid=US:en', label: 'PH Regulation (EN-INT)' },
+      // Filipino language (catches local news not covered in English)
+      { url: 'https://news.google.com/rss/search?q=gcash+maya+pautang+fintech+pilipinas&hl=fil&gl=PH&ceid=PH:fil', label: 'PH Fintech (FIL)' },
     ],
     include: `
 INCLUDE only events from the last 24 hours that meet at least one criterion:
@@ -161,9 +182,13 @@ EXCLUDE:
     name: 'Indonesia',
     competitors: ['Kredivo', 'Akulaku', 'GoPay', 'OVO', 'Dana', 'SPayLater', 'JULO', 'Honest', 'AdaKami', 'SeaBank', 'Bank Jago', 'Blu by BCA'],
     feeds: [
-      { url: 'https://news.google.com/rss/search?q=kredivo+OR+akulaku+OR+gopay+OR+ovo+fintech+kredit+indonesia&hl=id&gl=ID&ceid=ID:id', label: 'Google News ID Competitors' },
-      { url: 'https://news.google.com/rss/search?q=OJK+pinjaman+online+OR+bank+indonesia+QRIS+OR+fintech+lending+regulasi&hl=id&gl=ID&ceid=ID:id', label: 'Google News ID Regulation' },
-      { url: 'https://www.ojk.go.id/id/berita-dan-kegiatan/siaran-pers/rss', label: 'OJK Press Releases' },
+      // Local language (Indonesian)
+      { url: 'https://news.google.com/rss/search?q=kredivo+OR+akulaku+OR+gopay+OR+ovo+fintech+kredit+indonesia&hl=id&gl=ID&ceid=ID:id', label: 'ID Competitors (ID)' },
+      { url: 'https://news.google.com/rss/search?q=OJK+pinjaman+online+OR+bank+indonesia+QRIS+OR+fintech+lending+regulasi&hl=id&gl=ID&ceid=ID:id', label: 'ID Regulation (ID)' },
+      { url: 'https://news.google.com/rss/search?q=site:ojk.go.id+siaran+pers&hl=id&gl=ID&ceid=ID:id', label: 'OJK Official (ID)' },
+      // English language (international coverage)
+      { url: 'https://news.google.com/rss/search?q=kredivo+OR+akulaku+OR+gopay+indonesia+fintech+credit+lending&hl=en-US&gl=US&ceid=US:en', label: 'ID Competitors (EN)' },
+      { url: 'https://news.google.com/rss/search?q=indonesia+OJK+OR+%22Bank+Indonesia%22+fintech+lending+regulation&hl=en-US&gl=US&ceid=US:en', label: 'ID Regulation (EN)' },
     ],
     include: `
 INCLUDE only events from the last 24 hours that meet at least one criterion:
@@ -249,6 +274,8 @@ Return JSON (return empty newsItems array if nothing qualifies — do not force 
   ]
 }
 
+IMPORTANT — Deduplication: Articles are sourced from both local-language and English feeds. Multiple articles may cover the same underlying event in different languages. Extract each real-world event only ONCE, using the most informative source. Prefer English-language sourceUrl when the same event is covered in both languages.
+
 Articles (title | url | published):
 ${articles.map((a, i) => `${i + 1}. ${a.title} | ${a.url} | ${a.date}`).join('\n')}`;
 }
@@ -306,13 +333,15 @@ async function processMarket(marketSlug) {
     return;
   }
 
-  // Deduplicate by URL, cap at 30 per market
+  // Deduplicate by exact URL first, then cap at 40 per market.
+  // Cross-language story dedup (same event, different language) is handled by Claude
+  // via the explicit deduplication instruction in the prompt.
   const seen = new Set();
   const uniqueArticles = allArticles.filter(a => {
     if (!a.url || seen.has(a.url)) return false;
     seen.add(a.url);
     return true;
-  }).slice(0, 30);
+  }).slice(0, 40);
 
   // 2. Send to Claude
   console.log(`  Sending ${uniqueArticles.length} articles to Claude...`);

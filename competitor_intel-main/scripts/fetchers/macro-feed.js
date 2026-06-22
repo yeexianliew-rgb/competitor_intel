@@ -7,7 +7,13 @@ import Parser from 'rss-parser';
 import { extractStructured } from '../lib/claude.js';
 import { createRun, markSectionRefreshed, rebuildSnapshot, logChange, batchInsert } from '../lib/supabase.js';
 
-const rss = new Parser({ timeout: 15000 });
+const rss = new Parser({
+  timeout: 15000,
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+    'Accept': 'application/rss+xml, application/xml, text/xml, */*'
+  }
+});
 
 // ── Market macro config ──────────────────────────────────────────────────────
 
@@ -23,7 +29,7 @@ const MARKETS = {
     name: 'Brazil',
     currency: 'BRL',
     indicators: async () => fetchBacen(),
-    pressRss: 'https://www.bcb.gov.br/api/feed/pt-br/noticias/rss',
+    pressRss: 'https://news.google.com/rss/search?q=site:bcb.gov.br+credito+regulacao&hl=pt-BR&gl=BR&ceid=BR:pt-BR',
     eventContext: 'Brazil consumer credit market. BCB/BACEN regulates open finance, PIX, fintechs.'
   },
   ph: {
