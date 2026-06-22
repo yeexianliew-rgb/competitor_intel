@@ -4,21 +4,21 @@
 
 import { markSectionRefreshed } from '../lib/supabase.js';
 
-const FB_TOKEN = process.env.FB_ADS_API_TOKEN;
-const markets = process.env.MARKETS ? process.env.MARKETS.split(',') : ['mx', 'br', 'ph', 'id'];
+async function main() {
+  const FB_TOKEN = process.env.FB_ADS_API_TOKEN;
+  const markets = process.env.MARKETS ? process.env.MARKETS.split(',') : ['mx', 'br', 'ph', 'id'];
 
-if (!FB_TOKEN) {
-  console.log('FB_ADS_API_TOKEN not set — marketing feed skipped.');
-  console.log('To enable: add FB_ADS_API_TOKEN to GitHub repository secrets.');
-  console.log('Get a token at: https://developers.facebook.com/docs/marketing-api/reference/ads-archive/');
-  // Mark section as attempted so freshness badge doesn't show stale forever
-  for (const slug of markets) {
-    await markSectionRefreshed(slug, 'marketing').catch(() => {});
+  if (!FB_TOKEN) {
+    console.log('FB_ADS_API_TOKEN not set — marketing feed skipped.');
+    console.log('To enable: add FB_ADS_API_TOKEN to GitHub repository secrets.');
+    for (const slug of markets) {
+      await markSectionRefreshed(slug, 'marketing').catch(() => {});
+    }
+    return;
   }
-  process.exit(0);
+
+  // Full implementation added once FB token is available.
+  console.log('Marketing feed: FB token present but full implementation pending.');
 }
 
-// Full implementation added once FB token is available.
-// Flow: FB Ads Library API → Claude extracts structured ad schema → upsert intel_marketing_ad_examples
-console.log('Marketing feed: FB token present but full implementation pending.');
-process.exit(0);
+main().catch(e => { console.error(e.message); process.exit(1); });
