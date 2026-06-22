@@ -1,6 +1,7 @@
 // Competitor Feed Fetcher — Product specs + business stats via Claude web extraction
 // Cadence: monthly (GitHub Actions cron 0 6 1 * *)
 
+import '../lib/bootstrap.js';
 import fetch from 'node-fetch';
 import { extractStructured } from '../lib/claude.js';
 import { createRun, markSectionRefreshed, rebuildSnapshot, logChange, batchInsert, supabase } from '../lib/supabase.js';

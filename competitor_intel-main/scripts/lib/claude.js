@@ -2,7 +2,10 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 const { ANTHROPIC_API_KEY } = process.env;
-if (!ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY must be set');
+if (!ANTHROPIC_API_KEY) {
+  console.error('ANTHROPIC_API_KEY must be set');
+  process.exit(1);
+}
 
 export const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
 

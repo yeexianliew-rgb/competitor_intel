@@ -15,8 +15,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: competitor_intel-main/package.json
 
       - name: Install dependencies
         working-directory: competitor_intel-main

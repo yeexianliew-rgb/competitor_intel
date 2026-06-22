@@ -3,10 +3,11 @@
 // competitive intelligence via Claude, deduplicates, writes to Supabase.
 // Cadence: daily (GitHub Actions cron 0 2 * * *)
 
+import '../lib/bootstrap.js';
 import Parser from 'rss-parser';
 import { extractStructured } from '../lib/claude.js';
 import { supabase, createRun, markSectionRefreshed, rebuildSnapshot, logChange, batchInsert, getRecentHeadlines } from '../lib/supabase.js';
-import { randomUUID, createHash } from 'crypto';
+import { createHash } from 'crypto';
 
 const rss = new Parser({ timeout: 15000 });
 
