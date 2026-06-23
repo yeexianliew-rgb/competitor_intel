@@ -2549,7 +2549,11 @@ function renderDigest(){
       _type:'promoted', _sortDate: new Date(e.sortDate),
       id: 'ev-'+e.sortDate, date: e.date,
       category:'Event', competitor:'',
-      headline: e.title, oneLineSummary: e.note, sourceUrl:''
+      headline: e.title,
+      whatHappened: e.summary || e.note || null,
+      whyItMatters: e.importance || null,
+      oneLineSummary: e.note || e.summary || null,
+      sourceUrl:''
     }))
   ].sort((a,b) => b._sortDate - a._sortDate);
 
@@ -2581,15 +2585,19 @@ function renderDigest(){
   }
 
   function upcomingCard(e){
+    const impLc = (e.importance||'').toLowerCase().replace(/\s+/g,'');
+    const impColor = {critical:'var(--red)',veryhigh:'#c2410c',high:'var(--amber)',medium:'var(--muted)',low:'var(--muted)'}[impLc] || 'var(--muted)';
+    const body = e.summary || e.note || '';
+    const detail = e.importance || '';
     return `
     <div class="feed-card fc-upcoming">
       <div class="fc-meta">
         <span class="cat-badge upcoming">Upcoming</span>
+        ${detail ? `<span style="font-size:.62rem;font-weight:700;color:${impColor};padding:2px 0">${escHtml(detail)}</span>` : ''}
         <span class="fc-date">${escHtml(e.date)}</span>
       </div>
       <div class="fc-headline">${escHtml(e.title)}</div>
-      ${e.summary ? `<div class="fc-note">${escHtml(e.summary)}</div>` : ''}
-      ${e.importance ? `<div class="fc-importance">${escHtml(e.importance)}</div>` : ''}
+      ${body ? `<div class="fc-summary" style="margin-top:4px">${escHtml(body)}</div>` : ''}
     </div>`;
   }
 
