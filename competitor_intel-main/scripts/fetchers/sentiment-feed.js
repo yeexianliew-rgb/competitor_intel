@@ -46,6 +46,7 @@ const MARKETS = {
       { name: 'Creditas',        appleId: '1270180256', playId: 'br.com.creditas.mobile',   raSlug: 'creditas' },
       { name: 'C6 Bank',         appleId: '1463463143', playId: 'com.c6bank.app',           raSlug: 'c6-bank' },
       { name: 'PagBank',         appleId: '1186059012', playId: 'br.com.uol.ps.myaccount',  raSlug: 'pagbank' },
+      { name: 'SParcelado',      appleId: null,         playId: null,                        raSlug: 'sparcelado' },
     ]
   },
   ph: {
@@ -283,23 +284,28 @@ ${reviewBlock}
 
 Extract:
 1. Overall sentiment (weighted average across reviews)
-2. Top recurring complaints (max 4)
-3. Top recurring praise points (max 4)
+2. Top 5 recurring complaints — in English, concise (max 12 words each)
+3. Top 5 recurring praise points — in English, concise (max 12 words each)
 4. Most common pain point category (credit_approval|repayment|app_ux|customer_service|fees|fraud|other)
 5. NPS signal: are users recommending or warning others?
+6. Pick the single most representative negative quote and single most representative positive quote.
+   Translate both to English if they are in another language. Keep them short (max 30 words).
 
 Return JSON:
 {
   "overallSentiment": "positive|mixed|negative",
   "sentimentScore": 0.0,
-  "topComplaints": ["string", "string"],
-  "topPraise": ["string", "string"],
+  "topComplaints": ["string x5"],
+  "topPraise": ["string x5"],
   "topPainCategory": "credit_approval|repayment|app_ux|customer_service|fees|fraud|other",
   "npsSignal": "recommending|neutral|warning",
   "reviewCount": ${reviews.length},
-  "representativeBadReview": "verbatim short quote from a negative review",
-  "representativeGoodReview": "verbatim short quote from a positive review"
-}`;
+  "representativeBadReview": "English translation, max 30 words, or null if no negative reviews",
+  "representativeGoodReview": "English translation, max 30 words, or null if no positive reviews"
+}
+
+IMPORTANT: sentimentScore must be a decimal between 0.0 and 1.0 (not 0–5).
+Example: a moderately positive app = 0.65, a mostly negative app = 0.25.`;
 }
 
 // ── Process one app ────────────────────────────────────────────────────────────
@@ -338,7 +344,10 @@ async function processApp(marketSlug, marketName, countryCode, app, runId) {
     return null;
   }
 
-  const scoreNum = extracted.sentimentScore || 0;
+  // Normalize: Claude sometimes returns 0–5 instead of 0–1 despite the prompt
+  let rawScore = parseFloat(extracted.sentimentScore) || 0;
+  if (rawScore > 1.0) rawScore = rawScore / 5; // convert 0–5 → 0–1
+  const scoreNum = Math.min(1.0, Math.max(0.0, rawScore));
   const scoreTier = scoreNum >= 0.6 ? 'good' : scoreNum >= 0.3 ? 'mixed' : 'poor';
 
   return {

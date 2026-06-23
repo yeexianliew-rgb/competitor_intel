@@ -1808,7 +1808,7 @@ const MARKET_DATA = {
 
   br: {
     meta: { name: 'Brazil', flag: '🇧🇷', currency: 'BRL', lastUpdated: 'Jun 5, 2026', regulator: 'BACEN / BCB' },
-    competitors: ['All','Nubank','Mercado Crédito','PicPay','Creditas','C6 Bank','PagBank','Neon','Serasa','Avante'],
+    competitors: ['All','Nubank','Mercado Crédito','PicPay','Creditas','C6 Bank','PagBank','SParcelado','SCredito'],
     mktComps: ['nubank_br','mercado_br','picpay_br','creditas_br'],
     mktLabels: {nubank_br:'Nubank',mercado_br:'Merc. Crédito',picpay_br:'PicPay',creditas_br:'Creditas'},
     mktCompColors: {nubank_br:'#8B5CF6',mercado_br:'#f59e0b',picpay_br:'#06B6D4',creditas_br:'#059669'},
@@ -3636,12 +3636,17 @@ function renderSentiment(){
     matchesSearch([s.competitor, ...s.complaints, ...s.praises], q)
   );
 
-  const scoreColor = {good:'good',ok:'ok',bad:'bad'};
+  const scoreColor = {good:'good',ok:'ok',bad:'bad',mixed:'ok',poor:'bad'};
+  // Pretty-print company_slug → display name
+  function fmtCompSlug(slug) {
+    if (!slug) return '';
+    return slug.replace(/^_reddit_.*/, 'Reddit (market)').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
 
   const cards = items.length ? items.map(s => `
     <div class="sent-card">
       <div class="sent-header">
-        <div class="sent-comp">${escHtml(s.competitor)}</div>
+        <div class="sent-comp">${escHtml(fmtCompSlug(s.competitor) || s.competitor)}</div>
         <div class="sent-score ${scoreColor[s.scoreTier]||''}">${escHtml(s.score)}</div>
       </div>
       <div class="sent-body">
