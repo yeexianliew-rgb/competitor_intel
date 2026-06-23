@@ -46,7 +46,10 @@ const MARKETS = {
       { name: 'Creditas',        appleId: '1270180256', playId: 'br.com.creditas.mobile',   raSlug: 'creditas' },
       { name: 'C6 Bank',         appleId: '1463463143', playId: 'com.c6bank.app',           raSlug: 'c6-bank' },
       { name: 'PagBank',         appleId: '1186059012', playId: 'br.com.uol.ps.myaccount',  raSlug: 'pagbank' },
-      { name: 'SParcelado',      appleId: null,         playId: null,                        raSlug: 'sparcelado' },
+      // SParcelado and SCredito are features inside the Shopee BR app — use Shopee IDs,
+      // filter reviews to SParcelado/SCredito mentions via the Claude prompt focus field
+      { name: 'SParcelado',      appleId: '1481812175', playId: 'com.shopee.br', raSlug: 'shopee', promptFocus: 'SParcelado parcelamento BNPL installments credit' },
+      { name: 'SCredito',        appleId: '1481812175', playId: 'com.shopee.br', raSlug: 'shopee', promptFocus: 'SCrédito SCredito emprestimo pessoal personal loan credit' },
     ]
   },
   ph: {
@@ -204,7 +207,11 @@ async function fetchReviewNewsFallback(app, marketName) {
     'Indonesia':   'id&gl=ID&ceid=ID:id'
   };
   const lang = langMap[marketName] || 'en-US&gl=US&ceid=US:en';
-  const query = encodeURIComponent(`${app.name} review complaint reclamacao keluhan problema`);
+  // For embedded features (SParcelado/SCredito), search by feature name not parent app name
+  const searchName = app.promptFocus
+    ? app.name
+    : app.name;
+  const query = encodeURIComponent(`${searchName} review complaint reclamacao keluhan problema`);
   const url = `https://news.google.com/rss/search?q=${query}&hl=${lang}`;
 
   try {
@@ -274,9 +281,13 @@ function buildSentimentPrompt(app, marketName, reviews) {
     `[${i + 1}] Rating: ${r.rating}/5 | ${r.source || 'app_store'}\nTitle: ${r.title}\n${r.body}`
   ).join('\n\n---\n\n');
 
+  const focusNote = app.promptFocus
+    ? `\nFOCUS: This is for the "${app.name}" feature specifically. Only extract complaints and praises that mention or relate to: ${app.promptFocus}. Ignore reviews about unrelated app features.`
+    : '';
+
   return `App: ${app.name}
 Market: ${marketName}
-Review count: ${reviews.length}
+Review count: ${reviews.length}${focusNote}
 
 Analyze these user reviews and complaints:
 
