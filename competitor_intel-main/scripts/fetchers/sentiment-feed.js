@@ -192,6 +192,34 @@ async function fetchReclameAqui(app) {
   }
 }
 
+// ── Google News: user complaints / reviews coverage via RSS (CI-safe fallback) ─
+// Used when direct App Store / Play Store scraping is blocked (common on CI IPs)
+
+async function fetchReviewNewsFallback(app, marketName) {
+  const langMap = {
+    'Mexico':      'es-419&gl=MX&ceid=MX:es-419',
+    'Brazil':      'pt-BR&gl=BR&ceid=BR:pt-BR',
+    'Philippines': 'en-PH&gl=PH&ceid=PH:en',
+    'Indonesia':   'id&gl=ID&ceid=ID:id'
+  };
+  const lang = langMap[marketName] || 'en-US&gl=US&ceid=US:en';
+  const query = encodeURIComponent(`${app.name} review complaint reclamacao keluhan problema`);
+  const url = `https://news.google.com/rss/search?q=${query}&hl=${lang}`;
+
+  try {
+    const parsed = await rss.parseURL(url);
+    return (parsed.items || []).slice(0, 10).map(item => ({
+      title: item.title || '',
+      body: item.contentSnippet || item.title || '',
+      rating: 3,
+      date: item.pubDate ? new Date(item.pubDate).toISOString().split('T')[0] : '',
+      source: 'google_news'
+    }));
+  } catch (e) {
+    return [];
+  }
+}
+
 // ── Reddit search via RSS ─────────────────────────────────────────────────────
 
 async function fetchRedditSentiment(market) {
@@ -285,13 +313,20 @@ async function processApp(marketSlug, marketName, countryCode, app, runId) {
     fetchReclameAqui(app)
   ]);
 
-  const allReviews = [
+  let allReviews = [
     ...appleReviews.map(r => ({ ...r, source: 'apple_app_store' })),
     ...playReviews.map(r => ({ ...r, source: 'google_play' })),
     ...raComplaints
   ];
 
   console.log(`      Apple: ${appleReviews.length} | Play: ${playReviews.length} | ReclameAqui: ${raComplaints.length}`);
+
+  // CI fallback: if direct scraping blocked, use Google News review articles
+  if (!allReviews.length) {
+    const newsReviews = await fetchReviewNewsFallback(app, marketName);
+    console.log(`      [fallback] Google News reviews: ${newsReviews.length}`);
+    allReviews = newsReviews;
+  }
 
   if (!allReviews.length) return null;
 
@@ -313,13 +348,15 @@ async function processApp(marketSlug, marketName, countryCode, app, runId) {
     company_slug: app.name.toLowerCase().replace(/\s+/g, '_'),
     score: `${(scoreNum * 5).toFixed(1)} / 5`,
     score_tier: scoreTier,
-    sources: JSON.stringify(['Apple App Store', 'Google Play', ...(app.raSlug ? ['Reclame Aqui'] : [])]),
-    complaints: JSON.stringify(extracted.topComplaints || []),
-    praises: JSON.stringify(extracted.topPraise || []),
-    quotes: JSON.stringify([
-      ...(extracted.representativeBadReview ? [{ type: 'negative', text: extracted.representativeBadReview }] : []),
-      ...(extracted.representativeGoodReview ? [{ type: 'positive', text: extracted.representativeGoodReview }] : [])
-    ]),
+    sources: allReviews.some(r => r.source === 'google_news')
+      ? ['Google News', 'Reddit']
+      : ['Apple App Store', 'Google Play', ...(app.raSlug ? ['Reclame Aqui'] : [])],
+    complaints: extracted.topComplaints || [],
+    praises: extracted.topPraise || [],
+    quotes: [
+      ...(extracted.representativeBadReview ? [`"${extracted.representativeBadReview}"`] : []),
+      ...(extracted.representativeGoodReview ? [`"${extracted.representativeGoodReview}"`] : [])
+    ],
     raw_payload: extracted
   };
 }
@@ -381,14 +418,12 @@ Return JSON:
           company_slug: `_reddit_${market.subreddit}`,
           score: `${(rScore * 5).toFixed(1)} / 5`,
           score_tier: rTier,
-          sources: JSON.stringify([`reddit.com/r/${market.subreddit}`]),
-          complaints: JSON.stringify(redditExtracted.topComplaints || []),
-          praises: JSON.stringify([]),
-          quotes: JSON.stringify(
-            redditExtracted.representativeBadReview
-              ? [{ type: 'negative', text: redditExtracted.representativeBadReview }]
-              : []
-          ),
+          sources: [`reddit.com/r/${market.subreddit}`],
+          complaints: redditExtracted.topComplaints || [],
+          praises: [],
+          quotes: redditExtracted.representativeBadReview
+            ? [`"${redditExtracted.representativeBadReview}"`]
+            : [],
           raw_payload: redditExtracted
         });
       }
