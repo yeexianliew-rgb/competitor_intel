@@ -160,6 +160,10 @@ body.tab-macro .panel-container{margin-top:var(--topbar-h)}
 .cat-badge.regulatory{background:var(--red-light);color:var(--red);border-color:#fc8181}
 .cat-badge.macro{background:var(--surface);color:var(--muted);border-color:var(--border)}
 .cat-badge.competitor{background:var(--green-light);color:var(--green-dark);border-color:#b2ddd3}
+.cat-badge.product{background:#e0f2fe;color:#0369a1;border-color:#7dd3fc}
+.cat-badge.partnership{background:#f0fdf4;color:#15803d;border-color:#86efac}
+.cat-badge.repayment_risk,.cat-badge.repaymentrisk{background:#fff7ed;color:#c2410c;border-color:#fdba74}
+.cat-badge.valuation,.cat-badge.financials{background:#fdf4ff;color:#7e22ce;border-color:#d8b4fe}
 .cat-badge.mx-fintech,.cat-badge.mxfintech{background:#f3e8ff;color:#6b21a8;border-color:#d8b4fe}
 .cat-badge.event{background:var(--amber-light);color:#92400e;border-color:var(--amber)}
 .comp-badge{background:var(--surface);color:var(--navy);border-radius:10px}
@@ -2631,7 +2635,19 @@ function renderDigest(){
     }
 
     if(src){
-      card.addEventListener('click', () => { window.open(src,'_blank','noopener'); dismiss(); });
+      card.addEventListener('click', () => {
+        // Google News URLs are redirect wrappers — extract the real URL from the query string if present
+        let target = src;
+        try {
+          const u = new URL(src);
+          if(u.hostname === 'news.google.com') {
+            const real = u.searchParams.get('url') || u.searchParams.get('q');
+            if(real) target = real;
+          }
+        } catch(_){}
+        window.open(target, '_blank', 'noopener,noreferrer');
+        dismiss();
+      });
     }
 
     if(!seenIds.has(id)){
@@ -4168,10 +4184,19 @@ function clearFreshnessBadges(){
 
   function applyPayload(slug, payload, createdAt){
     if(!payload || typeof payload !== 'object') return false;
-    // Merge into the existing market object so that fields set only in the HTML
-    // (meta, competitors, mktComps, mktLabels, etc.) are preserved.
-    // Supabase payload fields (newsItems, productItems, mktAds, macroData, etc.) overwrite.
-    Object.assign(MARKET_DATA[slug], payload);
+    // Merge Supabase payload into the existing market object.
+    // Fields only in HTML (meta, competitors, mktComps, etc.) are preserved.
+    // For array fields: skip overwrite if the incoming array is empty — keeps
+    // the hand-curated HTML fallback data (e.g. upcomingEvents not yet fetched).
+    const ARRAY_FIELDS = ['upcomingEvents', 'sentimentItems', 'businessStats'];
+    const merged = Object.assign({}, payload);
+    ARRAY_FIELDS.forEach(f => {
+      if(Array.isArray(merged[f]) && merged[f].length === 0 &&
+         Array.isArray(MARKET_DATA[slug]?.[f]) && MARKET_DATA[slug][f].length > 0) {
+        delete merged[f];
+      }
+    });
+    Object.assign(MARKET_DATA[slug], merged);
     if(createdAt) _snapshotTs[slug] = createdAt;
     return true;
   }

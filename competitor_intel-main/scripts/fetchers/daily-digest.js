@@ -249,7 +249,7 @@ ${market.include}
 ${market.exclude}
 
 For each qualifying item, extract:
-- eventType: one of — regulatory | product | funding | partnership | repayment_risk | macro
+- eventType: one of — regulatory | product | funding | partnership | valuation | repayment_risk | macro
 - competitor: exact name from the competitor list above, or null if market-wide
 - headline: factual, max 15 words, in English
 - whatHappened: 1 sentence, factual summary of the event
@@ -258,12 +258,21 @@ For each qualifying item, extract:
 - date: YYYY-MM-DD (use article publish date)
 - sourceUrl: original article URL
 
+Category guide:
+- regulatory: licence, rule change, enforcement, policy rate decision
+- product: new product, feature launch, pricing/fee/rate/limit change
+- funding: fundraising round, debt facility, securitization
+- partnership: distribution deal, merchant or ecosystem tie-up
+- valuation: analyst rating, earnings, IPO, M&A, valuation news
+- repayment_risk: employment, income, welfare, debt relief, NPL, economic shock signals
+- macro: broader economic indicator without a direct competitor or regulatory action
+
 Return JSON (return empty newsItems array if nothing qualifies — do not force low-relevance items):
 {
   "newsItems": [
     {
       "date": "YYYY-MM-DD",
-      "category": "regulatory|product|funding|partnership|repayment_risk|macro",
+      "category": "regulatory|product|funding|partnership|valuation|repayment_risk|macro",
       "competitor": "exact competitor name or null",
       "headline": "max 15 words",
       "whatHappened": "1 sentence factual summary",
