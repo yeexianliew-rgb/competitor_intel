@@ -217,18 +217,38 @@ async function processCompetitor(marketSlug, marketName, competitor, runId) {
 
   if (!reliable.length) return [];
 
-  return reliable.map((stat, i) => ({
+  // Map dynamic metric rows into the fixed intel_business_stats column shape
+  const pick = (keywords) => {
+    const m = reliable.find(s =>
+      keywords.some(k => (s.metric || '').toLowerCase().includes(k))
+    );
+    return m ? `${m.value}${m.period ? ` (${m.period})` : ''}` : null;
+  };
+
+  const companySlug = competitor.name.toLowerCase().replace(/\s+/g, '_');
+
+  return [{
     run_id: runId,
     market_slug: marketSlug,
-    company_slug: competitor.name.toLowerCase().replace(/\s+/g, '_'),
-    metric_name: stat.metric,
-    metric_value: stat.value,
-    metric_period: stat.period || null,
-    source_url: articles[0]?.url || null,
-    key_highlight: i === 0 ? keyHighlight : null,
-    confidence: stat.confidence,
-    raw_payload: stat
-  }));
+    item_id: `${marketSlug}_${companySlug}_${runId.slice(0, 8)}`,
+    company_slug: companySlug,
+    users:            pick(['user', 'customer', 'active']),
+    loan_os:          pick(['portfolio', 'loan book', 'loan os', 'carteira', 'portofolio']),
+    revenue:          pick(['revenue', 'receita', 'pendapatan']),
+    funding:          pick(['funding', 'raised', 'round', 'facility', 'investimento']),
+    funding_advantage: keyHighlight,
+    est_cac:          pick(['cac', 'acquisition cost']),
+    est_promo_burn:   null,
+    npl:              pick(['npl', 'default', 'inadimplencia', 'npp']),
+    monetisation:     pick(['revenue', 'income', 'profit', 'lucro']),
+    distribution:     null,
+    ue_quality:       null,
+    ue_confidence:    null,
+    threat_level:     null,
+    threat_why:       null,
+    implication:      keyHighlight,
+    raw_payload:      { metrics: reliable, keyHighlight, source: articles[0]?.url || null }
+  }];
 }
 
 // ── Main per-market logic ────────────────────────────────────────────────────

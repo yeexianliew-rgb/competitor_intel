@@ -303,19 +303,23 @@ async function processApp(marketSlug, marketName, countryCode, app, runId) {
     return null;
   }
 
+  const scoreNum = extracted.sentimentScore || 0;
+  const scoreTier = scoreNum >= 0.6 ? 'good' : scoreNum >= 0.3 ? 'mixed' : 'poor';
+
   return {
     run_id: runId,
     market_slug: marketSlug,
+    item_id: `${marketSlug}_${app.name.toLowerCase().replace(/\s+/g, '_')}_${runId.slice(0, 8)}`,
     company_slug: app.name.toLowerCase().replace(/\s+/g, '_'),
-    overall_sentiment: extracted.overallSentiment || 'mixed',
-    sentiment_score: extracted.sentimentScore || 0,
-    top_complaints: extracted.topComplaints || [],
-    top_praise: extracted.topPraise || [],
-    top_pain_category: extracted.topPainCategory || 'other',
-    nps_signal: extracted.npsSignal || 'neutral',
-    review_count: extracted.reviewCount || allReviews.length,
-    representative_bad: extracted.representativeBadReview || null,
-    representative_good: extracted.representativeGoodReview || null,
+    score: `${(scoreNum * 5).toFixed(1)} / 5`,
+    score_tier: scoreTier,
+    sources: JSON.stringify(['Apple App Store', 'Google Play', ...(app.raSlug ? ['Reclame Aqui'] : [])]),
+    complaints: JSON.stringify(extracted.topComplaints || []),
+    praises: JSON.stringify(extracted.topPraise || []),
+    quotes: JSON.stringify([
+      ...(extracted.representativeBadReview ? [{ type: 'negative', text: extracted.representativeBadReview }] : []),
+      ...(extracted.representativeGoodReview ? [{ type: 'positive', text: extracted.representativeGoodReview }] : [])
+    ]),
     raw_payload: extracted
   };
 }
@@ -368,19 +372,23 @@ Return JSON:
 
       redditExtracted = await extractStructured(SYSTEM_PROMPT, redditPrompt);
       if (redditExtracted) {
+        const rScore = redditExtracted.sentimentScore || 0;
+        const rTier = rScore >= 0.6 ? 'good' : rScore >= 0.3 ? 'mixed' : 'poor';
         appRows.push({
           run_id: runId,
           market_slug: marketSlug,
+          item_id: `${marketSlug}_reddit_${market.subreddit}_${runId.slice(0, 8)}`,
           company_slug: `_reddit_${market.subreddit}`,
-          overall_sentiment: redditExtracted.overallSentiment || 'mixed',
-          sentiment_score: redditExtracted.sentimentScore || 0,
-          top_complaints: redditExtracted.topComplaints || [],
-          top_praise: redditExtracted.topPraise || [],
-          top_pain_category: redditExtracted.topPainCategory || 'other',
-          nps_signal: redditExtracted.npsSignal || 'neutral',
-          review_count: redditPosts.length,
-          representative_bad: redditExtracted.representativeBadReview || null,
-          representative_good: null,
+          score: `${(rScore * 5).toFixed(1)} / 5`,
+          score_tier: rTier,
+          sources: JSON.stringify([`reddit.com/r/${market.subreddit}`]),
+          complaints: JSON.stringify(redditExtracted.topComplaints || []),
+          praises: JSON.stringify([]),
+          quotes: JSON.stringify(
+            redditExtracted.representativeBadReview
+              ? [{ type: 'negative', text: redditExtracted.representativeBadReview }]
+              : []
+          ),
           raw_payload: redditExtracted
         });
       }
@@ -395,7 +403,7 @@ Return JSON:
     return;
   }
 
-  await batchInsert('intel_sentiment_scores', appRows);
+  await batchInsert('intel_sentiment_items', appRows);
   console.log(`  Inserted ${appRows.length} sentiment rows`);
 
   await logChange(marketSlug, 'sentiment', 'modified', appRows.length,

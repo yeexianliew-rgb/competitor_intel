@@ -295,11 +295,36 @@ async function processMarket(marketSlug) {
     return;
   }
 
-  await batchInsert('intel_marketing_signals', allRows);
-  console.log(`  Inserted ${allRows.length} marketing signal rows`);
+  // Write each competitor as one row into intel_marketing_items_archive using ad_copy_summary
+  // for value props and notes for messaging theme — reuses existing table/SQL shape
+  const archiveRows = allRows.map(r => ({
+    run_id: r.run_id,
+    market_slug: r.market_slug,
+    item_id: `${r.market_slug}_${r.company_slug}_${runId.slice(0, 8)}`,
+    company_slug: r.company_slug,
+    date_captured: new Date().toISOString().split('T')[0],
+    channel: r.channel_observation === 'fb_heavy' ? 'Meta/Facebook' :
+             r.channel_observation === 'google_heavy' ? 'Google Ads' : 'Meta + Google',
+    ad_status: 'active',
+    source_url: null,
+    landing_page_url: null,
+    creative_url: null,
+    screenshot_url: null,
+    headline: r.messaging_theme || null,
+    ad_copy_summary: (r.value_props || []).slice(0, 3).join(' · ') || null,
+    hook: (r.value_props || [])[0] || null,
+    promo_mechanics: (r.promotions || []).join(' | ') || null,
+    target_segment: r.target_audience || null,
+    cta: null,
+    notes: `Scraped ${r.ads_found_count} ads · confidence: ${r.confidence}`,
+    raw_payload: r.raw_payload
+  }));
 
-  await logChange(marketSlug, 'marketing', 'modified', allRows.length,
-    `Marketing signals: ${allRows.length} competitors updated`, runId);
+  await batchInsert('intel_marketing_items_archive', archiveRows);
+  console.log(`  Inserted ${archiveRows.length} marketing rows`);
+
+  await logChange(marketSlug, 'marketing', 'modified', archiveRows.length,
+    `Marketing signals: ${archiveRows.length} competitors updated`, runId);
   await markSectionRefreshed(marketSlug, 'marketing');
   await rebuildSnapshot(marketSlug);
   console.log(`  Snapshot rebuilt for ${marketSlug}`);
