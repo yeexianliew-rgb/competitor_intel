@@ -48,8 +48,8 @@ const MARKETS = {
       { name: 'PagBank',         appleId: '1186059012', playId: 'br.com.uol.ps.myaccount',  raSlug: 'pagbank' },
       // SParcelado and SCredito are features inside the Shopee BR app — use Shopee IDs,
       // filter reviews to SParcelado/SCredito mentions via the Claude prompt focus field
-      { name: 'SParcelado',      appleId: '1481812175', playId: 'com.shopee.br', raSlug: 'shopee', promptFocus: 'SParcelado parcelamento BNPL installments credit' },
-      { name: 'SCredito',        appleId: '1481812175', playId: 'com.shopee.br', raSlug: 'shopee', promptFocus: 'SCrédito SCredito emprestimo pessoal personal loan credit' },
+      { name: 'SParcelado',      appleId: '1481812175', playId: 'com.shopee.br', raSlug: 'shopee', promptFocus: 'SParcelado parcelamento BNPL installments credit', filterKeywords: ['sparcelado', 's parcelado', 'parcelado', 'parcelamento shopee'] },
+      { name: 'SCredito',        appleId: '1481812175', playId: 'com.shopee.br', raSlug: 'shopee', promptFocus: 'SCrédito SCredito emprestimo pessoal personal loan credit', filterKeywords: ['scredito', 'scrédito', 's crédito', 'emprestimo shopee', 'empréstimo shopee', 'credito shopee', 'crédito shopee'] },
     ]
   },
   ph: {
@@ -196,6 +196,19 @@ async function fetchReclameAqui(app) {
   }
 }
 
+// ── Keyword filter for embedded-feature apps (SParcelado, SCredito) ──────────
+// When app.filterKeywords is set, keep only reviews that mention at least one keyword.
+// This prevents generic Shopee shopping reviews from polluting the credit sentiment.
+
+function filterByKeywords(reviews, keywords) {
+  if (!keywords || !keywords.length) return reviews;
+  const lower = keywords.map(k => k.toLowerCase());
+  return reviews.filter(r => {
+    const text = `${r.title} ${r.body}`.toLowerCase();
+    return lower.some(k => text.includes(k));
+  });
+}
+
 // ── Google News: user complaints / reviews coverage via RSS (CI-safe fallback) ─
 // Used when direct App Store / Play Store scraping is blocked (common on CI IPs)
 
@@ -207,11 +220,7 @@ async function fetchReviewNewsFallback(app, marketName) {
     'Indonesia':   'id&gl=ID&ceid=ID:id'
   };
   const lang = langMap[marketName] || 'en-US&gl=US&ceid=US:en';
-  // For embedded features (SParcelado/SCredito), search by feature name not parent app name
-  const searchName = app.promptFocus
-    ? app.name
-    : app.name;
-  const query = encodeURIComponent(`${searchName} review complaint reclamacao keluhan problema`);
+  const query = encodeURIComponent(`${app.name} review complaint reclamacao keluhan problema`);
   const url = `https://news.google.com/rss/search?q=${query}&hl=${lang}`;
 
   try {
@@ -338,7 +347,14 @@ async function processApp(marketSlug, marketName, countryCode, app, runId) {
 
   console.log(`      Apple: ${appleReviews.length} | Play: ${playReviews.length} | ReclameAqui: ${raComplaints.length}`);
 
-  // CI fallback: if direct scraping blocked, use Google News review articles
+  // For embedded-feature apps (SParcelado, SCredito): filter to only reviews
+  // that explicitly mention the feature name — drops generic Shopee shopping reviews
+  allReviews = filterByKeywords(allReviews, app.filterKeywords);
+  if (app.filterKeywords) {
+    console.log(`      [keyword filter] kept ${allReviews.length} reviews mentioning ${app.name}`);
+  }
+
+  // CI fallback: if direct scraping blocked (or filter left nothing), use Google News
   if (!allReviews.length) {
     const newsReviews = await fetchReviewNewsFallback(app, marketName);
     console.log(`      [fallback] Google News reviews: ${newsReviews.length}`);
