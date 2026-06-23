@@ -9,7 +9,8 @@
     "fetch:macro": "node scripts/fetchers/macro-feed.js",
     "fetch:marketing": "node scripts/fetchers/marketing-feed.js",
     "fetch:sentiment": "node scripts/fetchers/sentiment-feed.js",
-    "fetch:competitor": "node scripts/fetchers/competitor-feed.js"
+    "fetch:competitor": "node scripts/fetchers/competitor-feed.js",
+    "fetch:bizstats": "node scripts/fetchers/business-stats-feed.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",

@@ -1,0 +1,36 @@
+name: Quarterly Business Stats
+
+on:
+  schedule:
+    - cron: '0 7 1 1,4,7,10 *'   # 7am UTC 1st day of Jan/Apr/Jul/Oct (3pm SGT)
+  workflow_dispatch:
+    inputs:
+      markets:
+        description: 'Comma-separated market slugs (default: all)'
+        required: false
+        default: 'mx,br,ph,id'
+
+jobs:
+  fetch:
+    name: Scrape competitor business stats
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        working-directory: competitor_intel-main
+        run: npm install
+
+      - name: Run business stats fetcher
+        working-directory: competitor_intel-main
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MARKETS: ${{ github.event.inputs.markets || 'mx,br,ph,id' }}
+        run: node scripts/fetchers/business-stats-feed.js
