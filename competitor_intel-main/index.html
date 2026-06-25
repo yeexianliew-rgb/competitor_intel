@@ -2740,23 +2740,36 @@ function renderMarketing(){
     </div>`;
   }
 
+  // Null-safe funnel accessor — returns empty stub if Supabase hasn't populated mktFunnels yet
+  const EMPTY_FUNNEL = { funnelSummary:'—', channelImplication:'—', prmCounterMove:'—',
+    channels:[], messaging:{ evergreen:[], campaigns:[] }, prm:[] };
+  const getFunnel = k => (MD().mktFunnels && MD().mktFunnels[k]) || EMPTY_FUNNEL;
+
+  // If no funnel data at all for any comp, show a placeholder instead of crashing
+  const hasFunnelData = comps.some(k => MD().mktFunnels && MD().mktFunnels[k]);
+
   let gridContent = '';
 
-  if(section === 'awareness'){
+  if(!hasFunnelData){
+    gridContent = `<div style="padding:48px 32px;text-align:center;color:var(--muted)">
+      <div style="font-size:1.1rem;margin-bottom:8px">No marketing data yet</div>
+      <div style="font-size:.8rem">Marketing Feed runs weekly (Monday 11am SGT). Hand-curated data is available for MX.</div>
+    </div>`;
+  } else if(section === 'awareness'){
     // Overview row (funnel summary per competitor)
     const overviewRow = `<div class="mkt-surface-row" style="border-top:none">
       <div class="mkt-surface-label" style="background:var(--navy);justify-content:center">
         <div class="mkt-surface-label-title" style="color:rgba(255,255,255,.6)">Overview</div>
       </div>
       ${comps.map(k=>{
-        const d=MD().mktFunnels[k];
+        const d=getFunnel(k);
         return `<div class="mkt-surface-cell" style="background:var(--surface)"><div style="font-size:.71rem;line-height:1.5;color:var(--muted);font-style:italic">${escHtml(d.funnelSummary)}</div></div>`;
       }).join('')}
     </div>`;
 
     // 5 channel rows
     const chRows = rowDefs.map(row => surfaceRow(row, (k, rowKey) => {
-      const d = MD().mktFunnels[k];
+      const d = getFunnel(k);
       const items = d.channels.map((ch,i)=>({ch,i})).filter(({ch})=>(chCatMap[ch.type]||'socials')===rowKey);
       if(!items.length) return `<div class="mkt-surface-cell empty"><span class="mkt-surface-empty-txt">No presence</span></div>`;
       return `<div class="mkt-surface-cell">${items.map(({ch,i})=>chCard(k,ch,i)).join('')}</div>`;
@@ -2769,7 +2782,7 @@ function renderMarketing(){
         <div class="mkt-surface-label-sub" style="color:#b45309">Implication</div>
       </div>
       ${comps.map(k=>{
-        const d=MD().mktFunnels[k];
+        const d=getFunnel(k);
         return `<div class="mkt-surface-cell" style="background:var(--amber-light);border-right-color:rgba(245,158,11,.25)"><div style="font-size:.7rem;line-height:1.5;color:#78350f">${escHtml(d.channelImplication)}</div></div>`;
       }).join('')}
     </div>`;
@@ -2786,7 +2799,7 @@ function renderMarketing(){
         <div class="mkt-surface-label-sub" style="color:rgba(255,255,255,.4)">Evergreen pillars</div>
       </div>
       ${comps.map(k=>{
-        const d=MD().mktFunnels[k];
+        const d=getFunnel(k);
         const pillars=d.messaging.evergreen.map(p=>`<span class="pillar-tag" style="font-size:.63rem;padding:3px 8px" title="${escHtml(p.channels.join(', '))}: ${escHtml(p.copy)}">${escHtml(p.pillar)}</span>`).join('');
         return `<div class="mkt-surface-cell mkt-pillars-cell">${pillars}</div>`;
       }).join('')}
@@ -2794,7 +2807,7 @@ function renderMarketing(){
 
     // 5 campaign rows grouped by surface
     const campRows = rowDefs.map(row => surfaceRow(row, (k, rowKey) => {
-      const d = MD().mktFunnels[k];
+      const d = getFunnel(k);
       const items = d.messaging.campaigns.map((c,i)=>({c,i})).filter(({c})=>campRow(c.channel,c.name)===rowKey);
       if(!items.length) return `<div class="mkt-surface-cell empty"><span class="mkt-surface-empty-txt">No campaigns</span></div>`;
       return `<div class="mkt-surface-cell">${items.map(({c,i})=>campCard(k,c,i)).join('')}</div>`;
@@ -2807,7 +2820,7 @@ function renderMarketing(){
   } else if(section === 'promotions'){
     // Promotions: keep original 4-column card layout (unchanged)
     const cols = comps.map(k => {
-      const d = MD().mktFunnels[k];
+      const d = getFunnel(k);
       const prmRows = d.prm.map((p,i) => {
         const typeSlug = p.type.toLowerCase().replace(/[^a-z]/g,'');
         const statusCls = (p.status||'').toLowerCase()==='active' ? 'prm-status-active' : 'prm-status-historic';
@@ -2836,7 +2849,7 @@ function renderMarketing(){
     const {comp:dc, section:ds, idx:di} = state.mktDetail;
     const _ma = MD().mktAds; const ads = _ma && _ma[dc+'_'+ds+'_'+di];
     if(ads && ads.length){
-      const dd = MD().mktFunnels[dc];
+      const dd = getFunnel(dc);
       const dLabel = labels[dc] || dc;
       let itemName = '';
       if(ds==='channels' && dd.channels[di]) itemName = dd.channels[di].name;
@@ -3631,7 +3644,15 @@ function renderProducts(){
 function renderSentiment(){
   const q = state.search;
   const comp = state.competitor;
-  const items = (MD().sentimentItems||[]).filter(s =>
+  // Coerce jsonb fields that may arrive as strings or nulls from Supabase
+  const safeArr = v => Array.isArray(v) ? v : (typeof v === 'string' ? (() => { try { return JSON.parse(v); } catch(e) { return [v]; } })() : []);
+  const items = (MD().sentimentItems||[]).map(s => ({
+    ...s,
+    complaints: safeArr(s.complaints),
+    praises:    safeArr(s.praises),
+    quotes:     safeArr(s.quotes),
+    sources:    safeArr(s.sources),
+  })).filter(s =>
     matchesComp(s.competitor, comp) &&
     matchesSearch([s.competitor, ...s.complaints, ...s.praises], q)
   );

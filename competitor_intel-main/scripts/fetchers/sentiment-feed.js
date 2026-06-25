@@ -48,8 +48,12 @@ const MARKETS = {
       { name: 'PagBank',         appleId: '1186059012', playId: 'br.com.uol.ps.myaccount',  raSlug: 'pagbank' },
       // SParcelado and SCredito are features inside the Shopee BR app — use Shopee IDs,
       // filter reviews to SParcelado/SCredito mentions via the Claude prompt focus field
-      { name: 'SParcelado',      appleId: '1481812175', playId: 'com.shopee.br', raSlug: 'shopee', promptFocus: 'SParcelado parcelamento BNPL installments credit', filterKeywords: ['sparcelado', 's parcelado', 'parcelado', 'parcelamento shopee'] },
-      { name: 'SCredito',        appleId: '1481812175', playId: 'com.shopee.br', raSlug: 'shopee', promptFocus: 'SCrédito SCredito emprestimo pessoal personal loan credit', filterKeywords: ['scredito', 'scrédito', 's crédito', 'emprestimo shopee', 'empréstimo shopee', 'credito shopee', 'crédito shopee'] },
+      { name: 'SParcelado',  appleId: '1481812175', playId: 'com.shopee.br', raSlug: 'shopee',
+        promptFocus: 'SParcelado parcelamento BNPL installments credit',
+        filterKeywords: ['sparcelado', 's parcelado', 'parcelado shopee', 'shopee parcelado', 'parcelamento', 'bnpl shopee', 'compra parcelada shopee'] },
+      { name: 'SCredito',    appleId: '1481812175', playId: 'com.shopee.br', raSlug: 'shopee',
+        promptFocus: 'SCrédito SCredito emprestimo pessoal personal loan credit',
+        filterKeywords: ['scredito', 'scrédito', 's crédito', 'emprestimo shopee', 'empréstimo shopee', 'credito shopee', 'crédito shopee', 'shopee credito', 'shopee emprestimo'] },
     ]
   },
   ph: {
@@ -354,11 +358,12 @@ async function processApp(marketSlug, marketName, countryCode, app, runId) {
     console.log(`      [keyword filter] kept ${allReviews.length} reviews mentioning ${app.name}`);
   }
 
-  // CI fallback: if direct scraping blocked (or filter left nothing), use Google News
+  // CI fallback: if direct scraping blocked (or keyword filter left nothing), use Google News.
+  // Google News is already searched by feature name so bypass keyword filter.
   if (!allReviews.length) {
     const newsReviews = await fetchReviewNewsFallback(app, marketName);
     console.log(`      [fallback] Google News reviews: ${newsReviews.length}`);
-    allReviews = newsReviews;
+    allReviews = newsReviews; // no keyword filter — search already targets feature name
   }
 
   if (!allReviews.length) return null;
